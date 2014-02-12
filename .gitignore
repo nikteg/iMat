@@ -27,9 +27,9 @@ $RECYCLE.BIN/
 
 miglayout-src.zip
 *.class
-bin/*
 
 # Package Files #
 *.war
 *.ear
 
+/bin

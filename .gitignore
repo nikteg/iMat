@@ -25,11 +25,11 @@ $RECYCLE.BIN/
 *~
 
 
-
+miglayout-src.zip
 *.class
 bin/*
 
 # Package Files #
-*.jar
 *.war
 *.ear
+

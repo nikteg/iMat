@@ -1,4 +1,33 @@
+# Remove OS X files.
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# OS X Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Remove linux temporary files.
+*~
+
+
+
 *.class
+bin/*
 
 # Package Files #
 *.jar

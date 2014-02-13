@@ -104,7 +104,7 @@ public class MainWindow {
 		txtPotatisgrattng.setColumns(10);
 		
 		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael Lönn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
 		frame.getContentPane().add(comboBox, "cell 2 1,grow");
 		
 		btnNewButton = new JButton("320:-");

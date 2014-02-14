@@ -20,6 +20,13 @@ public class Item extends JPanel {
 
 		initialize();
 	}
+	
+	public Item(String name) {
+		this();
+		
+		lblBild.setText(name);
+	}
+	
 	private void initialize() {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setPreferredSize(new Dimension(128, 160));

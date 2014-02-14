@@ -1,10 +1,14 @@
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,27 +17,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.ColorUIResource;
-
-import com.alee.laf.WebLookAndFeel;
 
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.DefaultComboBoxModel;
-
-import java.awt.Component;
-
-import javax.swing.JRadioButton;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
-import javax.swing.border.EtchedBorder;
-import javax.swing.JSeparator;
-import javax.swing.border.MatteBorder;
+import com.alee.laf.WebLookAndFeel;
 
 
 public class MainWindow {
@@ -57,6 +49,7 @@ public class MainWindow {
 	private JLabel lblBild;
 	private JButton btnNewButton_1;
 	private JSeparator separator;
+	private int margin = 24;
 
 	/**
 	 * Launch the application.
@@ -88,9 +81,9 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1034, 768);
+		frame.setBounds(100, 100, 1050, 768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][96px:n][96px:n]", "[][][grow]"));
+		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][96px:96px][192px:192px]", "[][][grow]"));
 		
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
@@ -103,14 +96,14 @@ public class MainWindow {
 		frame.getContentPane().add(txtPotatisgrattng, "cell 1 1,grow");
 		txtPotatisgrattng.setColumns(10);
 		
-		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
-		frame.getContentPane().add(comboBox, "cell 2 1,grow");
-		
 		btnNewButton = new JButton("320:-");
 		btnNewButton.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/cart.png")));
 		btnNewButton.addActionListener(new BtnNewButtonActionListener());
-		frame.getContentPane().add(btnNewButton, "cell 3 1,grow");
+		frame.getContentPane().add(btnNewButton, "cell 2 1,grow");
+		
+		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
+		frame.getContentPane().add(comboBox, "cell 3 1,grow");
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(null);
@@ -149,17 +142,37 @@ public class MainWindow {
 		group.add(tglbtnFiskSkaldjur);
 		
 		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBorder(null);
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane_1.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent arg0) {
+				int width = ((JScrollPane)arg0.getSource()).getWidth();
+				int height = ((JScrollPane)arg0.getSource()).getHeight();
+				
+				calculateResults(width, height);
+			}
+		});
+		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		frame.getContentPane().add(scrollPane_1, "cell 1 2 3 1,grow");
 		
 		panel_1 = new JPanel();
 		scrollPane_1.setViewportView(panel_1);
-		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 8, 8));
-		panel_1.setPreferredSize(new Dimension(scrollPane_1.getWidth(), 320));
+		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, margin, margin));
 		
-		for (int i = 0; i < 10; i++) {
-			panel_1.add(new Item());
+		for (int i = 0; i < 100; i++) {
+			panel_1.add(new Item("" + (i+1)));
 		}
 		
+	}
+	
+	private void calculateResults(int width, int height) {
+		int cols = width/(128+margin); System.out.print("cols:" + cols);
+		int rows = 100 / cols;
+		rows += ((rows * cols < 100) ? 1 : 0); System.out.println("rows:" + rows);
+		
+		panel_1.setPreferredSize(new Dimension(width, (rows * (160 + margin)) + margin));
+		scrollPane_1.revalidate();
 	}
 	
 	private class BtnNewButtonActionListener implements ActionListener {

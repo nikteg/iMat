@@ -31,7 +31,7 @@ import com.alee.laf.WebLookAndFeel;
 public class MainWindow {
 
 	private JFrame frame;
-	private JButton btnNewButton;
+	private CartButton btnNewButton;
 	private JTextField txtPotatisgrattng;
 	private JLabel lblImat;
 	private JScrollPane scrollPane;
@@ -50,6 +50,7 @@ public class MainWindow {
 	private JButton btnNewButton_1;
 	private JSeparator separator;
 	private int margin = 24;
+	private int cartItems = 0;
 
 	/**
 	 * Launch the application.
@@ -75,6 +76,13 @@ public class MainWindow {
 		
 		initialize();
 	}
+	
+	public void addToCart() {
+		cartItems++;
+		
+		btnNewButton.setNumber(cartItems);
+		btnNewButton.repaint();
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -83,7 +91,7 @@ public class MainWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1050, 768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][96px:96px][192px:192px]", "[][][grow]"));
+		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][64px:64px][192px:192px]", "[][][grow]"));
 		
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
@@ -96,10 +104,12 @@ public class MainWindow {
 		frame.getContentPane().add(txtPotatisgrattng, "cell 1 1,grow");
 		txtPotatisgrattng.setColumns(10);
 		
-		btnNewButton = new JButton("320:-");
+		btnNewButton = new CartButton();
+		btnNewButton.setPreferredSize(new Dimension(48, 48));
 		btnNewButton.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/cart.png")));
 		btnNewButton.addActionListener(new BtnNewButtonActionListener());
 		frame.getContentPane().add(btnNewButton, "cell 2 1,grow");
+		btnNewButton.setNumber(cartItems);
 		
 		comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
@@ -161,7 +171,9 @@ public class MainWindow {
 		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, margin, margin));
 		
 		for (int i = 0; i < 100; i++) {
-			panel_1.add(new Item("" + (i+1)));
+			Item item = new Item("" + (i+1));
+			item.setParent(this);
+			panel_1.add(item);
 		}
 		
 	}

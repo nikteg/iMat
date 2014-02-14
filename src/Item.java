@@ -6,12 +6,15 @@ import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JSeparator;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class Item extends JPanel {
 	private JLabel lblBild;
 	private JButton btnKp;
 	private JSeparator separator;
+	private MainWindow parent;
 
 	/**
 	 * Create the panel.
@@ -27,6 +30,10 @@ public class Item extends JPanel {
 		lblBild.setText(name);
 	}
 	
+	public void setParent(MainWindow parent) {
+		this.parent = parent;
+	}
+	
 	private void initialize() {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setPreferredSize(new Dimension(128, 160));
@@ -40,7 +47,15 @@ public class Item extends JPanel {
 		add(separator, "cell 0 1,growx,aligny center");
 		
 		btnKp = new JButton("K\u00F6p");
+		btnKp.addActionListener(new BtnKpActionListener());
 		add(btnKp, "cell 0 2,alignx right,aligny center");
 	}
 
+	private class BtnKpActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent arg0) {
+			if (arg0.getSource().equals(btnKp)) {
+				parent.addToCart();
+			}
+		}
+	}
 }

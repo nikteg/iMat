@@ -115,17 +115,23 @@ public class MainWindow {
 					for (int i = 0; i < 100; i++) {
 						ItemGrid item =  new ItemGrid("" + (i+1));
 						panel_1.add(item);
-						panel_1.revalidate();
+						
 					}
-					
+					int width = scrollPane_1.getWidth();
+					int height = scrollPane_1.getHeight();
+					calculateResults(width, height);
+					panel_1.revalidate();
 					gridOrList = false;
 					lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/list-icon.png")));
 				} else if (!gridOrList){
 					for (int i = 0; i < 100; i++) {
 						ItemList item =  new ItemList("" + (i+1));
 						panel_1.add(item);
-						panel_1.revalidate();
 					}
+					int width = scrollPane_1.getWidth();
+					int height = scrollPane_1.getHeight();
+					calculateResults(width, height);
+					panel_1.revalidate();
 					gridOrList = true;
 					lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/grid-icon.png")));
 
@@ -216,16 +222,13 @@ public class MainWindow {
 	
 	private void calculateResults(int width, int height) {
 		if (gridOrList) {
-			System.out.println("hej");
-			int cols = width/(128+margin); System.out.print("cols:" + cols);
+			int cols = width/(128+margin);
 			int rows = 100 / cols;
-			rows += ((rows * cols < 100) ? 1 : 0); System.out.println("rows:" + rows);
+			rows += ((rows * cols < 100) ? 1 : 0);
 			
 			panel_1.setPreferredSize(new Dimension(width, (rows * (160 + margin)) + margin));
 			scrollPane_1.revalidate();
-			
 		} else if (!gridOrList){
-			
 			panel_1.setPreferredSize(new Dimension(width, (100 * (64 + margin)) + margin));
 			scrollPane_1.revalidate();
 		}

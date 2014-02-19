@@ -26,12 +26,14 @@ import javax.swing.SwingConstants;
 import net.miginfocom.swing.MigLayout;
 
 import com.alee.laf.WebLookAndFeel;
+import javax.swing.JTabbedPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class MainWindow {
 
 	private JFrame frame;
-	private CartButton btnNewButton;
 	private JTextField txtPotatisgrattng;
 	private JLabel lblImat;
 	private JScrollPane scrollPane;
@@ -51,6 +53,10 @@ public class MainWindow {
 	private JSeparator separator;
 	private int margin = 24;
 	private int cartItems = 0;
+	private JScrollPane scrollPane_2;
+	private JTabbedPane tabbedPane;
+	private JLabel lblGridList;
+	private boolean gridOrList;
 
 	/**
 	 * Launch the application.
@@ -77,12 +83,6 @@ public class MainWindow {
 		initialize();
 	}
 	
-	public void addToCart() {
-		cartItems++;
-		
-		btnNewButton.setNumber(cartItems);
-		btnNewButton.repaint();
-	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -91,7 +91,7 @@ public class MainWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1050, 768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][64px:64px][192px:192px]", "[][][grow]"));
+		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][72px][192px:192px]", "[][][grow]"));
 		
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
@@ -104,12 +104,38 @@ public class MainWindow {
 		frame.getContentPane().add(txtPotatisgrattng, "cell 1 1,grow");
 		txtPotatisgrattng.setColumns(10);
 		
-		btnNewButton = new CartButton();
-		btnNewButton.setPreferredSize(new Dimension(48, 48));
-		btnNewButton.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/cart.png")));
-		btnNewButton.addActionListener(new BtnNewButtonActionListener());
-		frame.getContentPane().add(btnNewButton, "cell 2 1,grow");
-		btnNewButton.setNumber(cartItems);
+		lblGridList = new JLabel("");
+		lblGridList.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				panel_1.removeAll();
+				if (gridOrList) {
+					for (int i = 0; i < 100; i++) {
+						ItemGrid item =  new ItemGrid("" + (i+1));
+						panel_1.add(item);
+						panel_1.revalidate();
+					}
+					
+					gridOrList = false;
+					lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/list-icon.png")));
+				} else if (!gridOrList){
+					for (int i = 0; i < 100; i++) {
+						ItemList item =  new ItemList("" + (i+1));
+						panel_1.add(item);
+						panel_1.revalidate();
+					}
+					gridOrList = true;
+					lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/grid-icon.png")));
+
+				}
+				
+				
+			}
+		});
+		lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/list-icon.png")));
+		frame.getContentPane().add(lblGridList, "cell 2 1,alignx trailing");
 		
 		comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
@@ -120,27 +146,34 @@ public class MainWindow {
 		frame.getContentPane().add(scrollPane, "cell 0 2,grow");
 		
 		panel = new JPanel();
+		panel.setPreferredSize(new Dimension(64, 28));
 		scrollPane.setViewportView(panel);
-		panel.setLayout(new MigLayout("insets 0", "[grow]", "[][][16px][16px][][]"));
+		panel.setLayout(new MigLayout("insets 0", "[grow]", "[52px,bottom][28px][28px][28px][28px][28px]"));
 		
 		tglbtnAllaKategorier = new JToggleButton("Alla kategorier");
+		tglbtnAllaKategorier.setPreferredSize(new Dimension(64, 28));
 		tglbtnAllaKategorier.setSelected(true);
 		panel.add(tglbtnAllaKategorier, "flowy,cell 0 0,growx");
 		
 		tglbtnBageri = new JToggleButton("Bageri");
+		tglbtnBageri.setPreferredSize(new Dimension(64, 28));
 		panel.add(tglbtnBageri, "cell 0 1,growx");
 		
 		
 		tglbtnBarn = new JToggleButton("Barn");
+		tglbtnBarn.setPreferredSize(new Dimension(64, 28));
 		panel.add(tglbtnBarn, "cell 0 2,growx");
 		
 		tglbtnBlommor = new JToggleButton("Blommor");
+		tglbtnBlommor.setPreferredSize(new Dimension(64, 28));
 		panel.add(tglbtnBlommor, "cell 0 3,growx");
 		
 		tglbtnDryck = new JToggleButton("Dryck");
+		tglbtnDryck.setPreferredSize(new Dimension(64, 28));
 		panel.add(tglbtnDryck, "cell 0 4,growx");
 		
 		tglbtnFiskSkaldjur = new JToggleButton("Fisk & Skaldjur");
+		tglbtnFiskSkaldjur.setPreferredSize(new Dimension(64, 28));
 		panel.add(tglbtnFiskSkaldjur, "cell 0 5,growx");
 		
 		ButtonGroup group = new ButtonGroup();
@@ -164,32 +197,38 @@ public class MainWindow {
 			}
 		});
 		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		frame.getContentPane().add(scrollPane_1, "cell 1 2 3 1,grow");
+		frame.getContentPane().add(scrollPane_1, "cell 1 2 2 1,grow");
 		
 		panel_1 = new JPanel();
 		scrollPane_1.setViewportView(panel_1);
 		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, margin, margin));
 		
-		for (int i = 0; i < 100; i++) {
-			Item item = new Item("" + (i+1));
-			item.setParent(this);
-			panel_1.add(item);
-		}
+		scrollPane_2 = new JScrollPane();
+		frame.getContentPane().add(scrollPane_2, "cell 3 2,grow");
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		scrollPane_2.setViewportView(tabbedPane);
+		
+		
+
 		
 	}
 	
 	private void calculateResults(int width, int height) {
-		int cols = width/(128+margin); System.out.print("cols:" + cols);
-		int rows = 100 / cols;
-		rows += ((rows * cols < 100) ? 1 : 0); System.out.println("rows:" + rows);
-		
-		panel_1.setPreferredSize(new Dimension(width, (rows * (160 + margin)) + margin));
-		scrollPane_1.revalidate();
-	}
-	
-	private class BtnNewButtonActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			JOptionPane.showMessageDialog(frame, "HEY");
+		if (gridOrList) {
+			System.out.println("hej");
+			int cols = width/(128+margin); System.out.print("cols:" + cols);
+			int rows = 100 / cols;
+			rows += ((rows * cols < 100) ? 1 : 0); System.out.println("rows:" + rows);
+			
+			panel_1.setPreferredSize(new Dimension(width, (rows * (160 + margin)) + margin));
+			scrollPane_1.revalidate();
+			
+		} else if (!gridOrList){
+			
+			panel_1.setPreferredSize(new Dimension(width, (100 * (64 + margin)) + margin));
+			scrollPane_1.revalidate();
 		}
+
 	}
 }

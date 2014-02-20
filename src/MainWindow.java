@@ -1,3 +1,5 @@
+import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -6,38 +8,41 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+import com.alee.extended.panel.WebButtonGroup;
+import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
-import javax.swing.JTabbedPane;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import com.alee.laf.button.WebToggleButton;
+import com.alee.laf.combobox.WebComboBox;
+import com.alee.laf.label.WebLabel;
+import com.alee.laf.tabbedpane.WebTabbedPane;
 
 
-public class MainWindow {
+public class MainWindow implements ActionListener {
 
 	private JFrame frame;
-	private JTextField txtPotatisgrattng;
+	private JTextField txtSearchBox;
 	private JLabel lblImat;
-	private JScrollPane scrollPane;
-	private JComboBox comboBox;
+	private JScrollPane categoriesScrollPane;
+	private WebComboBox userComboBox;
 	private JPanel panel;
 	private JToggleButton tglbtnBageri;
 	private JToggleButton tglbtnBarn;
@@ -45,18 +50,16 @@ public class MainWindow {
 	private JToggleButton tglbtnDryck;
 	private JToggleButton tglbtnFiskSkaldjur;
 	private JToggleButton tglbtnAllaKategorier;
-	private JScrollPane scrollPane_1;
-	private JPanel panel_1;
-	private JPanel panelItem;
-	private JLabel lblBild;
-	private JButton btnNewButton_1;
-	private JSeparator separator;
-	private int margin = 24;
-	private int cartItems = 0;
-	private JScrollPane scrollPane_2;
-	private JTabbedPane tabbedPane;
-	private JLabel lblGridList;
-	private boolean gridOrList;
+	private JScrollPane contentScrollPane;
+	private JPanel contentPanel;
+	private int margin = 8;
+	private WebTabbedPane sidebarTabbedPane;
+	
+	private WebToggleButton toggleGridViewButton;
+	private WebToggleButton toggleListViewButton;
+	private WebButtonGroup toggleViewButtonGroup;
+	private JPanel cardPanelList;
+	private JPanel cardPanelGrid;
 
 	/**
 	 * Launch the application.
@@ -78,6 +81,11 @@ public class MainWindow {
 	 * Create the application.
 	 */
 	public MainWindow() {
+		StyleConstants.drawFocus = false;
+		StyleConstants.drawShade = false;
+		StyleConstants.smallRound = 0;
+		StyleConstants.mediumRound = 0;
+
 		WebLookAndFeel.install();
 		
 		initialize();
@@ -89,66 +97,48 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1050, 768);
+		frame.setBounds(100, 100, 1050, 772);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][72px][192px:192px]", "[][][grow]"));
+		frame.getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][grow][72px][212px:212px]", "[][][grow]"));
 		
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
 		lblImat.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(lblImat, "cell 0 0 1 2,growx,aligny center");
 		
-		txtPotatisgrattng = new JTextField();
-		txtPotatisgrattng.setText("Potatisgrat\u00E4ng");
-		txtPotatisgrattng.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-		frame.getContentPane().add(txtPotatisgrattng, "cell 1 1,grow");
-		txtPotatisgrattng.setColumns(10);
-		
-		lblGridList = new JLabel("");
-		lblGridList.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				panel_1.removeAll();
-				if (gridOrList) {
-					for (int i = 0; i < 100; i++) {
-						ItemGrid item =  new ItemGrid("" + (i+1));
-						panel_1.add(item);
-						panel_1.revalidate();
-					}
-					
-					gridOrList = false;
-					lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/list-icon.png")));
-				} else if (!gridOrList){
-					for (int i = 0; i < 100; i++) {
-						ItemList item =  new ItemList("" + (i+1));
-						panel_1.add(item);
-						panel_1.revalidate();
-					}
-					gridOrList = true;
-					lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/grid-icon.png")));
+		txtSearchBox = new JTextField();
+		txtSearchBox.addKeyListener(new TxtSearchBoxKeyListener());
+		txtSearchBox.setText("Potatisgrat\u00E4ng");
+		txtSearchBox.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+		frame.getContentPane().add(txtSearchBox, "cell 1 1,grow");
+		txtSearchBox.setColumns(10);
 
-				}
-				
-				
-			}
-		});
-		lblGridList.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/icons/list-icon.png")));
-		frame.getContentPane().add(lblGridList, "cell 2 1,alignx trailing");
+        toggleGridViewButton = new WebToggleButton(new ImageIcon(MainWindow.class.getResource("/resources/icons/application_view_tile.png")));
+        toggleListViewButton = new WebToggleButton(new ImageIcon(MainWindow.class.getResource("/resources/icons/application_view_list.png")));
+        toggleViewButtonGroup = new WebButtonGroup(true, toggleGridViewButton, toggleListViewButton);
+        toggleViewButtonGroup.setButtonsMargin(10);
+        toggleViewButtonGroup.setButtonsDrawFocus(false);
+        
+        toggleGridViewButton.addActionListener(this);
+        toggleListViewButton.addActionListener(this);
+        
+        toggleGridViewButton.setSelected(true);
 		
-		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
-		frame.getContentPane().add(comboBox, "cell 3 1,grow");
+		frame.getContentPane().add(toggleViewButtonGroup, "cell 2 1,grow");
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBorder(null);
-		frame.getContentPane().add(scrollPane, "cell 0 2,grow");
+		userComboBox = new WebComboBox();
+		userComboBox.setModel(new DefaultComboBoxModel(new String[] {"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Orderhistorik", "Logga ut"}));
+		userComboBox.setFocusable(false);
+		frame.getContentPane().add(userComboBox, "cell 3 1,grow");
+		
+		categoriesScrollPane = new JScrollPane();
+		categoriesScrollPane.setBorder(null);
+		frame.getContentPane().add(categoriesScrollPane, "cell 0 2,grow");
 		
 		panel = new JPanel();
 		panel.setPreferredSize(new Dimension(64, 28));
-		scrollPane.setViewportView(panel);
-		panel.setLayout(new MigLayout("insets 0", "[grow]", "[52px,bottom][28px][28px][28px][28px][28px]"));
+		categoriesScrollPane.setViewportView(panel);
+		panel.setLayout(new MigLayout("insets 0", "[grow]", "[bottom][28px][28px][28px][28px][28px]"));
 		
 		tglbtnAllaKategorier = new JToggleButton("Alla kategorier");
 		tglbtnAllaKategorier.setPreferredSize(new Dimension(64, 28));
@@ -178,16 +168,18 @@ public class MainWindow {
 		
 		ButtonGroup group = new ButtonGroup();
 		group.add(tglbtnAllaKategorier);
-		group.add(tglbtnBageri);		
+		group.add(tglbtnBageri);
 		group.add(tglbtnBarn);
 		group.add(tglbtnBlommor);
 		group.add(tglbtnDryck);
 		group.add(tglbtnFiskSkaldjur);
 		
-		scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBorder(null);
-		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane_1.addComponentListener(new ComponentAdapter() {
+		contentScrollPane = new JScrollPane();
+		contentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		contentScrollPane.setViewportBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		contentScrollPane.setBackground(Color.WHITE);
+		contentScrollPane.setBorder(null);
+		contentScrollPane.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent arg0) {
 				int width = ((JScrollPane)arg0.getSource()).getWidth();
@@ -196,39 +188,87 @@ public class MainWindow {
 				calculateResults(width, height);
 			}
 		});
-		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		frame.getContentPane().add(scrollPane_1, "cell 1 2 2 1,grow");
+		contentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		frame.getContentPane().add(contentScrollPane, "cell 1 2 2 1,grow");
 		
-		panel_1 = new JPanel();
-		scrollPane_1.setViewportView(panel_1);
-		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, margin, margin));
+		contentPanel = new JPanel();
+		contentPanel.setBorder(null);
+		contentPanel.setBackground(Color.WHITE);
+		contentScrollPane.setViewportView(contentPanel);
+		contentPanel.setLayout(new CardLayout(0, 0));
 		
-		scrollPane_2 = new JScrollPane();
-		frame.getContentPane().add(scrollPane_2, "cell 3 2,grow");
+		cardPanelGrid = new JPanel();
+		contentPanel.add(cardPanelGrid, "cardPanelGrid");
+		cardPanelGrid.setLayout(new FlowLayout(FlowLayout.LEFT, margin, margin));
 		
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		scrollPane_2.setViewportView(tabbedPane);
+		cardPanelList = new JPanel();
+		cardPanelList.setLayout(new BoxLayout(cardPanelList, BoxLayout.Y_AXIS));
+		contentPanel.add(cardPanelList, "cardPanelList");
 		
-		
-
-		
+		sidebarTabbedPane = new WebTabbedPane();
+		sidebarTabbedPane.setFocusable(false);
+		sidebarTabbedPane.addTab("Varukorg", new WebLabel());
+		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
+		sidebarTabbedPane.addTab("Historik", new WebLabel());
+		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
+	
+		search();
 	}
 	
 	private void calculateResults(int width, int height) {
-		if (gridOrList) {
-			System.out.println("hej");
+		if (toggleGridViewButton.isSelected()) {
 			int cols = width/(128+margin); System.out.print("cols:" + cols);
-			int rows = 100 / cols;
-			rows += ((rows * cols < 100) ? 1 : 0); System.out.println("rows:" + rows);
+			int rows = 25 / cols;
+			rows += ((rows * cols < 25) ? 1 : 0); System.out.println("rows:" + rows);
 			
-			panel_1.setPreferredSize(new Dimension(width, (rows * (160 + margin)) + margin));
-			scrollPane_1.revalidate();
-			
-		} else if (!gridOrList){
-			
-			panel_1.setPreferredSize(new Dimension(width, (100 * (64 + margin)) + margin));
-			scrollPane_1.revalidate();
+			contentPanel.setPreferredSize(new Dimension(width - 32, (rows * (160 + margin)) + margin));
+			contentScrollPane.revalidate();
 		}
+	}
 
+	@Override
+	public void actionPerformed(ActionEvent action) {
+		if (action.getSource() == toggleGridViewButton) {
+			CardLayout cl = (CardLayout)(contentPanel.getLayout());
+			cl.show(contentPanel, "cardPanelGrid");
+			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
+		}
+		
+		if (action.getSource() == toggleListViewButton) {
+			CardLayout cl = (CardLayout)(contentPanel.getLayout());
+			cl.show(contentPanel, "cardPanelList");
+			contentPanel.setPreferredSize(cardPanelList.getPreferredSize());
+		}
+	}
+	
+	private void search() {
+		String text = txtSearchBox.getText();
+		
+		cardPanelGrid.removeAll();
+		cardPanelList.removeAll();
+		
+		for (int i = 0; i < 25; i++) {
+			
+			cardPanelGrid.add(new ItemGrid(text + " " + i));
+			ItemList item = new ItemList(text + " " + i);
+			
+			if (i % 2 == 1) {
+				item.setBackground(new Color(248, 248, 248));
+			}
+			
+			
+			cardPanelList.add(item);
+		}
+		
+		cardPanelGrid.revalidate();
+		cardPanelList.revalidate();
+		
+	}
+	
+	private class TxtSearchBoxKeyListener extends KeyAdapter {
+		@Override
+		public void keyReleased(KeyEvent keyEvent) {
+			search();
+		}
 	}
 }

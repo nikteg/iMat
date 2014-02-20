@@ -1,15 +1,16 @@
-import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Dimension;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+
 import javax.swing.JButton;
-import javax.swing.border.EtchedBorder;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 
+@SuppressWarnings("serial")
 public class ItemGrid extends JPanel {
 	private JLabel lblBild;
 	private JButton btnKp;
@@ -34,7 +35,7 @@ public class ItemGrid extends JPanel {
 	}
 	
 	private void initialize() {
-		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		setBackground(new Color(248, 248, 248));
 		setPreferredSize(new Dimension(128, 160));
 		setLayout(new MigLayout("insets 4px", "[grow]", "[grow][][]"));
 		

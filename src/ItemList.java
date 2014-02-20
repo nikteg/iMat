@@ -1,16 +1,21 @@
-import java.awt.LayoutManager;
-
 import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
+
 import java.awt.Dimension;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
-import javax.swing.border.EtchedBorder;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
 
+import java.awt.Color;
 
+import javax.swing.ImageIcon;
+
+
+@SuppressWarnings("serial")
 public class ItemList extends JPanel {
 	private JLabel lblBild;
 	private JSeparator separator;
@@ -31,14 +36,15 @@ public class ItemList extends JPanel {
 	}
 	
 	private void initialize() {
-		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		setPreferredSize(new Dimension(582, 64));
-		setLayout(new MigLayout("", "[64px:64.00][5px:5px][92px:92px][240.00px,grow][48][64px]", "[64px]"));
+		setPreferredSize(new Dimension(512, 64));
+		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		setLayout(new MigLayout("", "[64px:64.00][5px:5px][92px:92px][grow][48px:48px][64px:64px]", "[64px]"));
 		
-		lblBild = new JLabel("BILD");
+		lblBild = new JLabel("");
+		lblBild.setIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/zoom.png")));
 		lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblBild, "cell 0 0,alignx center");
+		add(lblBild, "cell 0 0,alignx center,aligny center");
 		
 		separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
@@ -48,11 +54,10 @@ public class ItemList extends JPanel {
 		add(lblNamelabel, "cell 2 0,alignx center");
 		
 		lblPricelabel = new JLabel("priceLabel");
-		lblPricelabel.setMaximumSize(new Dimension(13337, 14));
+		lblPricelabel.setBackground(Color.RED);
 		add(lblPricelabel, "cell 3 0");
 		
 		spinner = new JSpinner();
-		spinner.setPreferredSize(new Dimension(48, 20));
 		add(spinner, "cell 4 0,alignx right");
 		
 		btnKp = new JButton("K\u00F6p");

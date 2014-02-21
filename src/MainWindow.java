@@ -360,7 +360,6 @@ public class MainWindow implements ActionListener {
 		addCardsPanel.add(lblCvc, "cell 4 1,alignx trailing");
 
 		cvcTextField = new JTextField();
-		cvcTextField.setText("988");
 		addCardsPanel.add(cvcTextField, "cell 5 1,growx");
 		cvcTextField.setColumns(10);
 

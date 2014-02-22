@@ -51,11 +51,12 @@ public class IMatModel {
 	 * @throws IllegalArgumentException if a favorite list with the given name already exists.
 	 */
 	public void createFavoriteList(List<Product> products, String name) throws IllegalArgumentException {
-		if(getFavoriteListTitles().contains(name)){
-			throw new IllegalArgumentException("Favorite list with title " + name + " already exists.");
-		}else{
-			favoriteLists.add(new FavoriteList(products, name));
+		for(int i = 0; i < favoriteLists.size(); i++){
+			if(favoriteLists.get(i).getName().equals(name)){
+				throw new IllegalArgumentException("Favorite list with title " + name + " already exists.");
+			}
 		}
+		favoriteLists.add(new FavoriteList(products, name));
 	}
 
 	/**
@@ -87,42 +88,11 @@ public class IMatModel {
 	}
 
 	/**
-	 * Returns a favorite list with the given index.
-	 * @param index The index of the favorite list requested.
-	 * @return A List<Product> with favorite products.
+	 * Returns an ArrayList of all the favorite lists.
+	 * @return A List<FavoriteList> with all favorite lists.
 	 */
-	public List<Product> getFavoriteList(int index){
-		return favoriteLists.get(index).getProducts();
-	}
-
-	/**
-	 * Returns the favorite list of the given title. Throws an exception if none are found.
-	 * @param title
-	 * @return A List<Product> matching the given title.
-	 * @throws IllegalArgumentException if no matching lists are found.
-	 */
-	public List<Product> getFavoriteList(String name) throws IllegalArgumentException{
-		if(getFavoriteListTitles().contains(name)){
-			int nameIndex = getFavoriteListTitles().indexOf(name);
-			return getFavoriteList(nameIndex);
-		}else{
-			throw new IllegalArgumentException("There is no favorite list with the name " + name);
-		}
-	}
-	
-	/**
-	 * Returns the titles of all the favorite lists.
-	 * @return 
-	 */
-	public List<String> getFavoriteListTitles(){
-		if(favoriteLists.isEmpty()){
-			return null;
-		}
-		List<String> titleList = new ArrayList<String>();
-		for(int i = 0; i < favoriteLists.size(); i++){
-			titleList.add(favoriteLists.get(i).getName());
-		}
-		return titleList;
+	public List<FavoriteList> getFavoriteLists(){
+		return favoriteLists;
 	}
 	
 	/**
@@ -317,28 +287,17 @@ public class IMatModel {
 	public void removeFavorite(Product p){
 		backend.removeFavorite(p);
 	}
-
-	/**
-	 * Remove the favorite list with the given index.
-	 * @param index The index of the list to be removed.
-	 */
-	public void removeFavoriteList(int index){
-		if(favoriteLists.size() > index){
-			favoriteLists.remove(index);
-		}
-	}
 	
 	/**
-	 * Remove the favorite list with the given title. Throws an exception if no matching lists exist.
-	 * @param title Title of the favorite list to be removed.
+	 * Remove the favorite list matching the input list.
+	 * @param list - The list to be removed.
 	 * @throws IllegalArgumentException If no matching favorite lists are found.
 	 */
-	public void removeFavoriteList(String name) throws IllegalArgumentException {
-		if(getFavoriteListTitles().contains(name)){
-			int index = getFavoriteListTitles().indexOf(name);
-			removeFavoriteList(index);
+	public void removeFavoriteList(FavoriteList list) throws IllegalArgumentException {
+		if(favoriteLists.contains(list)){
+			favoriteLists.remove(favoriteLists.indexOf(list));
 		}else{
-			throw new IllegalArgumentException("There is no favorite list with the name " + name);
+			throw new IllegalArgumentException("There is no list matching the list given: " + list.getName());
 		}
 	}
 	
@@ -353,7 +312,7 @@ public class IMatModel {
 	 * Inner class to handle favorite lists.
 	 *
 	 */
-	private class FavoriteList{
+	public class FavoriteList{
 		private String name;
 		private List<Product> products;
 		
@@ -362,14 +321,14 @@ public class IMatModel {
 			this.name = name;
 		}
 		/**
-		 * 
+		 * Returns the name of the favorite list. 
 		 * @return The name of this favorite list.
 		 */
 		public String getName(){
 			return name;
 		}
 		/**
-		 * 
+		 * Returns the list of products in the favorite list.
 		 * @return The products in this favorite list.
 		 */
 		public List<Product> getProducts(){

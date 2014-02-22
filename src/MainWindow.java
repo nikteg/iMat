@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -142,12 +143,15 @@ public class MainWindow implements ActionListener {
 		
 		ButtonGroup group = new ButtonGroup();
 		
-		WebToggleButton buttonAllCategories = new WebToggleButton("Alla kategorier");
+		WebToggleButton buttonAllCategories = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>Alla kategorier</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10)*10 + "</td></tr></table></html>");
+		buttonAllCategories.setHorizontalAlignment(JButton.LEFT);
+		buttonAllCategories.setSelected(true);
 		panel.add(buttonAllCategories, "growx");
 		group.add(buttonAllCategories);
 		
 		for (Constants.Category c : Constants.Category.values()) {
-			WebToggleButton button = new WebToggleButton(c.getName());
+			WebToggleButton button = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>" + c.getName() + "</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10) + "</td></tr></table></html>");
+			button.setHorizontalAlignment(JButton.LEFT);
 			panel.add(button, "growx");
 			group.add(button);
 		}

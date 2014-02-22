@@ -30,6 +30,7 @@ import net.miginfocom.swing.MigLayout;
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
+import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
@@ -136,43 +137,20 @@ public class MainWindow implements ActionListener {
 		frame.getContentPane().add(categoriesScrollPane, "cell 0 2,grow");
 		
 		panel = new JPanel();
-		panel.setPreferredSize(new Dimension(64, 28));
 		categoriesScrollPane.setViewportView(panel);
-		panel.setLayout(new MigLayout("insets 0", "[grow]", "[bottom][28px][28px][28px][28px][28px]"));
-		
-		tglbtnAllaKategorier = new JToggleButton("Alla kategorier");
-		tglbtnAllaKategorier.setPreferredSize(new Dimension(64, 28));
-		tglbtnAllaKategorier.setSelected(true);
-		panel.add(tglbtnAllaKategorier, "flowy,cell 0 0,growx");
-		
-		tglbtnBageri = new JToggleButton("Bageri");
-		tglbtnBageri.setPreferredSize(new Dimension(64, 28));
-		panel.add(tglbtnBageri, "cell 0 1,growx");
-		
-		
-		tglbtnBarn = new JToggleButton("Barn");
-		tglbtnBarn.setPreferredSize(new Dimension(64, 28));
-		panel.add(tglbtnBarn, "cell 0 2,growx");
-		
-		tglbtnBlommor = new JToggleButton("Blommor");
-		tglbtnBlommor.setPreferredSize(new Dimension(64, 28));
-		panel.add(tglbtnBlommor, "cell 0 3,growx");
-		
-		tglbtnDryck = new JToggleButton("Dryck");
-		tglbtnDryck.setPreferredSize(new Dimension(64, 28));
-		panel.add(tglbtnDryck, "cell 0 4,growx");
-		
-		tglbtnFiskSkaldjur = new JToggleButton("Fisk & Skaldjur");
-		tglbtnFiskSkaldjur.setPreferredSize(new Dimension(64, 28));
-		panel.add(tglbtnFiskSkaldjur, "cell 0 5,growx");
+		panel.setLayout(new MigLayout("flowy,insets 0", "[grow]", "[28px]"));
 		
 		ButtonGroup group = new ButtonGroup();
-		group.add(tglbtnAllaKategorier);
-		group.add(tglbtnBageri);
-		group.add(tglbtnBarn);
-		group.add(tglbtnBlommor);
-		group.add(tglbtnDryck);
-		group.add(tglbtnFiskSkaldjur);
+		
+		WebToggleButton buttonAllCategories = new WebToggleButton("Alla kategorier");
+		panel.add(buttonAllCategories, "growx");
+		group.add(buttonAllCategories);
+		
+		for (Constants.Category c : Constants.Category.values()) {
+			WebToggleButton button = new WebToggleButton(c.getName());
+			panel.add(button, "growx");
+			group.add(button);
+		}
 		
 		contentScrollPane = new JScrollPane();
 		contentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

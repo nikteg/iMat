@@ -55,15 +55,10 @@ public class MainWindow implements ActionListener {
 	private JScrollPane categoriesScrollPane;
 	private WebComboBox userComboBox;
 	private JPanel panel;
-	private JToggleButton tglbtnBageri;
-	private JToggleButton tglbtnBarn;
-	private JToggleButton tglbtnBlommor;
-	private JToggleButton tglbtnDryck;
-	private JToggleButton tglbtnFiskSkaldjur;
-	private JToggleButton tglbtnAllaKategorier;
 	private JScrollPane contentScrollPane;
 	private JPanel contentPanel;
 	private int margin = 8;
+	private int numResults;
 	private WebTabbedPane sidebarTabbedPane;
 
 	private WebToggleButton toggleGridViewButton;
@@ -79,44 +74,21 @@ public class MainWindow implements ActionListener {
 	private JPanel cardPanelSettings;
 	private JLabel lblInstllningarFr;
 	private JPanel SignInSettingsPanel;
-	private JPanel PaymentSettingsPanel;
-	private JPanel addresSettingsPanel;
 	private JTextField textField;
 	private JLabel lblEmail;
 	private JLabel lblNewPassword;
 	private JLabel lblRepeatPassword;
-	private JTextField FirstNameTextField;
-	private JTextField LastNameTextField;
-	private JTextField streetAddressTextField;
-	private JTextField cityTextField;
-	private JTextField phoneTextField;
-	private JTextField cellPhoneTextField;
-	private JLabel lblFirstName;
-	private JLabel lblLastName;
-	private JLabel lblStreetAddress;
-	private JLabel lblPostNr;
-	private JTextField zipCodeTextField;
-	private JPanel savedCardsPanel;
-	private JLabel lblPhone;
-	private JLabel lblCellPhone;
-	private JSeparator separator;
-	private JSeparator separator_1;
-	private JPanel addCardsPanel;
-	private JTextField cvcTextField;
-	private JLabel lblCvc;
-	private WebComboBox yearComboBox;
-	private WebComboBox monthComboBox;
-	private JLabel dividerLabel;
-	private JLabel lblUtgdatum;
-	private JLabel lblCardNum;
-	private JTextField textField_11;
 	private JPasswordField passwordField;
 	private JPasswordField passwordFieldRepeat;
-	private WebComboBox webComboBox;
-	private JButton btnTaBort;
 	private JButton btnNewButton;
 	private JScrollPane varuorgScrollPane;
 	private JPanel varukorgPanel;
+	private JPanel confirmPurchasePanel;
+	private AddressSettingsPanel addressSettingsPanel;
+	private AddressSettingsPanel addressSettingsPanel_1;
+	private JPanel cartConfirmationPanel;
+	private CardSettingsPanel cardSettingsPanel;
+	private CardSettingsPanel cardSettingsPanel_1;
 
 	/**
 	 * Launch the application.
@@ -144,7 +116,6 @@ public class MainWindow implements ActionListener {
 		StyleConstants.mediumRound = 0;
 
 		WebLookAndFeel.install();
-
 		searchTimer.setRepeats(false);
 
 		initialize();
@@ -169,7 +140,6 @@ public class MainWindow implements ActionListener {
 
 		txtSearchBox = new JTextField();
 		txtSearchBox.addKeyListener(new TxtSearchBoxKeyListener());
-		txtSearchBox.setText("Potatisgrat\u00E4ng");
 		txtSearchBox.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		frame.getContentPane().add(txtSearchBox, "cell 1 1,grow");
 		txtSearchBox.setColumns(10);
@@ -238,7 +208,7 @@ public class MainWindow implements ActionListener {
 				int width = ((JScrollPane) arg0.getSource()).getWidth();
 				int height = ((JScrollPane) arg0.getSource()).getHeight();
 
-				calculateResults(width, height);
+				calculateResults(width, height,numResults);
 			}
 		});
 		contentScrollPane
@@ -260,11 +230,29 @@ public class MainWindow implements ActionListener {
 		cardPanelList.setLayout(new BoxLayout(cardPanelList, BoxLayout.Y_AXIS));
 		contentPanel.add(cardPanelList, "cardPanelList");
 
+		initializeSettingsView();
+		
+		
+		sidebarTabbedPane = new WebTabbedPane();
+		sidebarTabbedPane.setFocusable(false);
+
+		varuorgScrollPane = new JScrollPane();
+		sidebarTabbedPane.addTab("Varukorg", null, varuorgScrollPane, null);
+
+		varukorgPanel = new JPanel();
+		varuorgScrollPane.setViewportView(varukorgPanel);
+		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
+		sidebarTabbedPane.addTab("Historik", new WebLabel());
+		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
+
+		search();
+	}
+
+	private void initializeSettingsView() {
 		cardPanelSettings = new JPanel();
 		contentPanel.add(cardPanelSettings, "cardPanelSettings");
 		cardPanelSettings
-				.setLayout(new MigLayout("", "[287.00,grow][287.00,grow]",
-						"[49.00][260.00][205.00,grow][]"));
+				.setLayout(new MigLayout("", "[287.00,grow][287.00,grow]", "[49.00][200.00,grow][205.00,grow][]"));
 
 		lblInstllningarFr = new JLabel("Inst\u00E4llningar f\u00F6r ");
 		lblInstllningarFr.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -296,152 +284,36 @@ public class MainWindow implements ActionListener {
 
 		passwordFieldRepeat = new JPasswordField();
 		SignInSettingsPanel.add(passwordFieldRepeat, "cell 1 2,growx");
-
-		PaymentSettingsPanel = new JPanel();
-		PaymentSettingsPanel.setBorder(new TitledBorder(null,
-				"Betalningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP,
-				null, null));
-		cardPanelSettings.add(PaymentSettingsPanel, "cell 1 1,grow");
-		PaymentSettingsPanel.setLayout(new MigLayout("", "[grow]",
-				"[83.00][197.00,grow]"));
-
-		savedCardsPanel = new JPanel();
-		savedCardsPanel.setBorder(new TitledBorder(null, "Sparade kort",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		PaymentSettingsPanel.add(savedCardsPanel, "cell 0 0,grow");
-		savedCardsPanel.setLayout(new MigLayout("", "[grow][]", "[grow]"));
-
-		webComboBox = new WebComboBox();
-		savedCardsPanel.add(webComboBox, "cell 0 0,growx");
-
-		btnTaBort = new JButton("Ta bort");
-		savedCardsPanel.add(btnTaBort, "cell 1 0");
-
-		addCardsPanel = new JPanel();
-		addCardsPanel.setBorder(new TitledBorder(UIManager
-				.getBorder("TitledBorder.border"), "L\u00E4gg till kort",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		PaymentSettingsPanel.add(addCardsPanel, "cell 0 1,grow");
-		addCardsPanel.setLayout(new MigLayout("",
-				"[][42px][][42px][grow][48px]", "[32px][32px]"));
-
-		lblCardNum = new JLabel("Kortnr");
-		addCardsPanel.add(lblCardNum, "cell 0 0,alignx left");
-
-		textField_11 = new JTextField();
-		addCardsPanel.add(textField_11, "cell 1 0 5 1,growx");
-		textField_11.setColumns(10);
-
-		lblUtgdatum = new JLabel("Utg.datum");
-		addCardsPanel.add(lblUtgdatum, "cell 0 1,alignx left");
-
-		monthComboBox = new WebComboBox();
-		monthComboBox.setModel(new DefaultComboBoxModel(new String[] { "MM",
-				"01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
-				"11", "12" }));
-		addCardsPanel.add(monthComboBox, "cell 1 1,growx");
-
-		dividerLabel = new JLabel("/");
-		addCardsPanel.add(dividerLabel, "cell 2 1,alignx trailing");
-
-		yearComboBox = new WebComboBox();
-		yearComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"\u00C5\u00C5", "14", "15", "16", "17", "18", "19", "20", "21",
-				"22", "23", "24", "25", "26", "27", "28", "29" }));
-		addCardsPanel.add(yearComboBox, "cell 3 1,growx");
-
-		lblCvc = new JLabel("CVC");
-		addCardsPanel.add(lblCvc, "cell 4 1,alignx trailing");
-
-		cvcTextField = new JTextField();
-		addCardsPanel.add(cvcTextField, "cell 5 1,growx");
-		cvcTextField.setColumns(10);
-
-		addresSettingsPanel = new JPanel();
-		addresSettingsPanel.setBorder(new TitledBorder(null, "Adressuppgifter",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		cardPanelSettings.add(addresSettingsPanel, "cell 0 2,grow");
-		addresSettingsPanel.setLayout(new MigLayout("", "[92px][52px][grow]",
-				"[32px][32px][][32px][32px][][32px][32px]"));
-
-		lblFirstName = new JLabel("F\u00F6rnamn");
-		addresSettingsPanel.add(lblFirstName, "cell 0 0,alignx left");
-
-		FirstNameTextField = new JTextField();
-		addresSettingsPanel.add(FirstNameTextField, "cell 1 0 2 1,growx");
-		FirstNameTextField.setColumns(10);
-
-		lblLastName = new JLabel("Efternamn");
-		addresSettingsPanel.add(lblLastName, "cell 0 1,alignx left");
-
-		LastNameTextField = new JTextField();
-		addresSettingsPanel.add(LastNameTextField, "cell 1 1 2 1,growx");
-		LastNameTextField.setColumns(10);
-
-		separator = new JSeparator();
-		addresSettingsPanel.add(separator, "cell 0 2 3 1,grow");
-
-		lblStreetAddress = new JLabel("Gatuadress");
-		addresSettingsPanel.add(lblStreetAddress, "cell 0 3,alignx left");
-
-		streetAddressTextField = new JTextField();
-		addresSettingsPanel.add(streetAddressTextField, "cell 1 3 2 1,growx");
-		streetAddressTextField.setColumns(10);
-
-		lblPostNr = new JLabel("Postnr/Postort");
-		addresSettingsPanel.add(lblPostNr, "cell 0 4,alignx left");
-
-		zipCodeTextField = new JTextField();
-		addresSettingsPanel.add(zipCodeTextField, "cell 1 4,growx");
-		zipCodeTextField.setColumns(10);
-
-		cityTextField = new JTextField();
-		addresSettingsPanel.add(cityTextField, "cell 2 4,growx");
-		cityTextField.setColumns(10);
-
-		separator_1 = new JSeparator();
-		addresSettingsPanel.add(separator_1, "cell 0 5 3 1,grow");
-
-		lblPhone = new JLabel("Tel (inkl riktnr.)");
-		addresSettingsPanel.add(lblPhone, "cell 0 6");
-
-		phoneTextField = new JTextField();
-		addresSettingsPanel.add(phoneTextField, "cell 2 6,growx");
-		phoneTextField.setColumns(10);
-
-		lblCellPhone = new JLabel("Mobiltelefon");
-		addresSettingsPanel.add(lblCellPhone, "cell 0 7");
-
-		cellPhoneTextField = new JTextField();
-		addresSettingsPanel.add(cellPhoneTextField, "cell 2 7,growx");
-		cellPhoneTextField.setColumns(10);
+		
+		cardSettingsPanel = new CardSettingsPanel();
+		cardPanelSettings.add(cardSettingsPanel, "cell 1 1,grow");
+		
+		addressSettingsPanel = new AddressSettingsPanel();
+		cardPanelSettings.add(addressSettingsPanel, "cell 0 2,grow");
 
 		btnNewButton = new JButton("New button");
 		cardPanelSettings.add(btnNewButton,
 				"cell 1 3,alignx right,aligny bottom");
-
-		sidebarTabbedPane = new WebTabbedPane();
-		sidebarTabbedPane.setFocusable(false);
-
-		varuorgScrollPane = new JScrollPane();
-		sidebarTabbedPane.addTab("Varukorg", null, varuorgScrollPane, null);
-
-		varukorgPanel = new JPanel();
-		varuorgScrollPane.setViewportView(varukorgPanel);
-		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
-		sidebarTabbedPane.addTab("Historik", new WebLabel());
-		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
-
-		search();
+		
+		confirmPurchasePanel = new JPanel();
+		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
+		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[grow][grow][]"));
+		
+		cartConfirmationPanel = new JPanel();
+		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
+		
+		addressSettingsPanel_1 = new AddressSettingsPanel();
+		confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
+		
+		cardSettingsPanel_1 = new CardSettingsPanel();
+		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
 	}
 
-	private void calculateResults(int width, int height) {
-		if (toggleGridViewButton.isSelected()) {
+	private void calculateResults(int width, int height, int num) {
+		if (toggleGridViewButton.isSelected() && width != 0) {
 			int cols = width / (128 + margin);
-			System.out.print("cols:" + cols);
-			int rows = 25 / cols;
-			rows += ((rows * cols < 25) ? 1 : 0);
-			System.out.println("rows:" + rows);
+			int rows = num / cols;
+			rows += ((rows * cols < num) ? 1 : 0);
 
 			contentPanel.setPreferredSize(new Dimension(width - 32,
 					(rows * (160 + margin)) + margin));
@@ -457,7 +329,7 @@ public class MainWindow implements ActionListener {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
 			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight());
+					contentScrollPane.getHeight(),numResults);
 		}
 
 		if (action.getSource() == toggleListViewButton) {
@@ -485,13 +357,17 @@ public class MainWindow implements ActionListener {
 		cardPanelGrid.removeAll();
 		cardPanelList.removeAll();
 		
+		
 		String text = txtSearchBox.getText();
 
 		List<Product> results = db.findProducts(text);
-
+		numResults = results.size();
 		for (int i = 0; i < results.size(); i++) {
+			ItemGrid itemGrid = new ItemGrid();
+			itemGrid.setName(results.get(i).getName());
+			//itemGrid.setIcon(results)
+			cardPanelGrid.add(itemGrid);
 			
-			cardPanelGrid.add(new ItemGrid(results.get(i).getName()));
 			ItemList item = new ItemList();
 			
 			if (i % 2 == 1) {
@@ -501,6 +377,7 @@ public class MainWindow implements ActionListener {
 			cardPanelList.add(item);
 		}
 
+		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight(),numResults);
 		cardPanelGrid.revalidate();
 		cardPanelList.revalidate();
 		cardPanelGrid.repaint();

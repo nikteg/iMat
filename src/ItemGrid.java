@@ -7,30 +7,22 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
+import se.chalmers.ait.dat215.project.Product;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class ItemGrid extends JPanel {
+public class ItemGrid extends Item {
 	private JLabel lblBild;
 	private JButton btnKp;
 	private JSeparator separator;
-	private MainWindow parent;
 	private JLabel lblNameLabel;
 
 	/**
 	 * Create the panel.
 	 */
-	public ItemGrid() {
+	public ItemGrid(Product product, MainWindow parent) {
+		super(product, parent);
 		initialize();
-	}
-
-	public ItemGrid(String name) {
-		this();
-		lblBild.setText(name);
-	}
-
-	public void setParent(MainWindow parent) {
-		this.parent = parent;
 	}
 
 	private void initialize() {
@@ -38,17 +30,19 @@ public class ItemGrid extends JPanel {
 		setPreferredSize(new Dimension(128, 160));
 		setLayout(new MigLayout("insets 4px", "[grow][]", "[87.00,grow][][]"));
 
-		lblBild = new JLabel("BILD");
+		lblBild = new JLabel(parent.getModel().getImageIcon(product, new Dimension(120, 120)));
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblBild, "cell 0 0 2 1,grow");
 
 		separator = new JSeparator();
 		add(separator, "cell 0 1 2 1,growx,aligny center");
 
-		lblNameLabel = new JLabel("nameLabel");
+		lblNameLabel = new JLabel(product.getName());
 		add(lblNameLabel, "cell 0 2,alignx center");
 
 		btnKp = new JButton("K\u00F6p");
+		btnKp.addActionListener(this);
+		btnKp.setActionCommand("add_cart");
 		add(btnKp, "cell 1 2,alignx right,aligny center");
 	}
 

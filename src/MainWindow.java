@@ -10,24 +10,29 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
@@ -40,11 +45,6 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
-import javax.swing.JButton;
-import javax.swing.border.TitledBorder;
-import javax.swing.JSeparator;
-import javax.swing.UIManager;
-import javax.swing.JPasswordField;
 import java.awt.BorderLayout;
 
 public class MainWindow implements ActionListener {
@@ -117,6 +117,10 @@ public class MainWindow implements ActionListener {
 	private JButton btnNewButton;
 	private JScrollPane varuorgScrollPane;
 	private JPanel varukorgPanel;
+	
+	private IMatModel model = IMatModel.getInstance();
+	private JList cartList;
+	private DefaultListModel cartListModel = new DefaultListModel();
 
 	/**
 	 * Launch the application.
@@ -146,8 +150,13 @@ public class MainWindow implements ActionListener {
 		WebLookAndFeel.install();
 
 		searchTimer.setRepeats(false);
+		searchTimer.setActionCommand("search");
 
 		initialize();
+	}
+	
+	public IMatModel getModel() {
+		return model;
 	}
 
 	/**
@@ -168,8 +177,8 @@ public class MainWindow implements ActionListener {
 		frame.getContentPane().add(lblImat, "cell 0 0 1 2,growx,aligny center");
 
 		txtSearchBox = new JTextField();
+		txtSearchBox.addActionListener(this);
 		txtSearchBox.addKeyListener(new TxtSearchBoxKeyListener());
-		txtSearchBox.setText("Potatisgrat\u00E4ng");
 		txtSearchBox.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		frame.getContentPane().add(txtSearchBox, "cell 1 1,grow");
 		txtSearchBox.setColumns(10);
@@ -188,7 +197,9 @@ public class MainWindow implements ActionListener {
 		toggleViewButtonGroup.setButtonsDrawFocus(false);
 
 		toggleGridViewButton.addActionListener(this);
+		toggleGridViewButton.setActionCommand("toggle_grid");
 		toggleListViewButton.addActionListener(this);
+		toggleListViewButton.setActionCommand("toggle_list");
 
 		toggleGridViewButton.setSelected(true);
 
@@ -428,10 +439,16 @@ public class MainWindow implements ActionListener {
 
 		varukorgPanel = new JPanel();
 		varuorgScrollPane.setViewportView(varukorgPanel);
+		varukorgPanel.setLayout(new BorderLayout(0, 0));
+		
+		cartList = new JList();
+		varukorgPanel.add(cartList);
 		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
 		sidebarTabbedPane.addTab("Historik", new WebLabel());
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
-
+		
+		cartList.setModel(cartListModel);
+		
 		search();
 	}
 
@@ -453,6 +470,18 @@ public class MainWindow implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent action) {
 
+		if (action.getActionCommand() == "add_cart") {
+			Product product = ((Item)action.getSource()).product;
+			cartListModel.addElement(product.getName());
+		}
+		
+		if (action.getActionCommand() == "toggle_grid") {
+			CardLayout cl = (CardLayout) (contentPanel.getLayout());
+			cl.show(contentPanel, "cardPanelGrid");
+			calculateResults(contentScrollPane.getWidth(),
+					contentScrollPane.getHeight());
+		}
+		
 		if (action.getSource() == toggleGridViewButton) {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
@@ -460,13 +489,18 @@ public class MainWindow implements ActionListener {
 					contentScrollPane.getHeight());
 		}
 
-		if (action.getSource() == toggleListViewButton) {
+		if (action.getActionCommand() == "toggle_list") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelList");
 			contentPanel.setPreferredSize(cardPanelList.getPreferredSize());
 		}
 
-		if (action.getSource() == searchTimer) {
+		if (action.getActionCommand() == "search") {
+			if (action.getSource() == txtSearchBox) {
+				CardLayout cl = (CardLayout) (contentPanel.getLayout());
+				cl.show(contentPanel, toggleGridViewButton.isSelected() ? "cardPanelGrid" : "cardPanelList");
+			}
+			
 			search();
 		}
 
@@ -482,22 +516,26 @@ public class MainWindow implements ActionListener {
 	}
 
 	private void search() {
+		String text = txtSearchBox.getText();
+		
+		// Skip search
+		if (text.length() < 2) return;
+		
+		List<Product> results = model.getSearchResults(text);
+
+		// Clear panel search results
 		cardPanelGrid.removeAll();
 		cardPanelList.removeAll();
-		
-		String text = txtSearchBox.getText();
-
-		List<Product> results = db.findProducts(text);
-
+	
 		for (int i = 0; i < results.size(); i++) {
+			Product p = results.get(i);
 			
-			cardPanelGrid.add(new ItemGrid(results.get(i).getName()));
-			ItemList item = new ItemList();
+			ItemList item = new ItemList(p, this);
 			
-			if (i % 2 == 1) {
-				item.setBackground(new Color(248, 248, 248));
-			}
-
+			
+			// Alternate background in list view
+			if (i % 2 == 1) item.setBackground(new Color(248, 248, 248));
+			cardPanelGrid.add(new ItemGrid(p, this));
 			cardPanelList.add(item);
 		}
 

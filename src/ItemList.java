@@ -1,22 +1,21 @@
-import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JSeparator;
+import javax.swing.JSpinner;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
-
-import java.awt.Dimension;
-
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.JSeparator;
-import javax.swing.JButton;
-import javax.swing.JSpinner;
-
-import java.awt.Color;
-
-import javax.swing.ImageIcon;
+import se.chalmers.ait.dat215.project.Product;
 
 
 @SuppressWarnings("serial")
-public class ItemList extends JPanel {
+public class ItemList extends Item implements ChangeListener {
 	private JLabel lblBild;
 	private JSeparator separator;
 	private JButton btnKp;
@@ -24,15 +23,9 @@ public class ItemList extends JPanel {
 	private JSpinner spinner;
 	private JLabel lblPricelabel;
 
-	public ItemList() {
-		// TODO Auto-generated constructor stub
+	public ItemList(Product product, MainWindow parent) {
+		super(product, parent);
 		initialize();
-	}
-	
-	public ItemList(String name) {
-		this();
-		
-		lblBild.setText(name);
 	}
 	
 	private void initialize() {
@@ -40,8 +33,7 @@ public class ItemList extends JPanel {
 		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new MigLayout("", "[64px:64.00][5px:5px][92px:92px][grow][48px:48px][64px:64px]", "[64px]"));
 		
-		lblBild = new JLabel("");
-		lblBild.setIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/zoom.png")));
+		lblBild = new JLabel(parent.getModel().getImageIcon(product, new Dimension(48, 48)));
 		lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblBild, "cell 0 0,alignx center,aligny center");
@@ -50,17 +42,27 @@ public class ItemList extends JPanel {
 		separator.setOrientation(SwingConstants.VERTICAL);
 		add(separator, "cell 1 0,growy");
 		
-		lblNamelabel = new JLabel("nameLabel");
+		lblNamelabel = new JLabel(product.getName());
 		add(lblNamelabel, "cell 2 0,alignx center");
 		
-		lblPricelabel = new JLabel("priceLabel");
+		lblPricelabel = new JLabel(product.getPrice() + ":-");
 		lblPricelabel.setBackground(Color.RED);
 		add(lblPricelabel, "cell 3 0");
 		
 		spinner = new JSpinner();
+		spinner.addChangeListener(this);
 		add(spinner, "cell 4 0,alignx right");
 		
 		btnKp = new JButton("K\u00F6p");
+		btnKp.addActionListener(this);
+		btnKp.setActionCommand("add_cart");
 		add(btnKp, "cell 5 0,alignx center");
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent event) {
+		if (event.getSource() == spinner) {
+			lblPricelabel.setText(product.getPrice() * ((Integer)spinner.getValue()).doubleValue() + ":-");
+		}
 	}
 }

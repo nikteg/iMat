@@ -18,6 +18,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,12 +41,16 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
+
 import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 import javax.swing.JSeparator;
 import javax.swing.UIManager;
 import javax.swing.JPasswordField;
+import javax.xml.crypto.dsig.SignedInfo;
+
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 public class MainWindow implements ActionListener {
 
@@ -69,7 +74,6 @@ public class MainWindow implements ActionListener {
 
 	private Timer searchTimer = new Timer(500, this);
 	
-	private IMatDataHandler db = IMatDataHandler.getInstance();
 
 	private JPanel cardPanelSettings;
 	private JLabel lblInstllningarFr;
@@ -89,6 +93,12 @@ public class MainWindow implements ActionListener {
 	private JPanel cartConfirmationPanel;
 	private CardSettingsPanel cardSettingsPanel;
 	private CardSettingsPanel cardSettingsPanel_1;
+	private JPanel signedInPanel;
+	private JPanel userPanel;
+	private JPanel signedOutPanel;
+	private JButton signInButton;
+	private LogInWindow loginWindow;
+	private IMatModel model = IMatModel.getInstance();
 
 	/**
 	 * Launch the application.
@@ -116,6 +126,7 @@ public class MainWindow implements ActionListener {
 		StyleConstants.mediumRound = 0;
 
 		WebLookAndFeel.install();
+		
 		searchTimer.setRepeats(false);
 
 		initialize();
@@ -129,8 +140,7 @@ public class MainWindow implements ActionListener {
 		frame.setBounds(100, 100, 1050, 772);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(
-				new MigLayout("insets 4px",
-						"[192px:n][grow][72px][212px:212px]", "[][][grow]"));
+				new MigLayout("insets 4px", "[192px:n][grow][72px][212px:212px]", "[][][grow]"));
 
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class
@@ -163,13 +173,29 @@ public class MainWindow implements ActionListener {
 		toggleGridViewButton.setSelected(true);
 
 		frame.getContentPane().add(toggleViewButtonGroup, "cell 2 1,grow");
-
-		userComboBox = new WebComboBox();
-		userComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"Mikael L\u00F6nn", "Kontoinst\u00E4llningar", "Logga ut" }));
-		userComboBox.setFocusable(false);
-		userComboBox.addActionListener(this);
-		frame.getContentPane().add(userComboBox, "cell 3 1,grow");
+		
+		userPanel = new JPanel();
+		frame.getContentPane().add(userPanel, "cell 3 1,grow");
+		userPanel.setLayout(new CardLayout(0, 0));
+		
+		signedOutPanel = new JPanel();
+		userPanel.add(signedOutPanel, "signedOutPanel");
+		signedOutPanel.setLayout(new MigLayout("insets 0", "[89px,grow]", "[23px,grow]"));
+		
+		signInButton = new JButton("Logga in");
+		signInButton.addActionListener(this);
+		signedOutPanel.add(signInButton, "cell 0 0,grow");
+		
+		signedInPanel = new JPanel();
+		userPanel.add(signedInPanel, "signedInPanel");
+				signedInPanel.setLayout(new MigLayout("insets 0", "[212px]", "[48px]"));
+		
+				userComboBox = new WebComboBox();
+				userComboBox.setAlignmentY(0.0f);
+				userComboBox.setAlignmentX(0.0f);
+				signedInPanel.add(userComboBox, "cell 0 0,grow");
+				userComboBox.setFocusable(false);
+				userComboBox.addActionListener(this);
 
 		categoriesScrollPane = new JScrollPane();
 		categoriesScrollPane.setBorder(null);
@@ -244,8 +270,8 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
 		sidebarTabbedPane.addTab("Historik", new WebLabel());
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
-
-		search();
+		loginWindow = new LogInWindow(frame, this);
+		
 	}
 
 	private void initializeSettingsView() {
@@ -341,6 +367,12 @@ public class MainWindow implements ActionListener {
 		if (action.getSource() == searchTimer) {
 			search();
 		}
+		
+		if(action.getSource() == signInButton){
+			
+			loginWindow.setLocationRelativeTo(frame);
+			loginWindow.setVisible(true);
+		}
 
 		if (action.getSource() == userComboBox) {
 			if (userComboBox.getSelectedIndex() == 1) {
@@ -348,6 +380,8 @@ public class MainWindow implements ActionListener {
 				cl.show(contentPanel, "cardPanelSettings");
 				contentPanel.setPreferredSize(cardPanelSettings
 						.getPreferredSize());
+			}else if(userComboBox.getSelectedIndex() == 2){
+				logOut();
 			}
 
 		}
@@ -360,12 +394,12 @@ public class MainWindow implements ActionListener {
 		
 		String text = txtSearchBox.getText();
 
-		List<Product> results = db.findProducts(text);
+		List<Product> results = model.getSearchResults(text);
 		numResults = results.size();
 		for (int i = 0; i < results.size(); i++) {
 			ItemGrid itemGrid = new ItemGrid();
 			itemGrid.setName(results.get(i).getName());
-			//itemGrid.setIcon(results)
+			itemGrid.setIcon(model.getImageIcon(results.get(i),new Dimension(120,120)));
 			cardPanelGrid.add(itemGrid);
 			
 			ItemList item = new ItemList();
@@ -393,5 +427,34 @@ public class MainWindow implements ActionListener {
 		public void keyReleased(KeyEvent keyEvent) {
 			searchTimer.restart();
 		}
+	}
+	public void logOut(){
+		//TODO Figure out logout method
+		//model.logOut();
+		System.out.println("Du har nu loggat ut.");
+		CardLayout cl = (CardLayout) (userPanel.getLayout());
+		cl.show(userPanel, "signedOutPanel");
+				
+	}
+	public void logIn(String userName, String password) {
+		//TODO Figure out login method
+		//model.logIn();
+		System.out.println("du har loggat in som " + userName);
+		userComboBox.setModel(new DefaultComboBoxModel(new String[] {
+				userName, "Kontoinst\u00E4llningar", "Logga ut" }));
+		loginWindow.setVisible(false);
+		CardLayout cl = (CardLayout) (userPanel.getLayout());
+		cl.show(userPanel, "signedInPanel");
+		
+		
+	}
+
+	public void createUser(String userName, String email, String password) {
+		//TODO Figure out create user method
+		//model.createUser(userName,email,password);
+		System.out.println("du har registerat dig som " + userName);
+		logIn(userName,password);
+		
+		
 	}
 }

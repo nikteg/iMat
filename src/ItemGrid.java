@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,7 +39,7 @@ public class ItemGrid extends JPanel {
 		setPreferredSize(new Dimension(128, 160));
 		setLayout(new MigLayout("insets 4px", "[grow][]", "[87.00,grow][][]"));
 
-		lblBild = new JLabel("BILD");
+		lblBild = new JLabel();
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblBild, "cell 0 0 2 1,grow");
 
@@ -50,6 +51,14 @@ public class ItemGrid extends JPanel {
 
 		btnKp = new JButton("K\u00F6p");
 		add(btnKp, "cell 1 2,alignx right,aligny center");
+	}
+	
+	public void setName(String name){
+		lblNameLabel.setText(name);
+	}
+	
+	public void setIcon(ImageIcon icon){
+		lblBild.setIcon(icon);		
 	}
 
 }

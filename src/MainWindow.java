@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,6 +38,7 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.ait.dat215.project.ProductCategory;
 
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.StyleConstants;
@@ -45,7 +47,8 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
-import java.awt.BorderLayout;
+import javax.swing.border.EmptyBorder;
+import java.awt.Component;
 
 public class MainWindow implements ActionListener {
 
@@ -121,6 +124,8 @@ public class MainWindow implements ActionListener {
 	private IMatModel model = IMatModel.getInstance();
 	private JList cartList;
 	private DefaultListModel cartListModel = new DefaultListModel();
+	
+	private List<Product> searchResults;
 
 	/**
 	 * Launch the application.
@@ -213,24 +218,39 @@ public class MainWindow implements ActionListener {
 		frame.getContentPane().add(userComboBox, "cell 3 1,grow");
 
 		categoriesScrollPane = new JScrollPane();
+		categoriesScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		categoriesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		categoriesScrollPane.setBorder(null);
 		frame.getContentPane().add(categoriesScrollPane, "cell 0 2,grow");
 
 		panel = new JPanel();
+		panel.setBorder(null);
 		categoriesScrollPane.setViewportView(panel);
 
 		panel.setLayout(new MigLayout("flowy,insets 0", "[grow]", "[28px]"));
 		
 		ButtonGroup group = new ButtonGroup();
 		
-		WebToggleButton buttonAllCategories = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>Alla kategorier</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10)*10 + "</td></tr></table></html>");
+		WebToggleButton buttonAllCategories = new WebToggleButton();
 		buttonAllCategories.setHorizontalAlignment(JButton.LEFT);
 		buttonAllCategories.setSelected(true);
-		panel.add(buttonAllCategories, "growx");
+		panel.add(buttonAllCategories, "cell 0 0");
 		group.add(buttonAllCategories);
 		
-		for (Constants.Category c : Constants.Category.values()) {
-			WebToggleButton button = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>" + c.getName() + "</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10) + "</td></tr></table></html>");
+		searchResults = model.getSearchResults("öl");
+		
+		buttonAllCategories.setText("<html><table cellpadding=0 cellspacing=0 style='width: 122px'><tr><td>Alla kategorier</td><td style='text-align: right; color: rgb(150, 150, 150)'>5</td></tr></table></html>");
+		
+		for (ProductCategory c : ProductCategory.values()) {
+			int num = 0;
+			
+			for (int i = 0; i < searchResults.size(); i++) {
+				if (searchResults.get(i).getCategory().equals(c)) {
+					num++;
+				}
+			}
+			
+			WebToggleButton button = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 122px'><tr><td>" + c.name() + "</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + num + "</td></tr></table></html>");
 			button.setHorizontalAlignment(JButton.LEFT);
 			panel.add(button, "growx");
 			group.add(button);
@@ -521,14 +541,14 @@ public class MainWindow implements ActionListener {
 		// Skip search
 		if (text.length() < 2) return;
 		
-		List<Product> results = model.getSearchResults(text);
+		searchResults = model.getSearchResults(text);
 
 		// Clear panel search results
 		cardPanelGrid.removeAll();
 		cardPanelList.removeAll();
 	
-		for (int i = 0; i < results.size(); i++) {
-			Product p = results.get(i);
+		for (int i = 0; i < searchResults.size(); i++) {
+			Product p = searchResults.get(i);
 			
 			ItemList item = new ItemList(p, this);
 			

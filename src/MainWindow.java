@@ -270,7 +270,6 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
 		sidebarTabbedPane.addTab("Historik", new WebLabel());
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
-		loginWindow = new LogInWindow(frame, this);
 		
 	}
 
@@ -369,7 +368,7 @@ public class MainWindow implements ActionListener {
 		}
 		
 		if(action.getSource() == signInButton){
-			
+			loginWindow = new LogInWindow(frame, this);
 			loginWindow.setLocationRelativeTo(frame);
 			loginWindow.setVisible(true);
 		}
@@ -439,6 +438,7 @@ public class MainWindow implements ActionListener {
 	public void logIn(String userName, String password) {
 		//TODO Figure out login method
 		//model.logIn();
+		
 		System.out.println("du har loggat in som " + userName);
 		userComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				userName, "Kontoinst\u00E4llningar", "Logga ut" }));

@@ -141,6 +141,7 @@ public class LogInWindow extends WebDialog implements ActionListener {
 			
 			if (new String(newUserPassword.getPassword()).equals(new String(newUserPasswordRepeat.getPassword()))){
 				parent.createUser(newUserNameTextField.getText(), newUserEmailTextField.getText(), new String(newUserPassword.getPassword()));
+				signInTabbedPane.setSelectedIndex(0);
 			}else{
 				JOptionPane.showMessageDialog(this, "du är dum i huvudet!", "Fel vid registering", JOptionPane.WARNING_MESSAGE);
 			}

@@ -36,7 +36,7 @@ public class ItemList extends JPanel {
 	}
 	
 	private void initialize() {
-		setPreferredSize(new Dimension(512, 64));
+		setPreferredSize(new Dimension(512, 77));
 		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new MigLayout("", "[64px:64.00][5px:5px][92px:92px][grow][48px:48px][64px:64px]", "[64px]"));
 		

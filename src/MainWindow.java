@@ -266,7 +266,7 @@ public class MainWindow implements ActionListener {
 		buttonAllCategories.setSelected(true);
 		panel.add(buttonAllCategories, "growx");
 		group.add(buttonAllCategories);
-		txtSearchBox.setText("öl");
+		txtSearchBox.setText("öla");
 		search();
 		for (Constants.Category c : Constants.Category.values()) {
 			int num = 0;

@@ -10,6 +10,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -24,14 +26,16 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
+import se.chalmers.ait.dat215.project.IMatDataHandler;
+import se.chalmers.ait.dat215.project.Product;
 
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
-import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
@@ -62,6 +66,9 @@ public class MainWindow implements ActionListener {
 	private WebButtonGroup toggleViewButtonGroup;
 	private JPanel cardPanelList;
 	private JPanel cardPanelGrid;
+	private Timer searchTimer = new Timer(500, this);
+	
+	private IMatDataHandler db = IMatDataHandler.getInstance();
 
 	/**
 	 * Launch the application.
@@ -89,6 +96,8 @@ public class MainWindow implements ActionListener {
 		StyleConstants.mediumRound = 0;
 
 		WebLookAndFeel.install();
+		
+		searchTimer.setRepeats(false);
 		
 		initialize();
 	}
@@ -199,9 +208,9 @@ public class MainWindow implements ActionListener {
 	
 	private void calculateResults(int width, int height) {
 		if (toggleGridViewButton.isSelected()) {
-			int cols = width/(128+margin); System.out.print("cols:" + cols);
+			int cols = width/(128+margin);
 			int rows = 25 / cols;
-			rows += ((rows * cols < 25) ? 1 : 0); System.out.println("rows:" + rows);
+			rows += ((rows * cols < 25) ? 1 : 0);
 			
 			contentPanel.setPreferredSize(new Dimension(width - 32, (rows * (160 + margin)) + margin));
 			contentScrollPane.revalidate();
@@ -221,36 +230,43 @@ public class MainWindow implements ActionListener {
 			cl.show(contentPanel, "cardPanelList");
 			contentPanel.setPreferredSize(cardPanelList.getPreferredSize());
 		}
+		
+		if (action.getSource() == searchTimer) {
+			search();
+		}
 	}
 	
 	private void search() {
-		String text = txtSearchBox.getText();
-		
 		cardPanelGrid.removeAll();
 		cardPanelList.removeAll();
 		
-		for (int i = 0; i < 25; i++) {
+		String text = txtSearchBox.getText();
+
+		List<Product> results = db.findProducts(text);
+
+		for (int i = 0; i < results.size(); i++) {
 			
-			cardPanelGrid.add(new ItemGrid(text + " " + i));
-			ItemList item = new ItemList(text + " " + i);
+			cardPanelGrid.add(new ItemGrid(results.get(i).getName()));
+			ItemList item = new ItemList();
 			
 			if (i % 2 == 1) {
 				item.setBackground(new Color(248, 248, 248));
 			}
-			
 			
 			cardPanelList.add(item);
 		}
 		
 		cardPanelGrid.revalidate();
 		cardPanelList.revalidate();
+		cardPanelGrid.repaint();
+		cardPanelList.repaint();
 		
 	}
 	
 	private class TxtSearchBoxKeyListener extends KeyAdapter {
 		@Override
 		public void keyReleased(KeyEvent keyEvent) {
-			search();
+			searchTimer.restart();
 		}
 	}
 }

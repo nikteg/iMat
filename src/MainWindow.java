@@ -98,6 +98,7 @@ public class MainWindow implements ActionListener {
 	private JPanel signedOutPanel;
 	private JButton signInButton;
 	private LogInWindow loginWindow;
+	private List<Product> searchResult;
 	private IMatModel model = IMatModel.getInstance();
 
 	/**
@@ -208,18 +209,7 @@ public class MainWindow implements ActionListener {
 		
 		ButtonGroup group = new ButtonGroup();
 		
-		WebToggleButton buttonAllCategories = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>Alla kategorier</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10)*10 + "</td></tr></table></html>");
-		buttonAllCategories.setHorizontalAlignment(JButton.LEFT);
-		buttonAllCategories.setSelected(true);
-		panel.add(buttonAllCategories, "growx");
-		group.add(buttonAllCategories);
-		
-		for (Constants.Category c : Constants.Category.values()) {
-			WebToggleButton button = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>" + c.getName() + "</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10) + "</td></tr></table></html>");
-			button.setHorizontalAlignment(JButton.LEFT);
-			panel.add(button, "growx");
-			group.add(button);
-		}
+
 		
 		contentScrollPane = new JScrollPane();
 		contentScrollPane
@@ -270,6 +260,26 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
 		sidebarTabbedPane.addTab("Historik", new WebLabel());
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
+		
+		WebToggleButton buttonAllCategories = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>Alla kategorier</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10)*10 + "</td></tr></table></html>");
+		buttonAllCategories.setHorizontalAlignment(JButton.LEFT);
+		buttonAllCategories.setSelected(true);
+		panel.add(buttonAllCategories, "growx");
+		group.add(buttonAllCategories);
+		txtSearchBox.setText("öl");
+		search();
+		for (Constants.Category c : Constants.Category.values()) {
+			int num = 0;
+			for (int i = 0; i < searchResult.size(); i++) {
+				if (c.getName().equals(model.getCategory(searchResult.get(i)).getName())) {
+					num++;
+				}
+			}
+			WebToggleButton button = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>" + c.getName() + "</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + num + "</td></tr></table></html>");
+			button.setHorizontalAlignment(JButton.LEFT);
+			panel.add(button, "growx");
+			group.add(button);
+		}
 		
 	}
 
@@ -387,18 +397,20 @@ public class MainWindow implements ActionListener {
 	}
 
 	private void search() {
-		cardPanelGrid.removeAll();
-		cardPanelList.removeAll();
 		
+			cardPanelGrid.removeAll();
+			cardPanelList.removeAll();
+
 		
 		String text = txtSearchBox.getText();
 
-		List<Product> results = model.getSearchResults(text);
-		numResults = results.size();
-		for (int i = 0; i < results.size(); i++) {
+		
+		searchResult = model.getSearchResults(text);
+		numResults = searchResult.size();
+		for (int i = 0; i < searchResult.size(); i++) {
 			ItemGrid itemGrid = new ItemGrid();
-			itemGrid.setName(results.get(i).getName());
-			itemGrid.setIcon(model.getImageIcon(results.get(i),new Dimension(120,120)));
+			itemGrid.setName(searchResult.get(i).getName());
+			itemGrid.setIcon(model.getImageIcon(searchResult.get(i),new Dimension(120,120)));
 			cardPanelGrid.add(itemGrid);
 			
 			ItemList item = new ItemList();

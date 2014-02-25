@@ -259,7 +259,18 @@ public class MainWindow implements ActionListener {
 		
 		cartList.setModel(cartListModel);
 		
-		initializeSettingsView();
+		confirmPurchasePanel = new JPanel();
+		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
+		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[grow][grow][]"));
+		
+		cartConfirmationPanel = new JPanel();
+		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
+		
+		addressSettingsPanel_1 = new AddressSettingsPanel();
+		confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
+		
+		cardSettingsPanel_1 = new CardSettingsPanel();
+		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
 		
 		buttonAllCategories = new CategoryToggleButton("Alla kategorier",numResults);
 		buttonAllCategories.setSelected(true);
@@ -284,27 +295,6 @@ public class MainWindow implements ActionListener {
 		
 	}
 
-	private void initializeSettingsView() {
-
-		
-		confirmPurchasePanel = new JPanel();
-		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
-		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[grow][grow][]"));
-		
-		cartConfirmationPanel = new JPanel();
-		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
-		
-		addressSettingsPanel_1 = new AddressSettingsPanel();
-		confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
-		
-		cardSettingsPanel_1 = new CardSettingsPanel();
-		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
-		
-		
-		search();
-	}
-
-	
 	private void calculateResults(int width, int height, int num) {
 		if (toggleGridViewButton.isSelected() && width != 0) {
 			int cols = width / (128 + margin);

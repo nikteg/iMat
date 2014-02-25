@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -35,6 +36,8 @@ import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.ait.dat215.project.ShoppingItem;
+
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
@@ -146,7 +149,7 @@ public class MainWindow implements ActionListener {
 		frame.setBounds(100, 100, 1050, 772);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(
-				new MigLayout("insets 4px", "[192px:n][grow][72px][212px:212px]", "[][][grow]"));
+				new MigLayout("insets 4px", "[192px:n][grow][72px][300px:300px]", "[][][grow]"));
 
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class
@@ -261,10 +264,10 @@ public class MainWindow implements ActionListener {
 
 		varukorgPanel = new JPanel();
 		varukorgScrollPane.setViewportView(varukorgPanel);
-		varukorgPanel.setLayout(new BorderLayout(0, 0));
+		varukorgPanel.setLayout(new GridLayout(100,1));
 		
 		cartList = new JList();
-		varukorgPanel.add(cartList);
+		//varukorgPanel.add(cartList);
 		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
 		sidebarTabbedPane.addTab("Historik", new WebLabel());
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
@@ -381,6 +384,11 @@ public class MainWindow implements ActionListener {
 			Product product = ((Item)action.getSource()).product;
 			cartListModel.addElement(product.getName());
 			System.out.println(product.getName());
+			model.getShoppingCart().addProduct(product, 1.0);
+			if(!model.getShoppingCart().getItems().contains(product)){
+				varukorgPanel.add(new CartItem(new ShoppingItem(product, 1.0)));
+				varukorgPanel.revalidate();
+			}
 		}
 		
 		if (action.getActionCommand() == "toggle_grid") {

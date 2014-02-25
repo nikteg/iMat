@@ -22,7 +22,7 @@ public abstract class Item extends JPanel implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent action) {
-		if (action.getActionCommand() == "add_cart") {
+		if (action.getActionCommand() == "add_cart" || action.getActionCommand() == "favorite") {
 			action.setSource(this);
 			parent.actionPerformed(action);
 		}

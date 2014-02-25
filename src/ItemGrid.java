@@ -23,7 +23,7 @@ public class ItemGrid extends Item {
 	private JLabel lblPrice;
 	private JSpinner spinner;
 	private JLabel lblKg;
-	private JToggleButton tglbtnNewToggleButton;
+	public JToggleButton tglFavorite;
 
 	/**
 	 * Create the panel.
@@ -60,19 +60,19 @@ public class ItemGrid extends Item {
 		btnKp.setActionCommand("add_cart");
 		add(btnKp, "cell 3 2,alignx right,aligny center");
 		
-		tglbtnNewToggleButton = new JToggleButton("");
-		tglbtnNewToggleButton.setUI(new javax.swing.plaf.basic.BasicButtonUI());
-		tglbtnNewToggleButton.setContentAreaFilled(false);
-		tglbtnNewToggleButton.setBorderPainted(false);
-		tglbtnNewToggleButton.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglbtnNewToggleButton.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-inactive.png")));
-		tglbtnNewToggleButton.setRolloverEnabled(true);
-		tglbtnNewToggleButton.setBorder(null);
-		tglbtnNewToggleButton.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglbtnNewToggleButton.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
-		tglbtnNewToggleButton.addActionListener(this);
-		tglbtnNewToggleButton.setActionCommand("favorite");
-		add(tglbtnNewToggleButton, "cell 3 1,alignx right,aligny center");
+		tglFavorite = new JToggleButton("");
+		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
+		tglFavorite.setContentAreaFilled(false);
+		tglFavorite.setBorderPainted(false);
+		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
+		tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-inactive.png")));
+		tglFavorite.setRolloverEnabled(true);
+		tglFavorite.setBorder(null);
+		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
+		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
+		tglFavorite.addActionListener(this);
+		tglFavorite.setActionCommand("favorite");
+		add(tglFavorite, "cell 3 1,alignx right,aligny center");
 	}
 
 }

@@ -42,6 +42,9 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 
@@ -99,6 +102,10 @@ public class MainWindow implements ActionListener {
 	private ButtonGroup categoryButtonGroup = new ButtonGroup();
 	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
 	private CategoryToggleButton buttonAllCategories;
+	private JScrollPane favoriteScrollPane;
+	private JScrollPane historyScrollPane;
+	private JTree tree;
+	private JButton btnKassa;
 
 
 	/**
@@ -261,15 +268,45 @@ public class MainWindow implements ActionListener {
 
 		varukorgPanel = new JPanel();
 		varukorgScrollPane.setViewportView(varukorgPanel);
-		varukorgPanel.setLayout(new BorderLayout(0, 0));
+		varukorgPanel.setLayout(new MigLayout("insets 0px", "[grow]", "[grow][]"));
 		
 		cartList = new JList();
-		varukorgPanel.add(cartList);
-		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
-		sidebarTabbedPane.addTab("Historik", new WebLabel());
+		varukorgPanel.add(cartList, "cell 0 0,grow");
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
 		
 		cartList.setModel(cartListModel);
+		
+		btnKassa = new JButton("Kassa");
+		varukorgPanel.add(btnKassa, "cell 0 1,growx");
+		
+		favoriteScrollPane = new JScrollPane();
+		sidebarTabbedPane.addTab("Favoriter", null, favoriteScrollPane, null);
+		
+		tree = new JTree();
+		tree.setRootVisible(false);
+		tree.setModel(new DefaultTreeModel(
+			new DefaultMutableTreeNode("Favoriter") {
+				{
+					DefaultMutableTreeNode node_1;
+					node_1 = new DefaultMutableTreeNode("Pungkaka");
+						node_1.add(new DefaultMutableTreeNode("blue"));
+						node_1.add(new DefaultMutableTreeNode("violet"));
+						node_1.add(new DefaultMutableTreeNode("red"));
+						node_1.add(new DefaultMutableTreeNode("yellow"));
+					add(node_1);
+					node_1 = new DefaultMutableTreeNode("Rabiesgröt");
+						node_1.add(new DefaultMutableTreeNode("blue"));
+						node_1.add(new DefaultMutableTreeNode("violet"));
+						node_1.add(new DefaultMutableTreeNode("red"));
+						node_1.add(new DefaultMutableTreeNode("yellow"));
+					add(node_1);
+				}
+			}
+		));
+		favoriteScrollPane.setViewportView(tree);
+		
+		historyScrollPane = new JScrollPane();
+		sidebarTabbedPane.addTab("Historik", null, historyScrollPane, null);
 		
 		initializeSettingsView();
 		
@@ -363,7 +400,7 @@ public class MainWindow implements ActionListener {
 	
 	private void calculateResults(int width, int height, int num) {
 		if (toggleGridViewButton.isSelected() && width != 0) {
-			int cols = width / (128 + margin);
+			int cols = Math.max(1, width / (128 + margin));
 			int rows = num / cols;
 			rows += ((rows * cols < num) ? 1 : 0);
 
@@ -377,6 +414,12 @@ public class MainWindow implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent action) {
 
+		if (action.getActionCommand() == "favorite") {
+			if (!((ItemGrid)action.getSource()).tglFavorite.isSelected()) return;
+			Product product = ((Item)action.getSource()).product;
+			System.out.println("DU FAVORISERADE JUST .... BAM BAM BAM: " + product.getName());
+		}
+		
 		if (action.getActionCommand() == "add_cart") {
 			Product product = ((Item)action.getSource()).product;
 			cartListModel.addElement(product.getName());
@@ -400,7 +443,7 @@ public class MainWindow implements ActionListener {
 		if (action.getActionCommand() == "toggle_list") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelList");
-			contentPanel.setPreferredSize(cardPanelList.getPreferredSize());
+			contentPanel.setPreferredSize(new Dimension(0, 0));
 		}
 
 		if (action.getActionCommand() == "search") {

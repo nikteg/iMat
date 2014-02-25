@@ -356,7 +356,7 @@ public class MainWindow implements ActionListener {
 
 		if (action.getSource() == userComboBox) {
 			userComboBox.hidePopup();
-			userComboBox.setSelectedIndex(0);
+			
 			if (userComboBox.getSelectedIndex() == 1) {
 				settingsWindow = new SettingsWindow(frame, this);
 				settingsWindow.setLocationRelativeTo(frame);
@@ -364,6 +364,7 @@ public class MainWindow implements ActionListener {
 			}else if(userComboBox.getSelectedIndex() == 2){
 				logOut();
 			}
+			userComboBox.setSelectedIndex(0);
 
 		}
 	}

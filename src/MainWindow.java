@@ -99,6 +99,8 @@ public class MainWindow implements ActionListener {
 	private JButton signInButton;
 	private LogInWindow loginWindow;
 	private List<Product> searchResult;
+	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
+	private CategoryToggleButton buttonAllCategories;
 	private IMatModel model = IMatModel.getInstance();
 
 	/**
@@ -261,25 +263,24 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane.addTab("Historik", new WebLabel());
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
 		
-		WebToggleButton buttonAllCategories = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>Alla kategorier</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + (int)(1 + Math.random() * 10)*10 + "</td></tr></table></html>");
-		buttonAllCategories.setHorizontalAlignment(JButton.LEFT);
+		
+		
+		
+		buttonAllCategories = new CategoryToggleButton("Alla kategorier",numResults);
 		buttonAllCategories.setSelected(true);
 		panel.add(buttonAllCategories, "growx");
 		group.add(buttonAllCategories);
-		txtSearchBox.setText("öla");
-		search();
+
 		for (Constants.Category c : Constants.Category.values()) {
-			int num = 0;
-			for (int i = 0; i < searchResult.size(); i++) {
-				if (c.getName().equals(model.getCategory(searchResult.get(i)).getName())) {
-					num++;
-				}
-			}
-			WebToggleButton button = new WebToggleButton("<html><table cellpadding=0 cellspacing=0 style='width: 134px'><tr><td>" + c.getName() + "</td><td style='text-align: right; color: rgb(150, 150, 150)'>" + num + "</td></tr></table></html>");
+			CategoryToggleButton button = new CategoryToggleButton(c.getName(),0);
 			button.setHorizontalAlignment(JButton.LEFT);
+			categorybuttons.add(button);
 			panel.add(button, "growx");
 			group.add(button);
 		}
+		txtSearchBox.setText("");
+		search();
+		
 		
 	}
 
@@ -344,6 +345,7 @@ public class MainWindow implements ActionListener {
 		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
 	}
 
+	
 	private void calculateResults(int width, int height, int num) {
 		if (toggleGridViewButton.isSelected() && width != 0) {
 			int cols = width / (128 + margin);
@@ -421,12 +423,31 @@ public class MainWindow implements ActionListener {
 
 			cardPanelList.add(item);
 		}
-
+		
+		updateButtonNumbers();
 		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight(),numResults);
 		cardPanelGrid.revalidate();
 		cardPanelList.revalidate();
 		cardPanelGrid.repaint();
 		cardPanelList.repaint();
+	}
+	
+	private void updateButtonNumbers(){
+		
+		buttonAllCategories.SetNumber(searchResult.size());
+		int i = 0;
+		for (Constants.Category c : Constants.Category.values()) {
+			int num = 0;
+			for (int j = 0; j < searchResult.size(); j++) {
+				if (c.getName().equals(model.getCategory(searchResult.get(j)).getName())) {
+					num++;
+				}
+			}
+			
+			categorybuttons.get(i).setName(c.getName());
+			categorybuttons.get(i).SetNumber(num);
+			i++;
+		}		
 	}
 
 	private JPanel getCart() {

@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -20,10 +19,8 @@ import java.awt.Cursor;
 
 import javax.swing.JPasswordField;
 
-import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.rootpane.WebDialog;
 
-import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 

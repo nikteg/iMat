@@ -12,11 +12,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -24,28 +20,21 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
-import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
-import se.chalmers.ait.dat215.project.ProductCategory;
-
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
@@ -54,15 +43,7 @@ import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
 
-import javax.swing.JButton;
-import javax.swing.border.TitledBorder;
-import javax.swing.JSeparator;
-import javax.swing.UIManager;
-import javax.swing.JPasswordField;
-import javax.xml.crypto.dsig.SignedInfo;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 
 public class MainWindow implements ActionListener {
 
@@ -361,24 +342,7 @@ public class MainWindow implements ActionListener {
 		btnNewButton = new JButton("New button");
 		cardPanelSettings.add(btnNewButton,
 				"cell 1 3,alignx right,aligny bottom");
-//
-//		sidebarTabbedPane = new WebTabbedPane();
-//		sidebarTabbedPane.setFocusable(false);
-//
-//		varukorgScrollPane = new JScrollPane();
-//		sidebarTabbedPane.addTab("Varukorg", null, varukorgScrollPane, null);
-//
-//		varukorgPanel = new JPanel();
-//		varukorgScrollPane.setViewportView(varukorgPanel);
-//		varukorgPanel.setLayout(new BorderLayout(0, 0));
-//		
-//		cartList = new JList();
-//		varukorgPanel.add(cartList);
-//		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
-//		sidebarTabbedPane.addTab("Historik", new WebLabel());
-//		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
-//		
-//		cartList.setModel(cartListModel);
+
 		
 		confirmPurchasePanel = new JPanel();
 		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");

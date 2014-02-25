@@ -69,17 +69,6 @@ public class MainWindow implements ActionListener {
 	private JPanel cardPanelGrid;
 
 	private Timer searchTimer = new Timer(500, this);
-
-	private JPanel cardPanelSettings;
-	private JLabel lblInstllningarFr;
-	private JPanel SignInSettingsPanel;
-	private JTextField textField;
-	private JLabel lblEmail;
-	private JLabel lblNewPassword;
-	private JLabel lblRepeatPassword;
-	private JPasswordField passwordField;
-	private JPasswordField passwordFieldRepeat;
-	private JButton btnNewButton;
 	private JScrollPane varukorgScrollPane;
 	private JPanel varukorgPanel;
 
@@ -88,16 +77,15 @@ public class MainWindow implements ActionListener {
 	private DefaultListModel cartListModel = new DefaultListModel();
 
 	private JPanel confirmPurchasePanel;
-	private AddressSettingsPanel addressSettingsPanel;
 	private AddressSettingsPanel addressSettingsPanel_1;
 	private JPanel cartConfirmationPanel;
-	private CardSettingsPanel cardSettingsPanel;
 	private CardSettingsPanel cardSettingsPanel_1;
 	private JPanel signedInPanel;
 	private JPanel userPanel;
 	private JPanel signedOutPanel;
 	private JButton signInButton;
 	private LogInWindow loginWindow;
+	private SettingsWindow settingsWindow;
 	private List<Product> searchResults;
 	private ButtonGroup categoryButtonGroup = new ButtonGroup();
 	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
@@ -234,7 +222,7 @@ public class MainWindow implements ActionListener {
 				int width = ((JScrollPane) arg0.getSource()).getWidth();
 				int height = ((JScrollPane) arg0.getSource()).getHeight();
 
-				calculateResults(width, height,numResults);
+				calculateResults(width, height);
 			}
 		});
 		contentScrollPane
@@ -274,7 +262,18 @@ public class MainWindow implements ActionListener {
 		
 		cartList.setModel(cartListModel);
 		
-		initializeSettingsView();
+		confirmPurchasePanel = new JPanel();
+		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
+		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[grow][grow][]"));
+		
+		cartConfirmationPanel = new JPanel();
+		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
+		
+		addressSettingsPanel_1 = new AddressSettingsPanel();
+		confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
+		
+		cardSettingsPanel_1 = new CardSettingsPanel();
+		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
 		
 		buttonAllCategories = new CategoryToggleButton("Alla kategorier",numResults);
 		buttonAllCategories.setSelected(true);
@@ -299,76 +298,11 @@ public class MainWindow implements ActionListener {
 		
 	}
 
-	private void initializeSettingsView() {
-		cardPanelSettings = new JPanel();
-		contentPanel.add(cardPanelSettings, "cardPanelSettings");
-		cardPanelSettings
-				.setLayout(new MigLayout("", "[287.00,grow][287.00,grow]", "[49.00][200.00,grow][205.00,grow][]"));
-
-		lblInstllningarFr = new JLabel("Inst\u00E4llningar f\u00F6r ");
-		lblInstllningarFr.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cardPanelSettings.add(lblInstllningarFr, "cell 0 0");
-
-		SignInSettingsPanel = new JPanel();
-		SignInSettingsPanel.setBorder(new TitledBorder(null,
-				"Inloggningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP,
-				null, null));
-		cardPanelSettings.add(SignInSettingsPanel, "cell 0 1,grow");
-		SignInSettingsPanel.setLayout(new MigLayout("", "[96px][grow]",
-				"[32px][32px][32px]"));
-
-		lblEmail = new JLabel("E-post");
-		SignInSettingsPanel.add(lblEmail, "cell 0 0,alignx left");
-
-		textField = new JTextField();
-		SignInSettingsPanel.add(textField, "cell 1 0,growx");
-		textField.setColumns(10);
-
-		lblNewPassword = new JLabel("Nytt L\u00F6senord");
-		SignInSettingsPanel.add(lblNewPassword, "cell 0 1,alignx left");
-
-		passwordField = new JPasswordField();
-		SignInSettingsPanel.add(passwordField, "cell 1 1,growx");
-
-		lblRepeatPassword = new JLabel("(igen)");
-		SignInSettingsPanel.add(lblRepeatPassword, "cell 0 2,alignx left");
-
-		passwordFieldRepeat = new JPasswordField();
-		SignInSettingsPanel.add(passwordFieldRepeat, "cell 1 2,growx");
-		
-		cardSettingsPanel = new CardSettingsPanel();
-		cardPanelSettings.add(cardSettingsPanel, "cell 1 1,grow");
-		
-		addressSettingsPanel = new AddressSettingsPanel();
-		cardPanelSettings.add(addressSettingsPanel, "cell 0 2,grow");
-
-		btnNewButton = new JButton("New button");
-		cardPanelSettings.add(btnNewButton,
-				"cell 1 3,alignx right,aligny bottom");
-
-		
-		confirmPurchasePanel = new JPanel();
-		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
-		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[grow][grow][]"));
-		
-		cartConfirmationPanel = new JPanel();
-		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
-		
-		addressSettingsPanel_1 = new AddressSettingsPanel();
-		confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
-		
-		cardSettingsPanel_1 = new CardSettingsPanel();
-		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
-
-		search();
-	}
-
-	
-	private void calculateResults(int width, int height, int num) {
+	private void calculateResults(int width, int height) {
 		if (toggleGridViewButton.isSelected() && width != 0) {
 			int cols = width / (128 + margin);
-			int rows = num / cols;
-			rows += ((rows * cols < num) ? 1 : 0);
+			int rows = searchResults.size() / cols;
+			rows += ((rows * cols < searchResults.size()) ? 1 : 0);
 
 			contentPanel.setPreferredSize(new Dimension(width - 32,
 					(rows * (160 + margin)) + margin));
@@ -395,14 +329,14 @@ public class MainWindow implements ActionListener {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
 			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight(), numResults);
+					contentScrollPane.getHeight());
 		}
 		
 		if (action.getSource() == toggleGridViewButton) {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
 			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight(),numResults);
+					contentScrollPane.getHeight());
 		}
 
 		if (action.getActionCommand() == "toggle_list") {
@@ -416,8 +350,10 @@ public class MainWindow implements ActionListener {
 				CardLayout cl = (CardLayout) (contentPanel.getLayout());
 				cl.show(contentPanel, toggleGridViewButton.isSelected() ? "cardPanelGrid" : "cardPanelList");
 			}
-			
 			search();
+			calculateResults(contentScrollPane.getWidth(),
+					contentScrollPane.getHeight());
+			
 		}
 		
 		if(action.getSource() == signInButton){
@@ -427,14 +363,16 @@ public class MainWindow implements ActionListener {
 		}
 
 		if (action.getSource() == userComboBox) {
+			userComboBox.hidePopup();
+			
 			if (userComboBox.getSelectedIndex() == 1) {
-				CardLayout cl = (CardLayout) (contentPanel.getLayout());
-				cl.show(contentPanel, "cardPanelSettings");
-				contentPanel.setPreferredSize(cardPanelSettings
-						.getPreferredSize());
+				settingsWindow = new SettingsWindow(frame, this);
+				settingsWindow.setLocationRelativeTo(frame);
+				settingsWindow.setVisible(true);
 			}else if(userComboBox.getSelectedIndex() == 2){
 				logOut();
 			}
+			userComboBox.setSelectedIndex(0);
 
 		}
 	}
@@ -443,7 +381,7 @@ public class MainWindow implements ActionListener {
 		String text = txtSearchBox.getText();
 		
 		// Skip search
-		if (text.length() < 2) return;
+		//if (text.length() < 2) return;
 		
 		searchResults = model.getSearchResults(text);
 
@@ -474,7 +412,7 @@ public class MainWindow implements ActionListener {
 		}
 		
 		updateButtonNumbers();
-		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight(),numResults);
+		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		cardPanelGrid.revalidate();
 		cardPanelList.revalidate();
 		cardPanelGrid.repaint();

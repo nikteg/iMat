@@ -27,7 +27,6 @@ public class AddressSettingsPanel extends JPanel {
 	private JTextField cityTextField;
 
 	public AddressSettingsPanel() {
-		// TODO Auto-generated constructor stub
 		initialize();
 	}
 	private void initialize() {
@@ -86,20 +85,43 @@ public class AddressSettingsPanel extends JPanel {
 		cellPhoneTextField.setColumns(10);
 		add(cellPhoneTextField, "cell 1 7 2 1,growx");
 	}
-
-	public AddressSettingsPanel(LayoutManager layout) {
-		super(layout);
-		// TODO Auto-generated constructor stub
+	
+	public String getFirstName() {
+		return firstNameTextField.getText();
 	}
-
-	public AddressSettingsPanel(boolean isDoubleBuffered) {
-		super(isDoubleBuffered);
-		// TODO Auto-generated constructor stub
+	public void setFirstName(String firstName) {
+		this.firstNameTextField.setText(firstName);
 	}
-
-	public AddressSettingsPanel(LayoutManager layout, boolean isDoubleBuffered) {
-		super(layout, isDoubleBuffered);
-		// TODO Auto-generated constructor stub
+	public String getStreetAddress() {
+		return streetAddressTextField.getText();
 	}
-
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddressTextField.setText(streetAddress);
+	}
+	public String getZipCode() {
+		return zipCodeTextField.getText();
+	}
+	public void setZipCode(String zipCode) {
+		this.zipCodeTextField.setText(zipCode);
+	}
+	public String getPhone() {
+		return phoneTextField.getText();
+	}
+	public void setPhone(String phone) {
+		this.phoneTextField.setText(phone);
+	}
+	public String getCellPhone() {
+		return cellPhoneTextField.getText();
+	}
+	public void setCellPhone(String cellPhone) {
+		this.cellPhoneTextField.setText(cellPhone);
+	}
+	public String getCity() {
+		return cityTextField.getText();
+	}
+	public void setCity(String city) {
+		this.cityTextField.setText(city);
+	}
+	
+	
 }

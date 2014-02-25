@@ -50,13 +50,11 @@ public class LogInWindow extends WebDialog implements ActionListener {
 		super(frame, true);
 		this.frame = frame;
 		this.parent = parent;
-		//WebLookAndFeel.install();
 		initialize2();
 	}
 	private void initialize2() {
 		setSize(360, 250);
 		setResizable(false);
-		//setLocationRelativeTo(frame);
 		
 		signInTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(signInTabbedPane, BorderLayout.CENTER);

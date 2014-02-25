@@ -28,7 +28,7 @@ public class CardSettingsPanel extends JPanel{
 	}
 	private void initialize() {
 		setBorder(new TitledBorder(null, "Betalningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setLayout(new MigLayout("", "[grow]", "[83][193,grow]"));
+		setLayout(new MigLayout("", "[grow]", "[83][193]"));
 		
 		panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Sparade kort", TitledBorder.LEADING, TitledBorder.TOP, null, null));

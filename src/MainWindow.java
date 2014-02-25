@@ -219,7 +219,7 @@ public class MainWindow implements ActionListener {
 				int width = ((JScrollPane) arg0.getSource()).getWidth();
 				int height = ((JScrollPane) arg0.getSource()).getHeight();
 
-				calculateResults(width, height,numResults);
+				calculateResults(width, height);
 			}
 		});
 		contentScrollPane
@@ -295,11 +295,11 @@ public class MainWindow implements ActionListener {
 		
 	}
 
-	private void calculateResults(int width, int height, int num) {
+	private void calculateResults(int width, int height) {
 		if (toggleGridViewButton.isSelected() && width != 0) {
 			int cols = width / (128 + margin);
-			int rows = num / cols;
-			rows += ((rows * cols < num) ? 1 : 0);
+			int rows = searchResults.size() / cols;
+			rows += ((rows * cols < searchResults.size()) ? 1 : 0);
 
 			contentPanel.setPreferredSize(new Dimension(width - 32,
 					(rows * (160 + margin)) + margin));
@@ -321,14 +321,14 @@ public class MainWindow implements ActionListener {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
 			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight(), numResults);
+					contentScrollPane.getHeight());
 		}
 		
 		if (action.getSource() == toggleGridViewButton) {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
 			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight(),numResults);
+					contentScrollPane.getHeight());
 		}
 
 		if (action.getActionCommand() == "toggle_list") {
@@ -342,8 +342,10 @@ public class MainWindow implements ActionListener {
 				CardLayout cl = (CardLayout) (contentPanel.getLayout());
 				cl.show(contentPanel, toggleGridViewButton.isSelected() ? "cardPanelGrid" : "cardPanelList");
 			}
-			
 			search();
+			calculateResults(contentScrollPane.getWidth(),
+					contentScrollPane.getHeight());
+			
 		}
 		
 		if(action.getSource() == signInButton){
@@ -370,7 +372,7 @@ public class MainWindow implements ActionListener {
 		String text = txtSearchBox.getText();
 		
 		// Skip search
-		if (text.length() < 2) return;
+		//if (text.length() < 2) return;
 		
 		searchResults = model.getSearchResults(text);
 
@@ -401,7 +403,7 @@ public class MainWindow implements ActionListener {
 		}
 		
 		updateButtonNumbers();
-		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight(),numResults);
+		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		cardPanelGrid.revalidate();
 		cardPanelList.revalidate();
 		cardPanelGrid.repaint();

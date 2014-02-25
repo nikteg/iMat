@@ -3,8 +3,6 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JSpinner;

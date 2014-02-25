@@ -27,12 +27,14 @@ public class IMatModel {
 	private static IMatModel instance = null;
 	private IMatDataHandler backend;
 	private List<FavoriteList> favoriteLists;
-	private List<CreditCard> creditCardList; //TODO Make use of this list.
+	private List<CreditCard> creditCardList;//TODO Make use of this list.
+	private List<Product> categoryList;
 	
 	private IMatModel() {
 		backend = IMatDataHandler.getInstance();
 		creditCardList = new ArrayList<CreditCard>();
 		favoriteLists = new ArrayList<FavoriteList>();
+		categoryList = new ArrayList<Product>();
 	}
 	
 	/**
@@ -165,8 +167,8 @@ public class IMatModel {
 	 * @param cat Product category
 	 * @return List of products in the given category.
 	 */
-	public List<Product> getProducts(Category cat){
-		List<Product> categoryList = new ArrayList<Product>();
+	public List<Product> getProducts(Constants.Category cat){
+		
 		
 		switch (cat) {
 			case BREAD:			categoryList.addAll(backend.getProducts(ProductCategory.BREAD));
@@ -204,6 +206,48 @@ public class IMatModel {
 			default:	break;
 		}
 		return categoryList;
+	}
+	
+	public Constants.Category getCategory(Product p){
+		
+		switch (p.getCategory()){
+		case BREAD:
+			return Constants.Category.BREAD;	
+		case DAIRIES:
+			return Constants.Category.DAIRIES;
+		case COLD_DRINKS:
+		case HOT_DRINKS:
+			return Constants.Category.DRINKS;
+		case BERRY:
+		case CITRUS_FRUIT:
+		case EXOTIC_FRUIT:
+		case FRUIT:
+		case MELONS:
+			return Constants.Category.FRUIT_BERRIES;
+		case MEAT:
+		case FISH:
+			return Constants.Category.MEAT_FISH;
+		case FLOUR_SUGAR_SALT:
+			return Constants.Category.PANTRY;
+		case PASTA:
+		case POTATO_RICE:
+			return Constants.Category.PASTA_POTATO_RICE;
+		case ROOT_VEGETABLE:
+			return Constants.Category.ROOT_VEGETABLES;
+		case NUTS_AND_SEEDS:
+		case SWEET:
+			return Constants.Category.SNACKS;
+		case HERB:
+			return Constants.Category.SPICES;
+		case CABBAGE:
+		case POD:
+		case VEGETABLE_FRUIT:
+			return Constants.Category.VEGETABLES;
+		default:
+			return null;
+		}
+		
+		
 	}
 
 	/**

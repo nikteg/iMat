@@ -11,7 +11,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -85,7 +89,7 @@ public class MainWindow implements ActionListener {
 	private JPasswordField passwordField;
 	private JPasswordField passwordFieldRepeat;
 	private JButton btnNewButton;
-	private JScrollPane varuorgScrollPane;
+	private JScrollPane varukorgScrollPane;
 	private JPanel varukorgPanel;
 	private JPanel confirmPurchasePanel;
 	private AddressSettingsPanel addressSettingsPanel;
@@ -99,6 +103,7 @@ public class MainWindow implements ActionListener {
 	private JButton signInButton;
 	private LogInWindow loginWindow;
 	private List<Product> searchResult;
+	private ButtonGroup categoryButtonGroup;
 	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
 	private CategoryToggleButton buttonAllCategories;
 	private IMatModel model = IMatModel.getInstance();
@@ -209,7 +214,8 @@ public class MainWindow implements ActionListener {
 
 		panel.setLayout(new MigLayout("flowy,insets 0", "[grow]", "[28px]"));
 		
-		ButtonGroup group = new ButtonGroup();
+		categoryButtonGroup = new ButtonGroup();
+		
 		
 
 		
@@ -254,11 +260,11 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane = new WebTabbedPane();
 		sidebarTabbedPane.setFocusable(false);
 
-		varuorgScrollPane = new JScrollPane();
-		sidebarTabbedPane.addTab("Varukorg", null, varuorgScrollPane, null);
+		varukorgScrollPane = new JScrollPane();
+		sidebarTabbedPane.addTab("Varukorg", null, varukorgScrollPane, null);
 
 		varukorgPanel = new JPanel();
-		varuorgScrollPane.setViewportView(varukorgPanel);
+		varukorgScrollPane.setViewportView(varukorgPanel);
 		sidebarTabbedPane.addTab("Favoriter", new WebLabel());
 		sidebarTabbedPane.addTab("Historik", new WebLabel());
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
@@ -268,15 +274,20 @@ public class MainWindow implements ActionListener {
 		
 		buttonAllCategories = new CategoryToggleButton("Alla kategorier",numResults);
 		buttonAllCategories.setSelected(true);
+		buttonAllCategories.addActionListener(this);
+		buttonAllCategories.setActionCommand("search");
 		panel.add(buttonAllCategories, "growx");
-		group.add(buttonAllCategories);
+		categoryButtonGroup.add(buttonAllCategories);
 
 		for (Constants.Category c : Constants.Category.values()) {
 			CategoryToggleButton button = new CategoryToggleButton(c.getName(),0);
+			button.setCategory(c);
 			button.setHorizontalAlignment(JButton.LEFT);
+			button.addActionListener(this);
+			button.setActionCommand("search");
 			categorybuttons.add(button);
 			panel.add(button, "growx");
-			group.add(button);
+			categoryButtonGroup.add(button);
 		}
 		txtSearchBox.setText("");
 		search();
@@ -409,7 +420,23 @@ public class MainWindow implements ActionListener {
 		
 		searchResult = model.getSearchResults(text);
 		numResults = searchResult.size();
+		
+		
+		
+		
 		for (int i = 0; i < searchResult.size(); i++) {
+			boolean skipstep = true;
+			for (CategoryToggleButton ctb : categorybuttons) {
+				if(ctb.isSelected()){
+					if(model.getCategory(searchResult.get(i)).equals(ctb.getCategory())){
+						skipstep = false;
+					}
+				}
+			}
+			if(skipstep && !buttonAllCategories.isSelected()){
+				continue;
+			}
+			
 			ItemGrid itemGrid = new ItemGrid();
 			itemGrid.setName(searchResult.get(i).getName());
 			itemGrid.setIcon(model.getImageIcon(searchResult.get(i),new Dimension(120,120)));
@@ -435,18 +462,17 @@ public class MainWindow implements ActionListener {
 	private void updateButtonNumbers(){
 		
 		buttonAllCategories.SetNumber(searchResult.size());
-		int i = 0;
-		for (Constants.Category c : Constants.Category.values()) {
+		for (int i = 0; i < Constants.Category.values().length; i++) {
 			int num = 0;
+			
 			for (int j = 0; j < searchResult.size(); j++) {
-				if (c.getName().equals(model.getCategory(searchResult.get(j)).getName())) {
+				if (Constants.Category.values()[i].getName().equals(model.getCategory(searchResult.get(j)).getName())) {
 					num++;
 				}
 			}
 			
-			categorybuttons.get(i).setName(c.getName());
+			categorybuttons.get(i).setName(Constants.Category.values()[i].getName());
 			categorybuttons.get(i).SetNumber(num);
-			i++;
 		}		
 	}
 
@@ -460,6 +486,7 @@ public class MainWindow implements ActionListener {
 			searchTimer.restart();
 		}
 	}
+	
 	public void logOut(){
 		//TODO Figure out logout method
 		//model.logOut();
@@ -468,6 +495,7 @@ public class MainWindow implements ActionListener {
 		cl.show(userPanel, "signedOutPanel");
 				
 	}
+	
 	public void logIn(String userName, String password) {
 		//TODO Figure out login method
 		//model.logIn();

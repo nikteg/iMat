@@ -167,7 +167,7 @@ public class IMatModel {
 	 * @param cat Product category
 	 * @return List of products in the given category.
 	 */
-	public List<Product> getProducts(Category cat){
+	public List<Product> getProducts(Constants.Category cat){
 		
 		
 		switch (cat) {

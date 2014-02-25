@@ -47,8 +47,6 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
-import javax.swing.border.EmptyBorder;
-import java.awt.Component;
 
 public class MainWindow implements ActionListener {
 
@@ -58,12 +56,6 @@ public class MainWindow implements ActionListener {
 	private JScrollPane categoriesScrollPane;
 	private WebComboBox userComboBox;
 	private JPanel panel;
-	private JToggleButton tglbtnBageri;
-	private JToggleButton tglbtnBarn;
-	private JToggleButton tglbtnBlommor;
-	private JToggleButton tglbtnDryck;
-	private JToggleButton tglbtnFiskSkaldjur;
-	private JToggleButton tglbtnAllaKategorier;
 	private JScrollPane contentScrollPane;
 	private JPanel contentPanel;
 	private int margin = 8;
@@ -77,7 +69,7 @@ public class MainWindow implements ActionListener {
 
 	private Timer searchTimer = new Timer(500, this);
 	
-	private IMatDataHandler db = IMatDataHandler.getInstance();
+	
 
 	private JPanel cardPanelSettings;
 	private JLabel lblInstllningarFr;

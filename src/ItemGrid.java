@@ -76,5 +76,10 @@ public class ItemGrid extends Item {
 		add(tglFavorite, "cell 3 1,alignx right,aligny center");
 	}
 
+	@Override
+	public double getAmount() {
+		return ((Integer)spinner.getValue()).doubleValue();
+	}
+
 
 }

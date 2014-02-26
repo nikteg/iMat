@@ -29,4 +29,6 @@ public abstract class Item extends JPanel implements ActionListener {
 		}
 	}
 
+	public abstract double getAmount();
+
 }

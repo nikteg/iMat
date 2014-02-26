@@ -66,5 +66,10 @@ public class ItemList extends Item implements ChangeListener {
 			lblPricelabel.setText(shoppingItem.getProduct().getPrice() * ((Integer)spinner.getValue()).doubleValue() + ":-");
 		}
 	}
+	
+	@Override
+	public double getAmount() {
+		return ((Integer)spinner.getValue()).doubleValue();
+	}
 
 }

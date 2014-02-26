@@ -97,6 +97,9 @@ public class MainWindow implements ActionListener {
 	private JScrollPane historyScrollPane;
 	private JTree tree;
 	private JButton btnKassa;
+	private JPanel panel_1;
+	private JButton checkOutButton;
+	private JButton confirmPurchaseButton;
 
 
 	/**
@@ -141,10 +144,10 @@ public class MainWindow implements ActionListener {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1050, 772);
+		frame.setBounds(100, 100, 1300, 860);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(
-				new MigLayout("insets 4px", "[192px:n][grow][72px][300px:300px]", "[][][grow]"));
+				new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));
 
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class
@@ -253,20 +256,29 @@ public class MainWindow implements ActionListener {
 
 		sidebarTabbedPane = new WebTabbedPane();
 		sidebarTabbedPane.setFocusable(false);
+		
+		panel_1 = new JPanel();
+		sidebarTabbedPane.addTab("New tab", null, panel_1, null);
+		panel_1.setLayout(new MigLayout("", "[2px,grow]", "[2px,grow][]"));
 
 		varukorgScrollPane = new JScrollPane();
-		sidebarTabbedPane.addTab("Varukorg", null, varukorgScrollPane, null);
+		panel_1.add(varukorgScrollPane, "cell 0 0,grow");
 
 		varukorgPanel = new JPanel();
 		varukorgScrollPane.setViewportView(varukorgPanel);
 
 		varukorgPanel.setLayout(new GridLayout(100,1));
+		
+		checkOutButton = new JButton("Gå till kassan");
+		checkOutButton.addActionListener(this);
+		checkOutButton.setActionCommand("check_out");
+		panel_1.add(checkOutButton, "cell 0 1,alignx right");
 
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
 
 		confirmPurchasePanel = new JPanel();
 		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
-		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[grow][grow][]"));
+		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[200.00][][grow]"));
 		
 		cartConfirmationPanel = new JPanel();
 		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
@@ -276,6 +288,9 @@ public class MainWindow implements ActionListener {
 		
 		cardSettingsPanel_1 = new CardSettingsPanel();
 		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
+		
+		confirmPurchaseButton = new JButton("Bekräfta köp");
+		confirmPurchasePanel.add(confirmPurchaseButton, "cell 1 2,alignx right,aligny bottom");
 		
 		favoriteScrollPane = new JScrollPane();
 		sidebarTabbedPane.addTab("Favoriter", null, favoriteScrollPane, null);
@@ -355,7 +370,8 @@ public class MainWindow implements ActionListener {
 			ShoppingItem shoppingItem = ((Item)action.getSource()).shoppingItem;
 			
 			if (model.getShoppingCart().getItems().contains(shoppingItem)){
-				model.getShoppingCart().addProduct(shoppingItem.getProduct());
+				
+				model.getShoppingCart().addProduct((shoppingItem.getProduct()));
 				
 			} else {
 				varukorgPanel.add(new CartItem(shoppingItem));
@@ -363,6 +379,18 @@ public class MainWindow implements ActionListener {
 				varukorgPanel.revalidate();
 			}
 			System.out.println(model.getShoppingCart().getTotal());
+			for(ShoppingItem s : model.getShoppingCart().getItems()){
+				System.out.println(s.getProduct().getName() + " " + s.getAmount());
+			}
+		}
+		
+		if (action.getActionCommand() == "check_out"){
+			CardLayout cl = (CardLayout) (contentPanel.getLayout());
+			cl.show(contentPanel, "cardConfrimPanel");
+			contentPanel.setPreferredSize(new Dimension(cartConfirmationPanel.getWidth(), cartConfirmationPanel.getHeight()));
+			
+			contentScrollPane.revalidate();
+			
 		}
 		
 		if (action.getActionCommand() == "toggle_grid") {

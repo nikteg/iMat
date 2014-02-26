@@ -281,6 +281,7 @@ public class MainWindow implements ActionListener {
 		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[200.00][][grow]"));
 		
 		cartConfirmationPanel = new JPanel();
+		cartConfirmationPanel.setBorder(new TitledBorder(null, "Varukorg", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
 		
 		addressSettingsPanel_1 = new AddressSettingsPanel();

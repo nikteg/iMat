@@ -347,19 +347,22 @@ public class MainWindow implements ActionListener {
 
 		if (action.getActionCommand() == "favorite") {
 			if (!((ItemGrid)action.getSource()).tglFavorite.isSelected()) return;
-			Product product = ((Item)action.getSource()).product;
+			Product product = ((Item)action.getSource()).shoppingItem.getProduct();
 			System.out.println("DU FAVORISERADE JUST .... BAM BAM BAM: " + product.getName());
 		}
 		
 		if (action.getActionCommand() == "add_cart") {
-			Product product = ((Item)action.getSource()).product;
-			cartListModel.addElement(product.getName());
-			System.out.println(product.getName());
-			model.getShoppingCart().addProduct(product, 1.0);
-			if(!model.getShoppingCart().getItems().contains(product)){
-				varukorgPanel.add(new CartItem(new ShoppingItem(product, 1.0)));
+			ShoppingItem shoppingItem = ((Item)action.getSource()).shoppingItem;
+			
+			if (model.getShoppingCart().getItems().contains(shoppingItem)){
+				model.getShoppingCart().addProduct(shoppingItem.getProduct());
+				
+			} else {
+				varukorgPanel.add(new CartItem(shoppingItem));
+				model.getShoppingCart().addItem(shoppingItem);
 				varukorgPanel.revalidate();
 			}
+			System.out.println(model.getShoppingCart().getTotal());
 		}
 		
 		if (action.getActionCommand() == "toggle_grid") {
@@ -427,6 +430,7 @@ public class MainWindow implements ActionListener {
 		cardPanelList.removeAll();
 	
 		for (int i = 0; i < searchResults.size(); i++) {
+			
 			Product p = searchResults.get(i);
 			boolean skipstep = true;
 			for (CategoryToggleButton ctb : categorybuttons) {
@@ -440,11 +444,11 @@ public class MainWindow implements ActionListener {
 				continue;
 			}
 			
-			ItemList item = new ItemList(p, this);
+			ItemList item = new ItemList(new ShoppingItem(p), this);
 			
 			// Alternate background in list view
 			if (i % 2 == 1) item.setBackground(new Color(248, 248, 248));
-			cardPanelGrid.add(new ItemGrid(p, this));
+			cardPanelGrid.add(new ItemGrid(new ShoppingItem(p), this));
 			cardPanelList.add(item);
 		}
 		

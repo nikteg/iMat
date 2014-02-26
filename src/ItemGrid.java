@@ -7,6 +7,7 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JSpinner;
@@ -28,8 +29,8 @@ public class ItemGrid extends Item {
 	/**
 	 * Create the panel.
 	 */
-	public ItemGrid(Product product, MainWindow parent) {
-		super(product, parent);
+	public ItemGrid(ShoppingItem shoppingItem, MainWindow parent) {
+		super(shoppingItem, parent);
 		initialize();
 	}
 
@@ -38,7 +39,7 @@ public class ItemGrid extends Item {
 		setPreferredSize(new Dimension(180, 240));
 		setLayout(new MigLayout("insets 8px", "[grow][grow][][]", "[164px:164px][26px:26px][26px:26px][]"));
 
-		lblBild = new JLabel(parent.getModel().getImageIcon(product, new Dimension(164, 164)));
+		lblBild = new JLabel(parent.getModel().getImageIcon(shoppingItem.getProduct(), new Dimension(164, 164)));
 		lblBild.setPreferredSize(new Dimension(164, 164));
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblBild, "cell 0 0 4 1,growx,aligny top");
@@ -46,10 +47,10 @@ public class ItemGrid extends Item {
 		btnKp = new JButton("K\u00F6p");
 		btnKp.addActionListener(this);
 		
-		lblName = new JLabel(product.getName());
+		lblName = new JLabel(shoppingItem.getProduct().getName());
 		add(lblName, "flowx,cell 0 1 3 1,alignx left,aligny center");
 		
-		lblPrice = new JLabel(product.getPrice() + ":-");
+		lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + ":-");
 		add(lblPrice, "cell 0 2,alignx left,aligny center");
 		
 		spinner = new JSpinner();
@@ -74,5 +75,6 @@ public class ItemGrid extends Item {
 		tglFavorite.setActionCommand("favorite");
 		add(tglFavorite, "cell 3 1,alignx right,aligny center");
 	}
+
 
 }

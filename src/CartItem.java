@@ -54,7 +54,7 @@ public class CartItem extends JPanel{
 		lblNameLabel.setText(item.getProduct().getName());
 		lblPricelabel.setText(""+item.getProduct().getPrice() + ":-");
 		lblTotalPriceLabel.setText(""+item.getTotal() + ":-");
-		spinner.setValue(new Integer(1));
+		spinner.setValue((item.getAmount()));
 	}
 	
 	private void initialize() {

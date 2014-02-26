@@ -45,6 +45,7 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -97,9 +98,11 @@ public class MainWindow implements ActionListener {
 	private JScrollPane historyScrollPane;
 	private JTree tree;
 	private JButton btnKassa;
-	private JPanel panel_1;
+	private JPanel checkoutPanel;
 	private JButton checkOutButton;
 	private JButton confirmPurchaseButton;
+	private JPanel checkoutButtonPanel;
+	private JLabel lblTotalprice;
 
 
 	/**
@@ -257,22 +260,29 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane = new WebTabbedPane();
 		sidebarTabbedPane.setFocusable(false);
 		
-		panel_1 = new JPanel();
-		sidebarTabbedPane.addTab("New tab", null, panel_1, null);
-		panel_1.setLayout(new MigLayout("", "[2px,grow]", "[2px,grow][]"));
+		checkoutPanel = new JPanel();
+		sidebarTabbedPane.addTab("Varukorg", null, checkoutPanel, null);
+		checkoutPanel.setLayout(new MigLayout("", "[2px,grow]", "[2px,grow][]"));
 
 		varukorgScrollPane = new JScrollPane();
-		panel_1.add(varukorgScrollPane, "cell 0 0,grow");
+		checkoutPanel.add(varukorgScrollPane, "cell 0 0,grow");
 
 		varukorgPanel = new JPanel();
 		varukorgScrollPane.setViewportView(varukorgPanel);
 
 		varukorgPanel.setLayout(new GridLayout(100,1));
 		
+		checkoutButtonPanel = new JPanel();
+		checkoutPanel.add(checkoutButtonPanel, "cell 0 1,grow");
+		checkoutButtonPanel.setLayout(new MigLayout("", "[grow][95px]", "[23px]"));
+		
+		lblTotalprice = new JLabel("0:-");
+		checkoutButtonPanel.add(lblTotalprice, "cell 0 0");
+		
 		checkOutButton = new JButton("Gå till kassan");
+		checkoutButtonPanel.add(checkOutButton, "cell 1 0,alignx right,aligny top");
 		checkOutButton.addActionListener(this);
 		checkOutButton.setActionCommand("check_out");
-		panel_1.add(checkOutButton, "cell 0 1,alignx right");
 
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
 
@@ -347,12 +357,12 @@ public class MainWindow implements ActionListener {
 
 	private void calculateResults(int width, int height) {
 		if (toggleGridViewButton.isSelected() && width != 0) {
-			int cols = Math.max(1, width / (128 + margin));
+			int cols = Math.max(1, width / (180 + margin));
 			int rows = searchResults.size() / cols;
 			rows += ((rows * cols < searchResults.size()) ? 1 : 0);
 
 			contentPanel.setPreferredSize(new Dimension(width - 32,
-					(rows * (160 + margin)) + margin));
+					(rows * (240 + margin)) + margin));
 			
 			contentScrollPane.revalidate();
 		}
@@ -372,17 +382,22 @@ public class MainWindow implements ActionListener {
 			
 			if (model.getShoppingCart().getItems().contains(shoppingItem)){
 				
-				model.getShoppingCart().addProduct((shoppingItem.getProduct()));
+				//model.getShoppingCart().getItems().get(i)
 				
 			} else {
-				varukorgPanel.add(new CartItem(shoppingItem));
+				varukorgPanel.add(new CartItem(shoppingItem,this));
 				model.getShoppingCart().addItem(shoppingItem);
+				setTotalPrice(model.getShoppingCart().getTotal()+":-");
 				varukorgPanel.revalidate();
 			}
-			System.out.println(model.getShoppingCart().getTotal());
-			for(ShoppingItem s : model.getShoppingCart().getItems()){
-				System.out.println(s.getProduct().getName() + " " + s.getAmount());
-			}
+		}
+		
+		if(action.getActionCommand() == "remove_from_cart"){
+			CartItem cartItem = (CartItem)action.getSource();
+			varukorgPanel.remove(cartItem);
+			model.getShoppingCart().removeItem(cartItem.getShoppingItem());
+			setTotalPrice(model.getShoppingCart().getTotal()+":-");
+			varukorgPanel.revalidate();
 		}
 		
 		if (action.getActionCommand() == "check_out"){
@@ -546,6 +561,12 @@ public class MainWindow implements ActionListener {
 		System.out.println("du har registerat dig som " + userName);
 		logIn(userName,password);
 		
+		
+	}
+
+	public void setTotalPrice(String string) {
+		lblTotalprice.setText(string);
+		checkoutButtonPanel.revalidate();
 		
 	}
 }

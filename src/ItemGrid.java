@@ -14,15 +14,20 @@ import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.ImageIcon;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ButtonUI;
+import javax.swing.SpinnerNumberModel;
+
+import com.alee.laf.spinner.WebSpinner;
 
 @SuppressWarnings("serial")
-public class ItemGrid extends Item {
+public class ItemGrid extends Item implements ChangeListener{
 	private JLabel lblBild;
 	private JButton btnKp;
 	private JLabel lblName;
 	private JLabel lblPrice;
-	private JSpinner spinner;
+	private WebSpinner spinner;
 	private JLabel lblKg;
 	public JToggleButton tglFavorite;
 
@@ -53,8 +58,12 @@ public class ItemGrid extends Item {
 		lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + ":-");
 		add(lblPrice, "cell 0 2,alignx left,aligny center");
 		
-		spinner = new JSpinner();
-		add(spinner, "cell 1 2,alignx right");
+		spinner = new WebSpinner();
+		spinner.setDrawFocus(false);
+		spinner.setPreferredSize(new Dimension(32, 20));
+		spinner.addChangeListener(this);
+		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		add(spinner, "cell 1 2,grow");
 		
 		lblKg = new JLabel("kg");
 		add(lblKg, "cell 2 2");
@@ -75,6 +84,15 @@ public class ItemGrid extends Item {
 		tglFavorite.setActionCommand("favorite");
 		add(tglFavorite, "cell 3 1,alignx right,aligny center");
 	}
+	
+	@Override
+	public void stateChanged(ChangeEvent event) {
+		if (event.getSource() == spinner) {
+			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
+			lblPrice.setText(shoppingItem.getTotal() + ":-");
+		}
+	}
+	
 
 	@Override
 	public double getAmount() {

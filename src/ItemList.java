@@ -13,6 +13,8 @@ import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import javax.swing.SpinnerNumberModel;
+import com.alee.laf.spinner.WebSpinner;
 
 
 @SuppressWarnings("serial")
@@ -21,7 +23,7 @@ public class ItemList extends Item implements ChangeListener {
 	private JSeparator separator;
 	private JButton btnKp;
 	private JLabel lblNamelabel;
-	private JSpinner spinner;
+	private WebSpinner spinner;
 	private JLabel lblPricelabel;
 
 	public ItemList(ShoppingItem shoppingItem , MainWindow parent) {
@@ -50,9 +52,10 @@ public class ItemList extends Item implements ChangeListener {
 		lblPricelabel.setBackground(Color.RED);
 		add(lblPricelabel, "cell 3 0");
 		
-		spinner = new JSpinner();
+		spinner = new WebSpinner();
 		spinner.addChangeListener(this);
-		add(spinner, "cell 4 0,alignx right");
+		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		add(spinner, "cell 4 0,growx");
 		
 		btnKp = new JButton("K\u00F6p");
 		btnKp.addActionListener(this);
@@ -63,6 +66,7 @@ public class ItemList extends Item implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
+			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
 			lblPricelabel.setText(shoppingItem.getProduct().getPrice() * ((Integer)spinner.getValue()).doubleValue() + ":-");
 		}
 	}

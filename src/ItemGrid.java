@@ -22,7 +22,6 @@ public class ItemGrid extends Item {
 	private JLabel lblName;
 	private JLabel lblPrice;
 	private JSpinner spinner;
-	private JLabel lblKg;
 	public JToggleButton tglFavorite;
 
 	/**
@@ -36,29 +35,26 @@ public class ItemGrid extends Item {
 	private void initialize() {
 		setBackground(new Color(248, 248, 248));
 		setPreferredSize(new Dimension(180, 240));
-		setLayout(new MigLayout("insets 8px", "[grow][grow][][]", "[164px:164px][26px:26px][26px:26px][]"));
+		setLayout(new MigLayout("insets 8px", "[grow][grow][]", "[164px:164px][26px:26px][26px:26px][]"));
 
 		lblBild = new JLabel(parent.getModel().getImageIcon(product, new Dimension(164, 164)));
 		lblBild.setPreferredSize(new Dimension(164, 164));
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblBild, "cell 0 0 4 1,growx,aligny top");
+		add(lblBild, "cell 0 0 3 1,growx,aligny top");
 
 		btnKp = new JButton("K\u00F6p");
 		btnKp.addActionListener(this);
 		
 		lblName = new JLabel(product.getName());
-		add(lblName, "flowx,cell 0 1 3 1,alignx left,aligny center");
+		add(lblName, "flowx,cell 0 1 2 1,alignx left,aligny center");
 		
-		lblPrice = new JLabel(product.getPrice() + ":-");
+		lblPrice = new JLabel(product.getPrice() + product.getUnit());
 		add(lblPrice, "cell 0 2,alignx left,aligny center");
 		
 		spinner = new JSpinner();
 		add(spinner, "cell 1 2,alignx right");
-		
-		lblKg = new JLabel("kg");
-		add(lblKg, "cell 2 2");
 		btnKp.setActionCommand("add_cart");
-		add(btnKp, "cell 3 2,alignx right,aligny center");
+		add(btnKp, "cell 2 2,alignx right,aligny center");
 		
 		tglFavorite = new JToggleButton("");
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
@@ -72,7 +68,7 @@ public class ItemGrid extends Item {
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setActionCommand("favorite");
-		add(tglFavorite, "cell 3 1,alignx right,aligny center");
+		add(tglFavorite, "cell 2 1,alignx right,aligny center");
 	}
 
 }

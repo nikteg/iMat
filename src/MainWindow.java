@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,11 +11,16 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -25,14 +29,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
@@ -43,15 +48,11 @@ import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
-import com.alee.laf.label.WebLabel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 
 
-public class MainWindow implements ActionListener {
+public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	private JFrame frame;
 	private JTextField txtSearchBox;
@@ -61,7 +62,7 @@ public class MainWindow implements ActionListener {
 	private JPanel panel;
 	private JScrollPane contentScrollPane;
 	private JPanel contentPanel;
-	private int margin = 8;
+	private int margin = 10;
 	private int numResults;
 	private WebTabbedPane sidebarTabbedPane;
 
@@ -72,7 +73,7 @@ public class MainWindow implements ActionListener {
 	private JPanel cardPanelGrid;
 
 	private Timer searchTimer = new Timer(500, this);
-	private JScrollPane varukorgScrollPane;
+	private JScrollPane cartScrollPane;
 	private JPanel varukorgPanel;
 
 	private IMatModel model = IMatModel.getInstance();
@@ -89,7 +90,7 @@ public class MainWindow implements ActionListener {
 	private JButton signInButton;
 	private LogInWindow loginWindow;
 	private SettingsWindow settingsWindow;
-	private List<Product> searchResults;
+	private List<Product> searchResults = new ArrayList<Product>();
 	private ButtonGroup categoryButtonGroup = new ButtonGroup();
 	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
 	private CategoryToggleButton buttonAllCategories;
@@ -97,12 +98,19 @@ public class MainWindow implements ActionListener {
 	private JScrollPane historyScrollPane;
 	private JTree tree;
 	private JButton btnKassa;
-
+	
+	private final static Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+		    public void run() {
+				System.out.println("SHUTDOWN EMINENT");
+				IMatModel.getInstance().shutDown();
+		    }
+		}));
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -129,6 +137,7 @@ public class MainWindow implements ActionListener {
 		searchTimer.setRepeats(false);
 		searchTimer.setActionCommand("search");
 
+		model.addPropertyChangeListener(this);
 		initialize();
 	}
 	
@@ -141,7 +150,7 @@ public class MainWindow implements ActionListener {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1050, 772);
+		frame.setBounds(100, 100, 1106, 772);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(
 				new MigLayout("insets 4px", "[192px:n][grow][72px][300px:300px]", "[][][grow]"));
@@ -195,7 +204,7 @@ public class MainWindow implements ActionListener {
 		
 		signedInPanel = new JPanel();
 		userPanel.add(signedInPanel, "signedInPanel");
-				signedInPanel.setLayout(new MigLayout("insets 0", "[212px]", "[48px]"));
+				signedInPanel.setLayout(new MigLayout("insets 0", "[89px,grow]", "[23px,grow]"));
 		
 				userComboBox = new WebComboBox();
 				userComboBox.setAlignmentY(0.0f);
@@ -254,11 +263,12 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane = new WebTabbedPane();
 		sidebarTabbedPane.setFocusable(false);
 
-		varukorgScrollPane = new JScrollPane();
-		sidebarTabbedPane.addTab("Varukorg", null, varukorgScrollPane, null);
+		cartScrollPane = new JScrollPane();
+		cartScrollPane.setFocusable(false);
+		sidebarTabbedPane.addTab("Varukorg", null, cartScrollPane, null);
 
 		varukorgPanel = new JPanel();
-		varukorgScrollPane.setViewportView(varukorgPanel);
+		cartScrollPane.setViewportView(varukorgPanel);
 
 		varukorgPanel.setLayout(new GridLayout(100,1));
 
@@ -281,6 +291,8 @@ public class MainWindow implements ActionListener {
 		sidebarTabbedPane.addTab("Favoriter", null, favoriteScrollPane, null);
 		
 		tree = new JTree();
+		tree.setFocusable(false);
+		tree.setShowsRootHandles(true);
 		tree.setRootVisible(false);
 		tree.setModel(new DefaultTreeModel(
 			new DefaultMutableTreeNode("Favoriter") {
@@ -302,8 +314,10 @@ public class MainWindow implements ActionListener {
 			}
 		));
 		favoriteScrollPane.setViewportView(tree);
+		favoriteScrollPane.setFocusable(false);
 		
 		historyScrollPane = new JScrollPane();
+		historyScrollPane.setFocusable(false);
 		sidebarTabbedPane.addTab("Historik", null, historyScrollPane, null);
 		
 		buttonAllCategories = new CategoryToggleButton("Alla kategorier",numResults);
@@ -330,13 +344,18 @@ public class MainWindow implements ActionListener {
 	}
 
 	private void calculateResults(int width, int height) {
-		if (toggleGridViewButton.isSelected() && width != 0) {
-			int cols = Math.max(1, width / (128 + margin));
+		if (toggleGridViewButton.isSelected()) {
+			int cols = Math.max(1, width / (180 + margin));
 			int rows = searchResults.size() / cols;
 			rows += ((rows * cols < searchResults.size()) ? 1 : 0);
 
 			contentPanel.setPreferredSize(new Dimension(width - 32,
-					(rows * (160 + margin)) + margin));
+					(rows * (240 + margin)) + margin));
+			
+			contentScrollPane.revalidate();
+		} else if (toggleListViewButton.isSelected()) {
+			contentPanel.setPreferredSize(new Dimension(width - 32,
+					(searchResults.size() * 77)));
 			
 			contentScrollPane.revalidate();
 		}
@@ -353,7 +372,6 @@ public class MainWindow implements ActionListener {
 		
 		if (action.getActionCommand() == "add_cart") {
 			Product product = ((Item)action.getSource()).product;
-			cartListModel.addElement(product.getName());
 			System.out.println(product.getName());
 			model.getShoppingCart().addProduct(product, 1.0);
 			if(!model.getShoppingCart().getItems().contains(product)){
@@ -365,31 +383,22 @@ public class MainWindow implements ActionListener {
 		if (action.getActionCommand() == "toggle_grid") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
-			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight());
-		}
-		
-		if (action.getSource() == toggleGridViewButton) {
-			CardLayout cl = (CardLayout) (contentPanel.getLayout());
-			cl.show(contentPanel, "cardPanelGrid");
-			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight());
+			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		}
 
 		if (action.getActionCommand() == "toggle_list") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelList");
-			contentPanel.setPreferredSize(new Dimension(0, 0));
+			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		}
 
 		if (action.getActionCommand() == "search") {
-			if (action.getSource() == txtSearchBox) {
-				CardLayout cl = (CardLayout) (contentPanel.getLayout());
-				cl.show(contentPanel, toggleGridViewButton.isSelected() ? "cardPanelGrid" : "cardPanelList");
+			if (action.getSource() == searchTimer) {
+				categoryButtonGroup.clearSelection();
+				buttonAllCategories.setSelected(true);
 			}
 			search();
-			calculateResults(contentScrollPane.getWidth(),
-					contentScrollPane.getHeight());
+			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 			
 		}
 		
@@ -407,7 +416,7 @@ public class MainWindow implements ActionListener {
 				settingsWindow.setLocationRelativeTo(frame);
 				settingsWindow.setVisible(true);
 			}else if(userComboBox.getSelectedIndex() == 2){
-				logOut();
+				model.signOut();
 			}
 			userComboBox.setSelectedIndex(0);
 
@@ -418,8 +427,8 @@ public class MainWindow implements ActionListener {
 		String text = txtSearchBox.getText();
 		
 		// Skip search
-		//if (text.length() < 2) return;
-		
+		if (text.length() < 2) return;
+
 		searchResults = model.getSearchResults(text);
 
 		// Clear panel search results
@@ -483,36 +492,22 @@ public class MainWindow implements ActionListener {
 			searchTimer.restart();
 		}
 	}
-	
-	public void logOut(){
-		//TODO Figure out logout method
-		//model.logOut();
-		System.out.println("Du har nu loggat ut.");
-		CardLayout cl = (CardLayout) (userPanel.getLayout());
-		cl.show(userPanel, "signedOutPanel");
-				
-	}
-	
-	public void logIn(String userName, String password) {
-		//TODO Figure out login method
-		//model.logIn();
-		
-		System.out.println("du har loggat in som " + userName);
-		userComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				userName, "Kontoinst\u00E4llningar", "Logga ut" }));
-		loginWindow.setVisible(false);
-		CardLayout cl = (CardLayout) (userPanel.getLayout());
-		cl.show(userPanel, "signedInPanel");
-		
-		
-	}
 
-	public void createUser(String userName, String email, String password) {
-		//TODO Figure out create user method
-		//model.createUser(userName,email,password);
-		System.out.println("du har registerat dig som " + userName);
-		logIn(userName,password);
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName() == "signedup") {
+			
+		}
 		
+		if (evt.getPropertyName() == "signedin") {
+			userComboBox.setModel(new DefaultComboBoxModel(new String[] { model.getAccount().getUserName(), "Kontoinst\u00E4llningar", "Logga ut" }));
+			CardLayout cl = (CardLayout) (userPanel.getLayout());
+			cl.show(userPanel, "signedInPanel");
+		}
 		
+		if (evt.getPropertyName() == "signedout") {
+			CardLayout cl = (CardLayout) (userPanel.getLayout());
+			cl.show(userPanel, "signedOutPanel");
+		}
 	}
 }

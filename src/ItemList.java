@@ -81,6 +81,9 @@ public class ItemList extends Item implements ChangeListener {
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setActionCommand("favorite");
+		
+		if (model.isFavorite(shoppingItem.getProduct())) tglFavorite.setSelected(true);
+		
 		add(tglFavorite, "cell 4 0,alignx center");
 	}
 

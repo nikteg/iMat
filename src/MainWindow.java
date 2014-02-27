@@ -48,7 +48,6 @@ import com.alee.laf.text.WebTextField;
 public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	private JFrame frame;
-	private WebTextField txtSearchBox;
 	private JLabel lblImat;
 	private JScrollPane categoriesScrollPane;
 	private WebComboBox userComboBox;
@@ -79,16 +78,12 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JPanel userPanel;
 	private JPanel signedOutPanel;
 	private JButton signInButton;
-	private LogInWindow loginWindow;
-	private SettingsWindow settingsWindow;
 	private List<Product> searchResults = new ArrayList<Product>();
 	private ButtonGroup categoryButtonGroup = new ButtonGroup();
 	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
 	private CategoryToggleButton buttonAllCategories;
 	private JScrollPane favoriteScrollPane;
 	private JScrollPane historyScrollPane;
-	private JTree tree;
-	private JButton btnKassa;
 
 	
 	private final static Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
@@ -98,6 +93,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JButton confirmPurchaseButton;
 	private JPanel checkoutButtonPanel;
 	private JLabel lblTotalprice;
+	private SettingsWindow settingsWindow;
+	private LogInWindow loginWindow;
 
 	/**
 	 * Launch the application.
@@ -159,13 +156,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		lblImat.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(lblImat, "cell 0 0 1 2,growx,aligny center");
 
-		txtSearchBox = new WebTextField();
-		txtSearchBox.setInputPrompt("Sök...");
-		txtSearchBox.addActionListener(this);
-		txtSearchBox.addKeyListener(new TxtSearchBoxKeyListener());
-		txtSearchBox.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-		frame.getContentPane().add(txtSearchBox, "cell 1 1,grow");
-		txtSearchBox.setColumns(10);
+		frame.getContentPane().add(new SearchField(model), "cell 1 1,grow");
 
 		toggleGridViewButton = new WebToggleButton(
 				new ImageIcon(
@@ -203,14 +194,14 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		
 		signedInPanel = new JPanel();
 		userPanel.add(signedInPanel, "signedInPanel");
-				signedInPanel.setLayout(new MigLayout("insets 0", "[89px,grow]", "[23px,grow]"));
-		
-				userComboBox = new WebComboBox();
-				userComboBox.setAlignmentY(0.0f);
-				userComboBox.setAlignmentX(0.0f);
-				signedInPanel.add(userComboBox, "cell 0 0,grow");
-				userComboBox.setFocusable(false);
-				userComboBox.addActionListener(this);
+		signedInPanel.setLayout(new MigLayout("insets 0", "[89px,grow]", "[23px,grow]"));
+
+		userComboBox = new WebComboBox();
+		userComboBox.setAlignmentY(0.0f);
+		userComboBox.setAlignmentX(0.0f);
+		signedInPanel.add(userComboBox, "cell 0 0,grow");
+		userComboBox.setFocusable(false);
+		userComboBox.addActionListener(this);
 
 		categoriesScrollPane = new JScrollPane();
 		categoriesScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -314,7 +305,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		historyScrollPane.setFocusable(false);
 		sidebarTabbedPane.addTab("Historik", null, historyScrollPane, null);
 		
-		buttonAllCategories = new CategoryToggleButton("Alla kategorier",numResults);
+		buttonAllCategories = new CategoryToggleButton("Alla kategorier", numResults);
 		buttonAllCategories.setSelected(true);
 		buttonAllCategories.addActionListener(this);
 		buttonAllCategories.setActionCommand("search");
@@ -322,19 +313,15 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		categoryButtonGroup.add(buttonAllCategories);
 
 		for (Constants.Category c : Constants.Category.values()) {
-			CategoryToggleButton button = new CategoryToggleButton(c.getName(),0);
+			CategoryToggleButton button = new CategoryToggleButton(c.getName(), 0);
 			button.setCategory(c);
 			button.setHorizontalAlignment(JButton.LEFT);
 			button.addActionListener(this);
-			button.setActionCommand("search");
+			button.setActionCommand("category_change");
 			categorybuttons.add(button);
 			panel.add(button, "growx");
 			categoryButtonGroup.add(button);
 		}
-		txtSearchBox.setText("");
-		search();
-		
-		
 	}
 
 	private void calculateResults(int width, int height) {
@@ -354,14 +341,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
-		if (action.getActionCommand() == "search") {
-			if (action.getSource() == searchTimer) {
-				categoryButtonGroup.clearSelection();
-				buttonAllCategories.setSelected(true);
-			}
-			search();
-			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
-		}
 /*
 		if (action.getActionCommand() == "favorite") {
 			if (!((ItemGrid)action.getSource()).tglFavorite.isSelected()) return;
@@ -444,72 +423,46 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 			
 		}
+		*/
+		
+		if (action.getActionCommand() == "category_change") {
+			List<Product> results = new ArrayList<Product>();
+			
+			for (Product product : searchResults) {
+				System.out.println(product.getName());
+				if (((CategoryToggleButton)action.getSource()).getCategory().equals(model.getCategory(product))) {
+					
+					results.add(product);
+				}
+			}
+			
+			populateResults(results);
+		}
+		
 		
 		if(action.getSource() == signInButton){
-			loginWindow = new LogInWindow(frame, this);
+			loginWindow = new LogInWindow(frame, model);
 			loginWindow.setLocationRelativeTo(frame);
 			loginWindow.setVisible(true);
 		}
-
+		
 		if (action.getSource() == userComboBox) {
 			userComboBox.hidePopup();
 			
 			if (userComboBox.getSelectedIndex() == 1) {
-				settingsWindow = new SettingsWindow(frame, this);
+				settingsWindow = new SettingsWindow(frame, model);
 				settingsWindow.setLocationRelativeTo(frame);
 				settingsWindow.setVisible(true);
-			}else if(userComboBox.getSelectedIndex() == 2){
-				model.signOut();
+			} else if(userComboBox.getSelectedIndex() == 2) {
+				model.accountSignOut();
 			}
+			
 			userComboBox.setSelectedIndex(0);
 
-		}*/
-	}
-
-	private void search() {
-		String text = txtSearchBox.getText();
-		
-		// Skip search
-		if (text.length() < 2) return;
-
-		searchResults = model.getSearchResults(text);
-
-		// Clear panel search results
-		cardPanelGrid.removeAll();
-		cardPanelList.removeAll();
-	
-		for (int i = 0; i < searchResults.size(); i++) {
-			
-			Product p = searchResults.get(i);
-			boolean skipstep = true;
-			for (CategoryToggleButton ctb : categorybuttons) {
-				if(ctb.isSelected()){
-					if(model.getCategory(p).equals(ctb.getCategory())){
-						skipstep = false;
-					}
-				}
-			}
-			if(skipstep && !buttonAllCategories.isSelected()){
-				continue;
-			}
-			
-			ItemList item = new ItemList(new ShoppingItem(p), model);
-			
-			// Alternate background in list view
-			if (i % 2 == 1) item.setBackground(new Color(248, 248, 248));
-			cardPanelGrid.add(new ItemGrid(new ShoppingItem(p), model));
-			cardPanelList.add(item);
 		}
-		
-		updateButtonNumbers();
-		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
-		cardPanelGrid.revalidate();
-		cardPanelList.revalidate();
-		cardPanelGrid.repaint();
-		cardPanelList.repaint();
 	}
 	
-	private void updateButtonNumbers(){
+	private void updateButtonNumbers() {
 		
 		buttonAllCategories.SetNumber(searchResults.size());
 		for (int i = 0; i < Constants.Category.values().length; i++) {
@@ -536,23 +489,67 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			searchTimer.restart();
 		}
 	}
+	
+	private void populateResults(List<Product> results) {
+		searchResults = results;
+		// Clear panel search results
+		cardPanelGrid.removeAll();
+		cardPanelList.removeAll();
+	
+		for (int i = 0; i < results.size(); i++) {
+			
+			Product product = results.get(i);
+			boolean skipstep = true;
+			for (CategoryToggleButton ctb : categorybuttons) {
+				if(ctb.isSelected()){
+					if(model.getCategory(product).equals(ctb.getCategory())){
+						skipstep = false;
+					}
+				}
+			}
+			if (skipstep && !buttonAllCategories.isSelected()) {
+				continue;
+			}
+			
+			ItemList item = new ItemList(new ShoppingItem(product), model);
+			
+			// Alternate background in list view
+			if (i % 2 == 1) item.setBackground(new Color(248, 248, 248));
+			cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), model));
+			cardPanelList.add(item);
+		}
+		
+		updateButtonNumbers();
+		calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
+		cardPanelGrid.revalidate();
+		cardPanelList.revalidate();
+		cardPanelGrid.repaint();
+		cardPanelList.repaint();
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName() == "signedup") {
+		if (evt.getPropertyName() == "account_signedup") {
 			
 		}
 		
-		if (evt.getPropertyName() == "signedin") {
+		if (evt.getPropertyName() == "account_signedin") {
 			Account account = (Account)evt.getNewValue();
 			userComboBox.setModel(new DefaultComboBoxModel(new String[] { account.getUserName(), "Kontoinst\u00E4llningar", "Logga ut" }));
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedInPanel");
 		}
 		
-		if (evt.getPropertyName() == "signedout") {
+		if (evt.getPropertyName() == "account_signout") {
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedOutPanel");
+		}
+		
+		if (evt.getPropertyName() == "search") {
+			categoryButtonGroup.clearSelection();
+			buttonAllCategories.setSelected(true);
+			
+			populateResults((ArrayList<Product>)evt.getNewValue());
 		}
 	}
 

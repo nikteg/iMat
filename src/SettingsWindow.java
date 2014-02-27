@@ -1,25 +1,23 @@
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.GraphicsConfiguration;
-import java.awt.Window;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 import com.alee.laf.rootpane.WebDialog;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 
-public class SettingsWindow extends WebDialog implements ActionListener {
+public class SettingsWindow extends WebDialog implements ActionListener, PropertyChangeListener {
 	private JFrame frame;
-	private MainWindow parent;
+	private IMatModel model;
 	private JPanel settingsPanel;
 	private JLabel lblSettings;
 	private CardSettingsPanel cardSettingsPanel;
@@ -27,10 +25,10 @@ public class SettingsWindow extends WebDialog implements ActionListener {
 	private LogInSettingsPanel logInSettingsPanel;
 	private JButton btnSave;
 
-	public SettingsWindow(JFrame frame, MainWindow parent) {
+	public SettingsWindow(JFrame frame, IMatModel model) {
 		super(frame,true);
 		this.frame = frame;
-		this.parent = parent;
+		this.model = model;
 		init();
 	}
 	private void init() {
@@ -135,9 +133,14 @@ public class SettingsWindow extends WebDialog implements ActionListener {
 		if (e.getSource() == btnSave){
 			//TODO save user settings
 			//parent.getModel().saveUserSettings();
-			setVisible(false);
+			dispose();
 		}
 		
+		
+	}
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
 		
 	}
 

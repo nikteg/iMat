@@ -76,7 +76,7 @@ public class CartView extends JPanel implements PropertyChangeListener {
 	}
 
 	private void addItem(ShoppingItem item) {
-		itemPanel.add(new CartItem(item));
+		itemPanel.add(new CartItem(item, model));
 	}
 	
 	private void clearCart(){
@@ -92,7 +92,7 @@ public class CartView extends JPanel implements PropertyChangeListener {
 		itemList = model.getShoppingCart().getItems();
 		itemPanel.removeAll();
 		for(int i=0; i < itemList.size(); i++){
-			itemPanel.add(new CartItem(itemList.get(i)), "wrap");
+			itemPanel.add(new CartItem(itemList.get(i), model), "wrap");
 		}
 		totalPriceLabel.setText("" + model.getShoppingCart().getTotal());
 	}

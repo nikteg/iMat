@@ -1,6 +1,5 @@
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
@@ -20,9 +19,7 @@ import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.alee.laf.rootpane.WebDialog;
-
-public class LogInWindow extends WebDialog implements ActionListener, PropertyChangeListener {
+public class LogInWindow extends JDialog implements ActionListener, PropertyChangeListener {
 	private JTabbedPane signInTabbedPane;
 	private JPanel newCustomerPanel;
 	private JPanel signInPanel;
@@ -49,14 +46,16 @@ public class LogInWindow extends WebDialog implements ActionListener, PropertyCh
 		super(frame, true);
 		this.frame = frame;
 		this.model = model;
-		initialize2();
+		this.model.addPropertyChangeListener(this);
+		initialize();
 	}
 
-	private void initialize2() {
+	private void initialize() {
 		setSize(360, 250);
 		setResizable(false);
 
 		signInTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		signInTabbedPane.setFocusable(false);
 		getContentPane().add(signInTabbedPane, BorderLayout.CENTER);
 
 		signInPanel = new JPanel();
@@ -65,8 +64,6 @@ public class LogInWindow extends WebDialog implements ActionListener, PropertyCh
 				"[32][32][32][grow]"));
 
 		userNameLabel = new JLabel("Användarnamn");
-		userNameLabel.setCursor(Cursor
-				.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		signInPanel.add(userNameLabel, "cell 0 1,alignx trailing");
 
 		userNameTextField = new JTextField();
@@ -129,6 +126,8 @@ public class LogInWindow extends WebDialog implements ActionListener, PropertyCh
 		btnRegister = new JButton("Registrera");
 		btnRegister.addActionListener(this);
 		newCustomerPanel.add(btnRegister, "cell 1 4,alignx right");
+		
+		userNameLabel.requestFocusInWindow();
 	}
 
 	@Override

@@ -392,8 +392,12 @@ public class IMatModel {
 	 *            Search expression
 	 * @return List<Product> with search results
 	 */
-	public List<Product> getSearchResults(String s) {
-		return backend.findProducts(s);
+	public void getSearchResults(String query) {
+		
+		List<Product> results = backend.findProducts(query);
+		
+		pcs.firePropertyChange("search", null, results);
+		LOGGER.log(Level.INFO, "search");
 	}
 
 	/**

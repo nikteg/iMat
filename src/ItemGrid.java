@@ -84,7 +84,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		tglFavorite.addActionListener(this);
 		tglFavorite.setActionCommand("favorite");
 		
-		if (model.isFavorite(shoppingItem.getProduct())) tglFavorite.setSelected(true); 
+		if (model.isFavorite(shoppingItem.getProduct())) tglFavorite.setSelected(true);
 			
 		add(tglFavorite, "cell 2 1,alignx right,aligny center");
 		

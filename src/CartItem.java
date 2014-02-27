@@ -13,24 +13,33 @@ import javax.swing.ImageIcon;
 import se.chalmers.ait.dat215.project.CartEvent;
 import se.chalmers.ait.dat215.project.ShoppingCartListener;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.SpinnerNumberModel;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import com.alee.laf.spinner.WebSpinner;
 
-public class CartItem extends JPanel{
+import javax.swing.JButton;
+
+
+public class CartItem extends JPanel implements ChangeListener, ActionListener{
 	private JLabel lblNameLabel;
-	private JSpinner spinner;
-	private JLabel lblPricelabel;
-	private JLabel lblRemoveLabel;
-	private ShoppingItem item;
+	private WebSpinner spinner;
+	private JLabel lblPrice;
+	private ShoppingItem shoppingItem;
 	private IMatModel model;
+	private MainWindow parent;
 	private JLabel lblTotalPriceLabel;
+	private JButton btnX;
 
 	public CartItem() {
 		// TODO Auto-generated constructor stub
@@ -45,79 +54,83 @@ public class CartItem extends JPanel{
 	
 	/**
 	 * Creates a CartItem instance from the given ShoppingItem.
-	 * @param item - The item to track
+	 * @param shoppingItem - The item to track
 	 */
-	public CartItem(ShoppingItem item){
+	public CartItem(ShoppingItem shoppingItem, MainWindow parent){
 		this();
-		this.item = item;
+		this.shoppingItem = shoppingItem;
 		model = IMatModel.getInstance();
-		lblNameLabel.setText(item.getProduct().getName());
-		lblPricelabel.setText(""+item.getProduct().getPrice() + ":-");
-		lblTotalPriceLabel.setText(""+item.getTotal() + ":-");
-		spinner.setValue(new Integer(1));
+		this.parent = parent; 
+		lblNameLabel.setText(shoppingItem.getProduct().getName());
+		lblPrice.setText(shoppingItem.getProduct().getPrice() + ":-");
+		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
+		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
 	}
 	
 	private void initialize() {
 		
 		
-		setPreferredSize(new Dimension(280, 60));
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{100, 50, 50, 25, 25, 0};
-		gridBagLayout.rowHeights = new int[]{40, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
+		setPreferredSize(new Dimension(260, 60));
+		setLayout(new MigLayout("", "[grow][48px][60px][23.00px][pref:18.00px:pref]", "[60px]"));
 		
 		lblNameLabel = new JLabel("nameLabel");
-		GridBagConstraints gbc_lblNameLabel = new GridBagConstraints();
-		gbc_lblNameLabel.anchor = GridBagConstraints.WEST;
-		gbc_lblNameLabel.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNameLabel.gridx = 0;
-		gbc_lblNameLabel.gridy = 0;
-		add(lblNameLabel, gbc_lblNameLabel);
+		add(lblNameLabel, "cell 0 0,alignx left,aligny center");
 		
-		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
-		spinner.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				//item.setAmount((double)spinner.getValue());
-				System.out.println(spinner.getValue());
-			}
-		});
+		spinner = new WebSpinner();
+		spinner.addChangeListener(this);
+		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		
-		lblPricelabel = new JLabel("priceLabel");
-		GridBagConstraints gbc_lblPricelabel = new GridBagConstraints();
-		gbc_lblPricelabel.anchor = GridBagConstraints.EAST;
-		gbc_lblPricelabel.insets = new Insets(0, 0, 0, 5);
-		gbc_lblPricelabel.gridx = 1;
-		gbc_lblPricelabel.gridy = 0;
-		add(lblPricelabel, gbc_lblPricelabel);
-		spinner.setPreferredSize(new Dimension(60, 60));
-		GridBagConstraints gbc_spinner = new GridBagConstraints();
-		gbc_spinner.anchor = GridBagConstraints.EAST;
-		gbc_spinner.insets = new Insets(0, 0, 0, 5);
-		gbc_spinner.gridx = 2;
-		gbc_spinner.gridy = 0;
-		add(spinner, gbc_spinner);
+		lblPrice = new JLabel("priceLabel");
+		add(lblPrice, "cell 1 0,alignx right,aligny center");
+		spinner.setPreferredSize(new Dimension(48, 10));
+		add(spinner, "cell 2 0,alignx right,aligny baseline");
 		
 		lblTotalPriceLabel = new JLabel("X");
-		GridBagConstraints gbc_lblTotalPriceLabel = new GridBagConstraints();
-		gbc_lblTotalPriceLabel.anchor = GridBagConstraints.WEST;
-		gbc_lblTotalPriceLabel.insets = new Insets(0, 0, 0, 5);
-		gbc_lblTotalPriceLabel.gridx = 3;
-		gbc_lblTotalPriceLabel.gridy = 0;
-		add(lblTotalPriceLabel, gbc_lblTotalPriceLabel);
+		add(lblTotalPriceLabel, "cell 3 0,alignx center,aligny center");
 		
-		lblRemoveLabel = new JLabel("");
-		lblRemoveLabel.addMouseListener(new MouseAdapter() {
-		});
-		lblRemoveLabel.setIcon(new ImageIcon(CartItem.class.getResource("/resources/icons/delete.png")));
-		GridBagConstraints gbc_lblRemoveLabel = new GridBagConstraints();
-		gbc_lblRemoveLabel.anchor = GridBagConstraints.EAST;
-		gbc_lblRemoveLabel.gridx = 4;
-		gbc_lblRemoveLabel.gridy = 0;
-		add(lblRemoveLabel, gbc_lblRemoveLabel);
+		btnX = new JButton("");
+		btnX.setPreferredSize(new Dimension(18, 18));
+		btnX.setUI(new javax.swing.plaf.basic.BasicButtonUI());
+		btnX.setIcon(new ImageIcon(CartItem.class.getResource("/resources/icons/delete.png")));
+		btnX.addActionListener(this);
+		btnX.setActionCommand("remove_from_cart");
+		btnX.setMinimumSize(new Dimension(0, 0));
+		add(btnX, "cell 4 0");
 	}
+	
+	public ShoppingItem getShoppingItem(){
+		return shoppingItem;
+	}
+	
+	@Override
+	public void stateChanged(ChangeEvent event) {
+		if (event.getSource() == spinner) {
+			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
+			parent.setTotalPrice((model.getShoppingCart().getTotal()+ ":-"));
+			lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnX){
+			e.setSource(this);
+			parent.actionPerformed(e);
+		}
+		
+	}
+
+	public void addItem(double amount) {
+		System.out.println(amount);
+		System.out.println(shoppingItem.getAmount());
+		shoppingItem.setAmount(shoppingItem.getAmount() + amount);
+		parent.setTotalPrice((model.getShoppingCart().getTotal()+ ":-"));
+		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
+		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
+	}
+	
+
+	
 
 
 

@@ -1,5 +1,6 @@
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -36,6 +37,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -49,8 +51,6 @@ import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.tabbedpane.WebTabbedPane;
-
-
 
 public class MainWindow implements ActionListener, PropertyChangeListener {
 
@@ -77,8 +77,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JPanel varukorgPanel;
 
 	private IMatModel model = IMatModel.getInstance();
-	private JList cartList;
-	private DefaultListModel cartListModel = new DefaultListModel();
 
 	private JPanel confirmPurchasePanel;
 	private AddressSettingsPanel addressSettingsPanel_1;
@@ -98,8 +96,15 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JScrollPane historyScrollPane;
 	private JTree tree;
 	private JButton btnKassa;
+
 	
 	private final static Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
+
+	private JPanel checkoutPanel;
+	private JButton checkOutButton;
+	private JButton confirmPurchaseButton;
+	private JPanel checkoutButtonPanel;
+	private JLabel lblTotalprice;
 
 	/**
 	 * Launch the application.
@@ -153,7 +158,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		frame.setBounds(100, 100, 1106, 772);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(
-				new MigLayout("insets 4px", "[192px:n][grow][72px][300px:300px]", "[][][grow]"));
+				new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));
 
 		lblImat = new JLabel();
 		lblImat.setIcon(new ImageIcon(MainWindow.class
@@ -262,23 +267,39 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 		sidebarTabbedPane = new WebTabbedPane();
 		sidebarTabbedPane.setFocusable(false);
+		
+		checkoutPanel = new JPanel();
+		sidebarTabbedPane.addTab("Varukorg", null, checkoutPanel, null);
+		checkoutPanel.setLayout(new MigLayout("", "[2px,grow]", "[2px,grow][]"));
 
 		cartScrollPane = new JScrollPane();
-		cartScrollPane.setFocusable(false);
-		sidebarTabbedPane.addTab("Varukorg", null, cartScrollPane, null);
+		checkoutPanel.add(cartScrollPane, "cell 0 0,grow");
 
 		varukorgPanel = new JPanel();
 		cartScrollPane.setViewportView(varukorgPanel);
 
 		varukorgPanel.setLayout(new GridLayout(100,1));
+		
+		checkoutButtonPanel = new JPanel();
+		checkoutPanel.add(checkoutButtonPanel, "cell 0 1,grow");
+		checkoutButtonPanel.setLayout(new MigLayout("", "[grow][95px]", "[23px]"));
+		
+		lblTotalprice = new JLabel("0:-");
+		checkoutButtonPanel.add(lblTotalprice, "cell 0 0");
+		
+		checkOutButton = new JButton("Gå till kassan");
+		checkoutButtonPanel.add(checkOutButton, "cell 1 0,alignx right,aligny top");
+		checkOutButton.addActionListener(this);
+		checkOutButton.setActionCommand("check_out");
 
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
 
 		confirmPurchasePanel = new JPanel();
 		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
-		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[grow][grow][]"));
+		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[200.00][][grow]"));
 		
 		cartConfirmationPanel = new JPanel();
+		cartConfirmationPanel.setBorder(new TitledBorder(null, "Varukorg", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
 		
 		addressSettingsPanel_1 = new AddressSettingsPanel();
@@ -287,33 +308,12 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		cardSettingsPanel_1 = new CardSettingsPanel();
 		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
 		
+		confirmPurchaseButton = new JButton("Bekräfta köp");
+		confirmPurchasePanel.add(confirmPurchaseButton, "cell 1 2,alignx right,aligny bottom");
+		
 		favoriteScrollPane = new JScrollPane();
 		sidebarTabbedPane.addTab("Favoriter", null, favoriteScrollPane, null);
-		
-		tree = new JTree();
-		tree.setFocusable(false);
-		tree.setShowsRootHandles(true);
-		tree.setRootVisible(false);
-		tree.setModel(new DefaultTreeModel(
-			new DefaultMutableTreeNode("Favoriter") {
-				{
-					DefaultMutableTreeNode node_1;
-					node_1 = new DefaultMutableTreeNode("Pungkaka");
-						node_1.add(new DefaultMutableTreeNode("blue"));
-						node_1.add(new DefaultMutableTreeNode("violet"));
-						node_1.add(new DefaultMutableTreeNode("red"));
-						node_1.add(new DefaultMutableTreeNode("yellow"));
-					add(node_1);
-					node_1 = new DefaultMutableTreeNode("Rabiesgröt");
-						node_1.add(new DefaultMutableTreeNode("blue"));
-						node_1.add(new DefaultMutableTreeNode("violet"));
-						node_1.add(new DefaultMutableTreeNode("red"));
-						node_1.add(new DefaultMutableTreeNode("yellow"));
-					add(node_1);
-				}
-			}
-		));
-		favoriteScrollPane.setViewportView(tree);
+
 		favoriteScrollPane.setFocusable(false);
 		
 		historyScrollPane = new JScrollPane();
@@ -349,13 +349,10 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			int rows = searchResults.size() / cols;
 			rows += ((rows * cols < searchResults.size()) ? 1 : 0);
 
-			contentPanel.setPreferredSize(new Dimension(width - 32,
-					(rows * (240 + margin)) + margin));
-			
+			contentPanel.setPreferredSize(new Dimension(width - 32, (rows * (240 + margin)) + margin));
 			contentScrollPane.revalidate();
 		} else if (toggleListViewButton.isSelected()) {
-			contentPanel.setPreferredSize(new Dimension(width - 32,
-					(searchResults.size() * 77)));
+			contentPanel.setPreferredSize(new Dimension(width - 32, (searchResults.size() * 77)));
 			
 			contentScrollPane.revalidate();
 		}
@@ -363,14 +360,15 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
-
+/*
 		if (action.getActionCommand() == "favorite") {
 			if (!((ItemGrid)action.getSource()).tglFavorite.isSelected()) return;
-			Product product = ((Item)action.getSource()).product;
+			Product product = ((Item)action.getSource()).shoppingItem.getProduct();
 			System.out.println("DU FAVORISERADE JUST .... BAM BAM BAM: " + product.getName());
 		}
 		
 		if (action.getActionCommand() == "add_cart") {
+<<<<<<< HEAD
 			Product product = ((Item)action.getSource()).product;
 			System.out.println(product.getName());
 			model.getShoppingCart().addProduct(product, 1.0);
@@ -378,6 +376,49 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 				varukorgPanel.add(new CartItem(new ShoppingItem(product, 1.0)));
 				varukorgPanel.revalidate();
 			}
+=======
+			ShoppingItem shoppingItem = ((Item)action.getSource()).shoppingItem;
+			
+						 
+				if (model.getShoppingCart().getItems().contains(shoppingItem)){
+					
+					for(Component c : varukorgPanel.getComponents()){
+						System.out.println((((CartItem) c).getShoppingItem().getProduct().getName()));
+						if((((CartItem) c).getShoppingItem().getProduct()).equals(shoppingItem.getProduct())){
+							((CartItem) c).addItem(((Item)action.getSource()).getAmount());
+							break;
+						}
+					}
+				
+				}else {
+					
+					shoppingItem.setAmount(((Item)action.getSource()).getAmount());
+					varukorgPanel.add(new CartItem(shoppingItem,this));
+					model.getShoppingCart().addItem(shoppingItem);
+					varukorgPanel.revalidate();
+					
+				} 
+			
+			setTotalPrice(model.getShoppingCart().getTotal()+":-");
+		}
+		
+		if(action.getActionCommand() == "remove_from_cart"){
+			CartItem cartItem = (CartItem)action.getSource();
+			varukorgPanel.remove(cartItem);
+			model.getShoppingCart().removeItem(cartItem.getShoppingItem());
+			setTotalPrice(model.getShoppingCart().getTotal()+":-");
+			varukorgPanel.revalidate();
+
+		}
+		
+		if (action.getActionCommand() == "check_out"){
+			CardLayout cl = (CardLayout) (contentPanel.getLayout());
+			cl.show(contentPanel, "cardConfrimPanel");
+			contentPanel.setPreferredSize(new Dimension(cartConfirmationPanel.getWidth(), cartConfirmationPanel.getHeight()));
+			
+			contentScrollPane.revalidate();
+			
+>>>>>>> origin/mlonn
 		}
 		
 		if (action.getActionCommand() == "toggle_grid") {
@@ -420,7 +461,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			}
 			userComboBox.setSelectedIndex(0);
 
-		}
+		}*/
 	}
 
 	private void search() {
@@ -436,6 +477,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		cardPanelList.removeAll();
 	
 		for (int i = 0; i < searchResults.size(); i++) {
+			
 			Product p = searchResults.get(i);
 			boolean skipstep = true;
 			for (CategoryToggleButton ctb : categorybuttons) {
@@ -449,11 +491,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 				continue;
 			}
 			
-			ItemList item = new ItemList(p, this);
+			ItemList item = new ItemList(new ShoppingItem(p), this);
 			
 			// Alternate background in list view
 			if (i % 2 == 1) item.setBackground(new Color(248, 248, 248));
-			cardPanelGrid.add(new ItemGrid(p, this));
+			cardPanelGrid.add(new ItemGrid(new ShoppingItem(p), this));
 			cardPanelList.add(item);
 		}
 		
@@ -500,7 +542,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		}
 		
 		if (evt.getPropertyName() == "signedin") {
-			userComboBox.setModel(new DefaultComboBoxModel(new String[] { model.getAccount().getUserName(), "Kontoinst\u00E4llningar", "Logga ut" }));
+			Account account = (Account)evt.getNewValue();
+			userComboBox.setModel(new DefaultComboBoxModel(new String[] { account.getUserName(), "Kontoinst\u00E4llningar", "Logga ut" }));
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedInPanel");
 		}
@@ -509,5 +552,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedOutPanel");
 		}
+	}
+
+	public void setTotalPrice(String string) {
+		lblTotalprice.setText(string);
+		checkoutButtonPanel.revalidate();
+		
 	}
 }

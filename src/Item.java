@@ -4,19 +4,20 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 
 
 public abstract class Item extends JPanel implements ActionListener {
-	public Product product;
+	public ShoppingItem shoppingItem;
 	public MainWindow parent;
 	
 	public Item() {
 		super();
 	}
 	
-	public Item(Product product, MainWindow parent) {
+	public Item(ShoppingItem shoppingItem, MainWindow parent) {
 		this();
-		this.product = product;
+		this.shoppingItem = shoppingItem;
 		this.parent = parent;
 	}
 	
@@ -27,4 +28,7 @@ public abstract class Item extends JPanel implements ActionListener {
 			parent.actionPerformed(action);
 		}
 	}
+
+	public abstract double getAmount();
+
 }

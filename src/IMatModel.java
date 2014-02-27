@@ -125,8 +125,6 @@ public class IMatModel {
 			pcs.firePropertyChange("account_signedup", null, account);
 			LOGGER.log(Level.INFO, "account_signedup");
 			
-			accountSignIn(account.getUserName(), account.getPassword());
-			
 			return true;
 		}
 

@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,7 +22,7 @@ import net.miginfocom.swing.MigLayout;
 
 import com.alee.laf.rootpane.WebDialog;
 
-public class LogInWindow extends WebDialog implements ActionListener {
+public class LogInWindow extends WebDialog implements ActionListener, PropertyChangeListener {
 	private JTabbedPane signInTabbedPane;
 	private JPanel newCustomerPanel;
 	private JPanel signInPanel;
@@ -40,12 +43,12 @@ public class LogInWindow extends WebDialog implements ActionListener {
 	private JPasswordField newUserPasswordRepeat;
 	private JButton btnRegister;
 	private JFrame frame;
-	private MainWindow parent;
+	private IMatModel model;
 
-	public LogInWindow(JFrame frame, MainWindow parent) {
+	public LogInWindow(JFrame frame, IMatModel model) {
 		super(frame, true);
 		this.frame = frame;
-		this.parent = parent;
+		this.model = model;
 		initialize2();
 	}
 
@@ -131,9 +134,11 @@ public class LogInWindow extends WebDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == btnLogIn) {
-			userNameTextField.setBackground(Color.WHITE);
+			model.accountSignIn(userNameTextField.getText(), new String(passwordField.getPassword()));
+/*			userNameTextField.setBackground(Color.WHITE);
 			passwordField.setBackground(Color.WHITE);
-			Map<String, String> errors = parent.getModel().signIn(userNameTextField.getText(), new String(passwordField.getPassword()));
+			
+			model.accountSignIn(userNameTextField.getText(), new String(passwordField.getPassword()));
 			
 			if (!errors.isEmpty()) {
 				userNameTextField.setBackground(Constants.ERROR_COLOR);
@@ -141,16 +146,17 @@ public class LogInWindow extends WebDialog implements ActionListener {
 				JOptionPane.showMessageDialog(this, errors.get("signin"), "Fel vid inloggning", JOptionPane.WARNING_MESSAGE);
 			} else {
 				dispose();
-			}
+			}*/
 		}
 		
 		if (event.getSource() == btnRegister) {
-			newUserNameTextField.setBackground(Color.WHITE);
+			model.accountSignUp(newUserNameTextField.getText(), new String(newUserPassword.getPassword()), newUserEmailTextField.getText());
+/*			newUserNameTextField.setBackground(Color.WHITE);
 			newUserPassword.setBackground(Color.WHITE);
 			newUserEmailTextField.setBackground(Color.WHITE);
 			newUserPasswordRepeat.setBackground(Color.WHITE);
 			
-			Map<String, String> errors = parent.getModel().signUp(newUserNameTextField.getText(), new String(newUserPassword.getPassword()), newUserEmailTextField.getText());
+			model.accountSignUp(newUserNameTextField.getText(), new String(newUserPassword.getPassword()), newUserEmailTextField.getText());
 			
 			if (errors.containsKey("username")) newUserNameTextField.setBackground(Constants.ERROR_COLOR);
 			if (errors.containsKey("password")) newUserPassword.setBackground(Constants.ERROR_COLOR);
@@ -171,7 +177,39 @@ public class LogInWindow extends WebDialog implements ActionListener {
 				JOptionPane.showMessageDialog(this, msg, "Fel vid registering", JOptionPane.WARNING_MESSAGE);
 			} else {
 				dispose();
+			}*/
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName() == "account_signin") {
+			List<String> errors = (ArrayList<String>)evt.getNewValue();
+			if (!errors.isEmpty()) {
+				for (String error : errors) {
+					System.out.println(error);
+				}
 			}
+		}
+		
+		if (evt.getPropertyName() == "account_signedin") {
+			System.out.println("DET GICK! Du är inloggad nu...");
+			dispose();
+		}
+		
+		if (evt.getPropertyName() == "account_signup") {
+			List<String> errors = (ArrayList<String>)evt.getNewValue();
+			if (!errors.isEmpty()) {
+				for (String error : errors) {
+					System.out.println(error);
+				}
+			}
+		}
+		
+		if (evt.getPropertyName() == "account_signedup") {
+			Account account = (Account)evt.getNewValue();
+			System.out.println("DET GICK! Du har ett konto, din jävel...");
+			model.accountSignIn(account.getUserName(), account.getPassword());
 		}
 	}
 }

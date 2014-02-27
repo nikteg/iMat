@@ -12,6 +12,9 @@ import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.ait.dat215.project.ShoppingItem;
+import javax.swing.SpinnerNumberModel;
+import com.alee.laf.spinner.WebSpinner;
 
 
 @SuppressWarnings("serial")
@@ -20,11 +23,11 @@ public class ItemList extends Item implements ChangeListener {
 	private JSeparator separator;
 	private JButton btnKp;
 	private JLabel lblNamelabel;
-	private JSpinner spinner;
+	private WebSpinner spinner;
 	private JLabel lblPricelabel;
 
-	public ItemList(Product product, MainWindow parent) {
-		super(product, parent);
+	public ItemList(ShoppingItem shoppingItem , MainWindow parent) {
+		super(shoppingItem, parent);
 		initialize();
 	}
 	
@@ -33,7 +36,7 @@ public class ItemList extends Item implements ChangeListener {
 		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new MigLayout("", "[64px:64.00][5px:5px][92px:92px][grow][48px:48px][64px:64px]", "[64px]"));
 		
-		lblBild = new JLabel(parent.getModel().getImageIcon(product, new Dimension(48, 48)));
+		lblBild = new JLabel(parent.getModel().getImageIcon(shoppingItem.getProduct(), new Dimension(48, 48)));
 		lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblBild, "cell 0 0,alignx center,aligny center");
@@ -42,16 +45,17 @@ public class ItemList extends Item implements ChangeListener {
 		separator.setOrientation(SwingConstants.VERTICAL);
 		add(separator, "cell 1 0,growy");
 		
-		lblNamelabel = new JLabel(product.getName());
+		lblNamelabel = new JLabel(shoppingItem.getProduct().getName());
 		add(lblNamelabel, "cell 2 0,alignx center");
 		
-		lblPricelabel = new JLabel(product.getPrice() + ":-");
+		lblPricelabel = new JLabel(shoppingItem.getProduct().getPrice() + ":-");
 		lblPricelabel.setBackground(Color.RED);
 		add(lblPricelabel, "cell 3 0");
 		
-		spinner = new JSpinner();
+		spinner = new WebSpinner();
 		spinner.addChangeListener(this);
-		add(spinner, "cell 4 0,alignx right");
+		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		add(spinner, "cell 4 0,growx");
 		
 		btnKp = new JButton("K\u00F6p");
 		btnKp.addActionListener(this);
@@ -62,7 +66,14 @@ public class ItemList extends Item implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
-			lblPricelabel.setText(product.getPrice() * ((Integer)spinner.getValue()).doubleValue() + ":-");
+			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
+			lblPricelabel.setText(shoppingItem.getProduct().getPrice() * ((Integer)spinner.getValue()).doubleValue() + ":-");
 		}
 	}
+	
+	@Override
+	public double getAmount() {
+		return ((Integer)spinner.getValue()).doubleValue();
+	}
+
 }

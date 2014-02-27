@@ -2,9 +2,7 @@ import java.awt.Dimension;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -18,6 +16,7 @@ import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ProductCategory;
 import se.chalmers.ait.dat215.project.ShoppingCart;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 import se.chalmers.ait.dat215.project.User;
 
 /**
@@ -65,29 +64,28 @@ public class IMatModel {
 		pcs.removePropertyChangeListener(pcl);
 	}
 	
-	public Map<String, String> signIn(String userName, String password) {
-		HashMap<String, String> errors = new HashMap<String, String>();
+	public boolean accountSignIn(String userName, String password) {
+		List<String> errors = new ArrayList<String>();
 		
-		if (!userName.equals(account.getUserName()) || !password.equals(account.getPassword())) {
-			System.out.println("Vad du matar in: ");
-			System.out.println(userName);
-			System.out.println(password);
-			System.out.println("Vad backend säger: ");
-			System.out.println(account.getUserName());
-			System.out.println(account.getPassword());
-			
-			errors.put("signin", "Felaktiga inloggningsuppgifter");
+		if (!userName.equalsIgnoreCase(account.getUserName())) {
+			errors.add("username_wrong");
 		}
 		
-		LOGGER.log(Level.INFO, errors.get("signin"));
+		if (!password.equals(account.getPassword())) {
+			errors.add("password_wrong");
+		}
+		
+		pcs.firePropertyChange("account_signin", null, errors);
+		LOGGER.log(Level.INFO, "account_signin");
 		
 		if (errors.isEmpty()) {
-			pcs.firePropertyChange("signedin", null, account);
+			pcs.firePropertyChange("account_signedin", null, account);
+			LOGGER.log(Level.INFO, "account_signedin");
 			
-			LOGGER.log(Level.INFO, "User (" + userName + ") has signed in");
+			return true;
 		}
 		
-		return errors;
+		return false;
 	}
 	
 	public void setCredentials(String userName, String password, String email, String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
@@ -103,17 +101,19 @@ public class IMatModel {
 		account.setPostCode(postCode);
 	}
 	
-	public Map<String, String> signUp(String userName, String password, String email) {
-		HashMap<String, String> errors = new HashMap<String, String>();
+	public boolean accountSignUp(String userName, String password, String email) {
+		List<String> errors = new ArrayList<String>();
 		
-		if (userName.length() < 1) errors.put("username", "För kort användarnamn");
+		if (userName.length() < 1) errors.add("username_too_short");
 		
-		if (password.length() < 1) errors.put("password", "För kort lösenord");
+		if (password.length() < 1) errors.add("password_too_short");
 		
 		Pattern emailPattern = Pattern.compile("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$");
 		Matcher m = emailPattern.matcher(email);
 		
-		if (!m.matches()) errors.put("email", "Felaktig e-postadress");
+		if (!m.matches()) errors.add("email_invalid");
+		
+		pcs.firePropertyChange("account_signup", null, errors);
 		
 		if (errors.isEmpty()) {
 			account.setUserName(userName);
@@ -122,27 +122,22 @@ public class IMatModel {
 			
 			account.setAnonymous(false);
 			
-			pcs.firePropertyChange("signedup", null, account);
+			pcs.firePropertyChange("account_signedup", null, account);
+			LOGGER.log(Level.INFO, "account_signedup");
 			
-			LOGGER.log(Level.INFO, "User (" + userName + ") has signed up");
+			accountSignIn(account.getUserName(), account.getPassword());
 			
-			signIn(account.getUserName(), account.getPassword());
+			return true;
 		}
 
-		return errors;
+		return false;
 	}
 	
-	public void signOut() {
-		backend.reset();
+	public void accountSignOut() {
 		account.setAnonymous(true);
 		
-		pcs.firePropertyChange("signedout", null, account);
-		
-		LOGGER.log(Level.INFO, "User (" + account.getUserName() + ") has signed out");
-	}
-	
-	public Account getAccount() {
-		return account;
+		pcs.firePropertyChange("account_signout", null, account);
+		LOGGER.log(Level.INFO, "account_signout");
 	}
 
 	/**
@@ -151,19 +146,46 @@ public class IMatModel {
 	 * @param p
 	 *            The product to give favorite status.
 	 */
-	public void addFavorite(Product p) {
-		backend.addFavorite(p);
+	public void favoriteAdd(Product product) {
+		backend.addFavorite(product);
+		
+		pcs.firePropertyChange("favorite_add", null, product);
+		LOGGER.log(Level.INFO, "favorite_add");
 	}
-
-	/**
-	 * Returns the single creditcard object holding information about the
-	 * customer's creditcard.
-	 * 
-	 * @return a CreditCard object.
-	 */
-	public CreditCard getCreditCard() {
-		return backend.getCreditCard();
-		// TODO Implement multiple card support
+	
+	public void favoriteRemove(Product product) {
+		backend.removeFavorite(product);
+		
+		pcs.firePropertyChange("favorite_remove", null, product);
+		LOGGER.log(Level.INFO, "favorite_remove");
+	}
+	
+	public void cartAddItem(ShoppingItem item) {
+		backend.getShoppingCart().addItem(item);
+		
+		pcs.firePropertyChange("cart_additem", null, item);
+		LOGGER.log(Level.INFO, "cart_additem");
+	}
+	
+	public void cartRemoveItem(ShoppingItem item) {
+		backend.getShoppingCart().removeItem(item);
+		
+		pcs.firePropertyChange("cart_removeitem", null, item);
+		LOGGER.log(Level.INFO, "cart_removeitem");
+	}
+	
+	public void cartUpdateItem(ShoppingItem oldItem, ShoppingItem newItem) {
+		backend.getShoppingCart().getItems().set(backend.getShoppingCart().getItems().indexOf(oldItem), newItem);
+		
+		pcs.firePropertyChange("cart_updateitem", oldItem, newItem);
+		LOGGER.log(Level.INFO, "cart_updateitem");
+	}
+	
+	public void cartClear() {
+		backend.getShoppingCart().clear();
+		
+		pcs.firePropertyChange("cart_clear", null, backend.getShoppingCart());
+		LOGGER.log(Level.INFO, "cart_clear");
 	}
 
 	/**

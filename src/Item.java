@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
@@ -7,28 +9,31 @@ import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 
-public abstract class Item extends JPanel implements ActionListener {
+public abstract class Item extends JPanel implements ActionListener, PropertyChangeListener {
 	public ShoppingItem shoppingItem;
-	public MainWindow parent;
+	public IMatModel model;
 	
 	public Item() {
 		super();
 	}
 	
-	public Item(ShoppingItem shoppingItem, MainWindow parent) {
+	public Item(ShoppingItem shoppingItem, IMatModel model) {
 		this();
 		this.shoppingItem = shoppingItem;
-		this.parent = parent;
+		this.model = model;
+		model.addPropertyChange(this);
+		
 	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent action) {
-		if (action.getActionCommand() == "add_cart" || action.getActionCommand() == "favorite") {
-			action.setSource(this);
-			parent.actionPerformed(action);
+		if (action.getActionCommand() == "add_cart") {
+			//TODO
+			model.CartAddItem();
 		}
 	}
 
-	public abstract double getAmount();
+
 
 }

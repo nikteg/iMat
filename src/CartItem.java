@@ -25,19 +25,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import com.alee.laf.spinner.WebSpinner;
 
 import javax.swing.JButton;
 
 
-public class CartItem extends JPanel implements ChangeListener, ActionListener{
+public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener{
 	private JLabel lblNameLabel;
 	private WebSpinner spinner;
 	private JLabel lblPrice;
 	private ShoppingItem shoppingItem;
 	private IMatModel model;
-	private MainWindow parent;
 	private JLabel lblTotalPriceLabel;
 	private JButton btnX;
 
@@ -56,11 +57,10 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener{
 	 * Creates a CartItem instance from the given ShoppingItem.
 	 * @param shoppingItem - The item to track
 	 */
-	public CartItem(ShoppingItem shoppingItem, MainWindow parent){
+	public CartItem(ShoppingItem shoppingItem, IMatModel model){
 		this();
 		this.shoppingItem = shoppingItem;
-		model = IMatModel.getInstance();
-		this.parent = parent; 
+		this.model = model;
 		lblNameLabel.setText(shoppingItem.getProduct().getName());
 		lblPrice.setText(shoppingItem.getProduct().getPrice() + ":-");
 		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
@@ -105,29 +105,27 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener{
 	@Override
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
-			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
-			parent.setTotalPrice((model.getShoppingCart().getTotal()+ ":-"));
-			lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
+			model.cartUpdateitem(shoppingItem);
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnX){
-			e.setSource(this);
-			parent.actionPerformed(e);
+			model.cartRemoveItem();
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName() == "cart_updateitem") {
+			spinner.setValue(((ShoppingItem)evt.getNewValue()).getAmount());
+			lblTotalPriceLabel.setText(((ShoppingItem)evt.getNewValue()).getTotal() + ((ShoppingItem)evt.getNewValue()).getProduct().getUnit());
 		}
 		
 	}
 
-	public void addItem(double amount) {
-		System.out.println(amount);
-		System.out.println(shoppingItem.getAmount());
-		shoppingItem.setAmount(shoppingItem.getAmount() + amount);
-		parent.setTotalPrice((model.getShoppingCart().getTotal()+ ":-"));
-		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
-		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
-	}
+
 	
 
 	

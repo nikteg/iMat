@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -34,8 +35,8 @@ public class ItemGrid extends Item implements ChangeListener{
 	/**
 	 * Create the panel.
 	 */
-	public ItemGrid(ShoppingItem shoppingItem, MainWindow parent) {
-		super(shoppingItem, parent);
+	public ItemGrid(ShoppingItem shoppingItem, IMatModel model) {
+		super(shoppingItem, model);
 		initialize();
 	}
 
@@ -44,7 +45,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		setPreferredSize(new Dimension(180, 240));
 		setLayout(new MigLayout("insets 8px", "[grow][grow][][]", "[164px:164px][26px:26px][26px:26px][]"));
 
-		lblBild = new JLabel(parent.getModel().getImageIcon(shoppingItem.getProduct(), new Dimension(164, 164)));
+		lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(164, 164)));
 		lblBild.setPreferredSize(new Dimension(164, 164));
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblBild, "cell 0 0 4 1,growx,aligny top");
@@ -95,8 +96,18 @@ public class ItemGrid extends Item implements ChangeListener{
 	
 
 	@Override
-	public double getAmount() {
-		return ((Integer)spinner.getValue()).doubleValue();
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName() == "favorite_add") {
+			if((Product)evt.getNewValue().equals(shoppingItem.getProduct())) {
+				tglFavorite.setSelected(true);
+			}
+		}
+		if (evt.getPropertyName() == "favorite_remove") {
+			if((Product)evt.getNewValue().equals(shoppingItem.getProduct())) {
+				tglFavorite.setSelected(false);
+			}
+		}
+		
 	}
 
 

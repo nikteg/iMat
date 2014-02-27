@@ -21,7 +21,7 @@ public abstract class Item extends JPanel implements ActionListener, PropertyCha
 		this();
 		this.shoppingItem = shoppingItem;
 		this.model = model;
-		model.addPropertyChange(this);
+		this.model.addPropertyChangeListener(this);
 		
 	}
 	
@@ -29,9 +29,17 @@ public abstract class Item extends JPanel implements ActionListener, PropertyCha
 	@Override
 	public void actionPerformed(ActionEvent action) {
 		if (action.getActionCommand() == "add_cart") {
-			//TODO
-			model.CartAddItem();
+			model.cartAddItem(shoppingItem);
 		}
+		
+		if (action.getActionCommand() == "favorite") {
+			
+			if (model.isFavorite(shoppingItem.getProduct())) {
+				model.favoriteRemove(shoppingItem.getProduct());
+			} else {
+				model.favoriteAdd(shoppingItem.getProduct());
+			}
+ 		}
 	}
 
 

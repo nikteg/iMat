@@ -493,11 +493,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 				continue;
 			}
 			
-			ItemList item = new ItemList(new ShoppingItem(p), this);
+			ItemList item = new ItemList(new ShoppingItem(p), model);
 			
 			// Alternate background in list view
 			if (i % 2 == 1) item.setBackground(new Color(248, 248, 248));
-			cardPanelGrid.add(new ItemGrid(new ShoppingItem(p), this));
+			cardPanelGrid.add(new ItemGrid(new ShoppingItem(p), model));
 			cardPanelList.add(item);
 		}
 		

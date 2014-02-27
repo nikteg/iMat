@@ -83,7 +83,11 @@ public class ItemGrid extends Item implements ChangeListener{
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setActionCommand("favorite");
+		
+		if (model.isFavorite(shoppingItem.getProduct())) tglFavorite.setSelected(true); 
+			
 		add(tglFavorite, "cell 2 1,alignx right,aligny center");
+		
 	}
 	
 	@Override
@@ -98,12 +102,12 @@ public class ItemGrid extends Item implements ChangeListener{
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "favorite_add") {
-			if((Product)evt.getNewValue().equals(shoppingItem.getProduct())) {
+			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(true);
 			}
 		}
 		if (evt.getPropertyName() == "favorite_remove") {
-			if((Product)evt.getNewValue().equals(shoppingItem.getProduct())) {
+			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(false);
 			}
 		}

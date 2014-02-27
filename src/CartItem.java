@@ -105,14 +105,16 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	@Override
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
-			model.cartUpdateitem(shoppingItem);
+			
+			ShoppingItem item = new ShoppingItem(shoppingItem.getProduct(), shoppingItem.getAmount()); 
+			model.cartUpdateItem(shoppingItem, item);
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnX){
-			model.cartRemoveItem();
+			model.cartRemoveItem(shoppingItem);
 		}
 	}
 

@@ -97,12 +97,12 @@ public class ItemList extends Item implements ChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "favorite_add") {
-			if((Product)evt.getNewValue().equals(shoppingItem.getProduct())) {
+			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(true);
 			}
 		}
 		if (evt.getPropertyName() == "favorite_remove") {
-			if((Product)evt.getNewValue().equals(shoppingItem.getProduct())) {
+			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(false);
 			}
 		}

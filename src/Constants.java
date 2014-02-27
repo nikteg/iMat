@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 public class Constants {
 	public static enum Category {
 		BREAD("Bröd"), SNACKS("Snacks"), DRINKS("Drycker"), DAIRIES("Mejeri"),
@@ -15,4 +17,6 @@ public class Constants {
 			return this.name;
 		}
 	};
+	
+	public static final Color ERROR_COLOR = new Color(250, 150, 150);
 }

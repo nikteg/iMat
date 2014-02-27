@@ -1,6 +1,5 @@
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -16,30 +15,23 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
@@ -51,11 +43,12 @@ import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.tabbedpane.WebTabbedPane;
+import com.alee.laf.text.WebTextField;
 
 public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	private JFrame frame;
-	private JTextField txtSearchBox;
+	private WebTextField txtSearchBox;
 	private JLabel lblImat;
 	private JScrollPane categoriesScrollPane;
 	private WebComboBox userComboBox;
@@ -166,7 +159,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		lblImat.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(lblImat, "cell 0 0 1 2,growx,aligny center");
 
-		txtSearchBox = new JTextField();
+		txtSearchBox = new WebTextField();
+		txtSearchBox.setInputPrompt("Sök...");
 		txtSearchBox.addActionListener(this);
 		txtSearchBox.addKeyListener(new TxtSearchBoxKeyListener());
 		txtSearchBox.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
@@ -360,6 +354,14 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
+		if (action.getActionCommand() == "search") {
+			if (action.getSource() == searchTimer) {
+				categoryButtonGroup.clearSelection();
+				buttonAllCategories.setSelected(true);
+			}
+			search();
+			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
+		}
 /*
 		if (action.getActionCommand() == "favorite") {
 			if (!((ItemGrid)action.getSource()).tglFavorite.isSelected()) return;
@@ -420,7 +422,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			
 >>>>>>> origin/mlonn
 		}
-		
+		*/
 		if (action.getActionCommand() == "toggle_grid") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
@@ -432,7 +434,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			cl.show(contentPanel, "cardPanelList");
 			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		}
-
+		/*
 		if (action.getActionCommand() == "search") {
 			if (action.getSource() == searchTimer) {
 				categoryButtonGroup.clearSelection();

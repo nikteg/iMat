@@ -64,7 +64,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener{
 		lblNameLabel.setText(shoppingItem.getProduct().getName());
 		lblPrice.setText(shoppingItem.getProduct().getPrice() + ":-");
 		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
-		spinner.setValue((shoppingItem.getAmount()));
+		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
 	}
 	
 	private void initialize() {
@@ -106,8 +106,6 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener{
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
 			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
-
-			//shoppingItem.setAmount(Double.parseDouble(spinner.getValue().toString()));
 			parent.setTotalPrice((model.getShoppingCart().getTotal()+ ":-"));
 			lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
 		}
@@ -120,6 +118,15 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener{
 			parent.actionPerformed(e);
 		}
 		
+	}
+
+	public void addItem(double amount) {
+		System.out.println(amount);
+		System.out.println(shoppingItem.getAmount());
+		shoppingItem.setAmount(shoppingItem.getAmount() + amount);
+		parent.setTotalPrice((model.getShoppingCart().getTotal()+ ":-"));
+		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
+		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
 	}
 	
 

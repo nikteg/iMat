@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -380,16 +381,27 @@ public class MainWindow implements ActionListener {
 		if (action.getActionCommand() == "add_cart") {
 			ShoppingItem shoppingItem = ((Item)action.getSource()).shoppingItem;
 			
-			if (model.getShoppingCart().getItems().contains(shoppingItem)){
+						 
+				if (model.getShoppingCart().getItems().contains(shoppingItem)){
+					
+					for(Component c : varukorgPanel.getComponents()){
+						System.out.println((((CartItem) c).getShoppingItem().getProduct().getName()));
+						if((((CartItem) c).getShoppingItem().getProduct()).equals(shoppingItem.getProduct())){
+							((CartItem) c).addItem(((Item)action.getSource()).getAmount());
+							break;
+						}
+					}
 				
-				//model.getShoppingCart().getItems().get(i)
-				
-			} else {
-				varukorgPanel.add(new CartItem(shoppingItem,this));
-				model.getShoppingCart().addItem(shoppingItem);
-				setTotalPrice(model.getShoppingCart().getTotal()+":-");
-				varukorgPanel.revalidate();
-			}
+				}else {
+					
+					shoppingItem.setAmount(((Item)action.getSource()).getAmount());
+					varukorgPanel.add(new CartItem(shoppingItem,this));
+					model.getShoppingCart().addItem(shoppingItem);
+					varukorgPanel.revalidate();
+					
+				} 
+			
+			setTotalPrice(model.getShoppingCart().getTotal()+":-");
 		}
 		
 		if(action.getActionCommand() == "remove_from_cart"){
@@ -398,6 +410,7 @@ public class MainWindow implements ActionListener {
 			model.getShoppingCart().removeItem(cartItem.getShoppingItem());
 			setTotalPrice(model.getShoppingCart().getTotal()+":-");
 			varukorgPanel.revalidate();
+
 		}
 		
 		if (action.getActionCommand() == "check_out"){

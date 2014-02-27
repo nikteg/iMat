@@ -16,6 +16,10 @@ import javax.swing.JSeparator;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 import java.awt.Color;
+import java.awt.GridLayout;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 
 public class CartView extends JPanel implements PropertyChangeListener {
@@ -34,8 +38,13 @@ public class CartView extends JPanel implements PropertyChangeListener {
 		itemList = new ArrayList<ShoppingItem>(model.getShoppingCart().getItems());
 		setLayout(new MigLayout("", "[126px,grow]", "[539.00,grow][][47px,fill]"));
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		add(scrollPane, "cell 0 0,grow");
+		
 		JPanel itemPanel = new JPanel();
-		add(itemPanel, "cell 0 0");
+		scrollPane.setViewportView(itemPanel);
+		itemPanel.setLayout(new MigLayout("", "[grow,fill]", "[]"));
 		
 		JPanel summaryPanel = new JPanel();
 		add(summaryPanel, "cell 0 2,grow");
@@ -83,7 +92,7 @@ public class CartView extends JPanel implements PropertyChangeListener {
 		itemList = model.getShoppingCart().getItems();
 		itemPanel.removeAll();
 		for(int i=0; i < itemList.size(); i++){
-			itemPanel.add(new CartItem(itemList.get(i)));
+			itemPanel.add(new CartItem(itemList.get(i)), "wrap");
 		}
 		totalPriceLabel.setText("" + model.getShoppingCart().getTotal());
 	}

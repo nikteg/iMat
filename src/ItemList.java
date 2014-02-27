@@ -32,7 +32,11 @@ public class ItemList extends Item implements ChangeListener {
 	private JLabel lblPricelabel;
 	public JToggleButton tglFavorite;
 
-
+	public ItemList() {
+		super();
+		initialize();
+	}
+	
 	public ItemList(ShoppingItem shoppingItem , IMatModel model) {
 		super(shoppingItem, model);
 		initialize();
@@ -41,7 +45,7 @@ public class ItemList extends Item implements ChangeListener {
 	private void initialize() {
 		setPreferredSize(new Dimension(512, 77));
 		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		setLayout(new MigLayout("", "[64px:64.00][5px:5px][92px:92px][grow][][48px:48px][64px:64px]", "[64px]"));
+		setLayout(new MigLayout("", "[64px:64.00][5px:5px][92px:92px,grow][64px][][48px:48px][64px:64px]", "[64px]"));
 		
 		lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(48, 48)));
 		lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -53,7 +57,7 @@ public class ItemList extends Item implements ChangeListener {
 		add(separator, "cell 1 0,growy");
 		
 		lblNamelabel = new JLabel(shoppingItem.getProduct().getName());
-		add(lblNamelabel, "cell 2 0,alignx center");
+		add(lblNamelabel, "cell 2 0,alignx left");
 		
 		lblPricelabel = new JLabel(shoppingItem.getProduct().getPrice() + ":-");
 		lblPricelabel.setBackground(Color.RED);

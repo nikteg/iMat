@@ -79,6 +79,8 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		btnX = new JButton("");
 		btnX.setPreferredSize(new Dimension(18, 18));
 		btnX.setUI(new javax.swing.plaf.basic.BasicButtonUI());
+		btnX.setContentAreaFilled(false);
+		btnX.setBorderPainted(false);
 		btnX.setIcon(new ImageIcon(CartItem.class.getResource("/resources/icons/delete.png")));
 		btnX.addActionListener(this);
 		btnX.setActionCommand("remove_from_cart");

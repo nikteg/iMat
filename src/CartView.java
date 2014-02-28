@@ -19,42 +19,46 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	private JPanel itemPanel;
 	private JLabel totalPriceLabel;
 	private JButton btnRensaKassan;
+	private JScrollPane scrollPane;
+	private JLabel totalPriceDescriptionLabel;
+	private JButton checkoutButton;
 	
 	public CartView() {
 		super();
+		initialize();
 	}
 
 	public CartView(IMatModel model) {
+		this();
 		this.model = model;
 		this.model.addPropertyChangeListener(this);
-		initialize();
 		updateCartView();
 	}
 	
 	private void initialize() {
-		setLayout(new MigLayout("insets 2px", "[][grow][grow]", "[grow][][]"));
+		setLayout(new MigLayout("insets 2px", "[grow][grow]", "[grow][20.00][24.00]"));
 		
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		add(scrollPane, "cell 0 0 3 1,grow");
+		add(scrollPane, "cell 0 0 2 1,grow");
 		
 		itemPanel = new JPanel();
 		scrollPane.setViewportView(itemPanel);
 		itemPanel.setLayout(new MigLayout("insets 0px", "[grow]", "[20px]"));
 		
-		JLabel totalPriceDescriptionLabel = new JLabel("Totalpris:");
-		add(totalPriceDescriptionLabel, "flowx,cell 1 1,alignx right");
+		totalPriceDescriptionLabel = new JLabel("Totalpris:");
+		add(totalPriceDescriptionLabel, "flowx,cell 0 1,alignx right");
 		
 		totalPriceLabel = new JLabel("TOTALPRIS");
-		add(totalPriceLabel, "cell 2 1");
+		add(totalPriceLabel, "cell 1 1");
 		
 		btnRensaKassan = new JButton("Rensa varukorg");
 		btnRensaKassan.addActionListener(this);
-		add(btnRensaKassan, "cell 1 2,growx,aligny center");
+		add(btnRensaKassan, "cell 0 2,growx,aligny center");
 		
-		JButton checkoutButton = new JButton("Gå till kassan");
-		add(checkoutButton, "cell 2 2,growx,aligny center");
+		checkoutButton = new JButton("Gå till kassan");
+		add(checkoutButton, "cell 1 2,growx,aligny center");
 	}
 
 	@Override

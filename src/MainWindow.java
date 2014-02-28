@@ -82,7 +82,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private ButtonGroup categoryButtonGroup = new ButtonGroup();
 	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
 	private CategoryToggleButton buttonAllCategories;
-	private JScrollPane favoriteScrollPane;
 	private JScrollPane historyScrollPane;
 
 	
@@ -93,6 +92,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private SettingsWindow settingsWindow;
 	private LogInWindow loginWindow;
 	private Constants.Category currentCategory;
+	private JPanel favoritePanel;
+	private FavoriteView favoriteView;
 
 	/**
 	 * Launch the application.
@@ -143,7 +144,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1106, 772);
+		frame.setBounds(100, 100, 1120, 772);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(
 				new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));
@@ -282,10 +283,12 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		confirmPurchaseButton = new JButton("Bekräfta köp");
 		confirmPurchasePanel.add(confirmPurchaseButton, "cell 1 2,alignx right,aligny bottom");
 		
-		favoriteScrollPane = new JScrollPane();
-		sidebarTabbedPane.addTab("Favoriter", null, favoriteScrollPane, null);
-
-		favoriteScrollPane.setFocusable(false);
+		favoritePanel = new JPanel();
+		sidebarTabbedPane.addTab("Favoriter", null, favoritePanel, null);
+		favoritePanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
+		
+		favoriteView = new FavoriteView(model);
+		favoritePanel.add(favoriteView, "cell 0 0,grow");
 		
 		historyScrollPane = new JScrollPane();
 		historyScrollPane.setFocusable(false);
@@ -294,7 +297,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		buttonAllCategories = new CategoryToggleButton("Alla kategorier", numResults);
 		buttonAllCategories.setSelected(true);
 		buttonAllCategories.addActionListener(this);
-		buttonAllCategories.setActionCommand("search");
+		buttonAllCategories.setActionCommand("category_change");
 		panel.add(buttonAllCategories, "growx");
 		categoryButtonGroup.add(buttonAllCategories);
 
@@ -425,8 +428,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			List<Product> results = new ArrayList<Product>();
 			
 			for (Product product : searchResults) {
-				System.out.println(product.getName());
-				if (((CategoryToggleButton)action.getSource()).getCategory().equals(model.getCategory(product))) {
+				if (buttonAllCategories.isSelected() || ((CategoryToggleButton)action.getSource()).getCategory().equals(model.getCategory(product))) {
 					
 					results.add(product);
 				}
@@ -534,7 +536,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		if (evt.getPropertyName() == "search") {
 			categoryButtonGroup.clearSelection();
 			buttonAllCategories.setSelected(true);
-			
+			searchResults = (ArrayList<Product>)evt.getNewValue();
 			populateResults((ArrayList<Product>)evt.getNewValue());
 		}
 		

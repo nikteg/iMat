@@ -29,12 +29,13 @@ public class ItemGrid extends Item implements ChangeListener{
 	private JLabel lblName;
 	private JLabel lblPrice;
 	private WebSpinner spinner;
-	private JLabel lblKg;
 	public JToggleButton tglFavorite;
 
-	/**
-	 * Create the panel.
-	 */
+	public ItemGrid() {
+		super();
+		initialize();
+	}
+	
 	public ItemGrid(ShoppingItem shoppingItem, IMatModel model) {
 		super(shoppingItem, model);
 		initialize();
@@ -56,7 +57,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		lblName = new JLabel(shoppingItem.getProduct().getName());
 		add(lblName, "flowx,cell 0 1 3 1,alignx left,aligny center");
 		
-		lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + ":-");
+		lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
 		add(lblPrice, "cell 0 2,alignx left,aligny center");
 		
 		spinner = new WebSpinner();
@@ -65,9 +66,6 @@ public class ItemGrid extends Item implements ChangeListener{
 		spinner.addChangeListener(this);
 		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		add(spinner, "cell 1 2,grow");
-		
-		lblKg = new JLabel("kg");
-		add(lblKg, "cell 2 2");
 		btnKp.setActionCommand("add_cart");
 		add(btnKp, "cell 2 2,alignx right,aligny center");
 		
@@ -94,7 +92,6 @@ public class ItemGrid extends Item implements ChangeListener{
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
 			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
-			lblPrice.setText(shoppingItem.getTotal() + ":-");
 		}
 	}
 	

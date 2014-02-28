@@ -31,26 +31,20 @@ import java.beans.PropertyChangeListener;
 import com.alee.laf.spinner.WebSpinner;
 
 import javax.swing.JButton;
+import java.awt.Color;
 
 
 public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener{
 	private JLabel lblNameLabel;
 	private WebSpinner spinner;
-	private JLabel lblPrice;
 	private ShoppingItem shoppingItem;
 	private IMatModel model;
 	private JLabel lblTotalPriceLabel;
 	private JButton btnX;
 
 	public CartItem() {
-		// TODO Auto-generated constructor stub
+		super();
 		initialize();
-	}
-	
-	public CartItem(String name){
-		this();
-		lblNameLabel.setText(name);
-		
 	}
 	
 	/**
@@ -61,17 +55,14 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		this();
 		this.shoppingItem = shoppingItem;
 		this.model = model;
+		this.model.addPropertyChangeListener(this);
 		lblNameLabel.setText(shoppingItem.getProduct().getName());
-		lblPrice.setText(shoppingItem.getProduct().getPrice() + ":-");
 		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
 		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
 	}
 	
 	private void initialize() {
-		
-		
-		setPreferredSize(new Dimension(260, 60));
-		setLayout(new MigLayout("", "[grow][48px][60px][23.00px][pref:18.00px:pref]", "[60px]"));
+		setLayout(new MigLayout("insets 4px", "[grow][][64px][pref:18.00px:pref]", "[60px]"));
 		
 		lblNameLabel = new JLabel("nameLabel");
 		add(lblNameLabel, "cell 0 0,alignx left,aligny center");
@@ -79,14 +70,11 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		spinner = new WebSpinner();
 		spinner.addChangeListener(this);
 		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
-		
-		lblPrice = new JLabel("priceLabel");
-		add(lblPrice, "cell 1 0,alignx right,aligny center");
 		spinner.setPreferredSize(new Dimension(48, 10));
-		add(spinner, "cell 2 0,alignx right,aligny baseline");
+		add(spinner, "cell 1 0,alignx right,aligny baseline");
 		
-		lblTotalPriceLabel = new JLabel("X");
-		add(lblTotalPriceLabel, "cell 3 0,alignx center,aligny center");
+		lblTotalPriceLabel = new JLabel("20:-");
+		add(lblTotalPriceLabel, "cell 2 0,alignx right,aligny center");
 		
 		btnX = new JButton("");
 		btnX.setPreferredSize(new Dimension(18, 18));
@@ -95,10 +83,10 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		btnX.addActionListener(this);
 		btnX.setActionCommand("remove_from_cart");
 		btnX.setMinimumSize(new Dimension(0, 0));
-		add(btnX, "cell 4 0");
+		add(btnX, "cell 3 0");
 	}
 	
-	public ShoppingItem getShoppingItem(){
+	public ShoppingItem getShoppingItem() {
 		return shoppingItem;
 	}
 	
@@ -106,25 +94,28 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
 			System.out.println("RULLAR");
-			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
-			lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
-			repaint();
+			model.cartUpdateItem(shoppingItem.getProduct(), ((Integer)spinner.getValue()).doubleValue());
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnX) {
-			model.cartRemoveItem(shoppingItem);
+			model.cartRemoveItem(shoppingItem.getProduct());
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "cart_updateitem") {
-			ShoppingItem item = (ShoppingItem)evt.getNewValue();
-			if (shoppingItem.getProduct().equals(item.getProduct())) {
-				spinner.setValue(((Double)(item).getAmount()).intValue());
+			if (shoppingItem.getProduct().equals(((ShoppingItem)evt.getNewValue()).getProduct())) {
+				ShoppingItem item = (ShoppingItem)evt.getNewValue();
+				//if (shoppingItem.getAmount() == item.getAmount()) return;
+				
+				spinner.setValue(((Double)item.getAmount()).intValue());
+				lblTotalPriceLabel.setText(item.getTotal() + ":-");
+				shoppingItem = item;
+				repaint();
 			}
 		}
 	}

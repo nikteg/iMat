@@ -1,33 +1,26 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-
-import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JSeparator;
-
-import se.chalmers.ait.dat215.project.ShoppingItem;
-
-import java.awt.Color;
-import java.awt.GridLayout;
-import javax.swing.JScrollBar;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import net.miginfocom.swing.MigLayout;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 
-public class CartView extends JPanel implements PropertyChangeListener {
+
+public class CartView extends JPanel implements ActionListener, PropertyChangeListener {
 
 	private IMatModel model;
 	private JPanel itemPanel;
 	private JLabel totalPriceLabel;
-	private List<ShoppingItem> itemList;
+	private JButton btnRensaKassan;
 	
 	/**
 	 * 
@@ -35,65 +28,109 @@ public class CartView extends JPanel implements PropertyChangeListener {
 	 */
 	public CartView(IMatModel model) {
 		this.model = model;
-		itemList = new ArrayList<ShoppingItem>(model.getShoppingCart().getItems());
-		setLayout(new MigLayout("", "[126px,grow]", "[539.00,grow][][47px,fill]"));
+		initialize();
+		updateCartView();
+	}
+	private void initialize() {
+		this.model.addPropertyChangeListener(this);
+		setLayout(new MigLayout("insets 2px", "[][grow][grow]", "[grow][][]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		add(scrollPane, "cell 0 0,grow");
+		add(scrollPane, "cell 0 0 3 1,grow");
 		
-		JPanel itemPanel = new JPanel();
+		itemPanel = new JPanel();
 		scrollPane.setViewportView(itemPanel);
-		itemPanel.setLayout(new MigLayout("", "[grow,fill]", "[]"));
-		
-		JPanel summaryPanel = new JPanel();
-		add(summaryPanel, "cell 0 2,grow");
-		summaryPanel.setLayout(new MigLayout("", "[][][][][][][][][][]", "[][]"));
+		itemPanel.setLayout(new MigLayout("insets 0px", "[grow]", "[20px]"));
 		
 		JLabel totalPriceDescriptionLabel = new JLabel("Totalpris:");
-		summaryPanel.add(totalPriceDescriptionLabel, "cell 8 0");
+		add(totalPriceDescriptionLabel, "flowx,cell 1 1,alignx right");
 		
-		JLabel totalPriceLabel = new JLabel("TOTALPRIS");
-		summaryPanel.add(totalPriceLabel, "cell 9 0");
+		totalPriceLabel = new JLabel("TOTALPRIS");
+		add(totalPriceLabel, "cell 2 1");
+		
+		btnRensaKassan = new JButton("Rensa varukorg");
+		btnRensaKassan.addActionListener(this);
+		add(btnRensaKassan, "cell 1 2,growx,aligny center");
 		
 		JButton checkoutButton = new JButton("Gå till kassan");
-		summaryPanel.add(checkoutButton, "cell 9 1");
+		add(checkoutButton, "cell 2 2,growx,aligny center");
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		String command = evt.getPropertyName();
-		switch (command) {
-			case "cart_add_item": updateCartView();
-			break;
-			case "cart_remove_item": updateCartView();
-			break;
-			case "cart_clear": updateCartView();
-			break;
-			case "cart_updateitem": updateCartView();
-			default: break;
+		if (evt.getPropertyName() == "cart_additem") {
+			itemPanel.add(new CartItem((ShoppingItem)evt.getNewValue(), model), "wrap,growx");
+			totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+			updateColors();
+			revalidate();
+			repaint();
+		}
+		
+		if (evt.getPropertyName() == "cart_removeitem") {
+			
+			for (int i = 0; i < itemPanel.getComponentCount(); i++) {
+				if (((CartItem)itemPanel.getComponent(i)).getShoppingItem() == (ShoppingItem)evt.getNewValue()) {
+					itemPanel.remove(i);
+					break;
+				}
+			}
+			
+			totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+			updateColors();
+			itemPanel.revalidate();
+			repaint();
+		}
+		
+		if (evt.getPropertyName() == "cart_updateitem") {
+			
+			for (int i = 0; i < itemPanel.getComponentCount(); i++) {
+				if (((CartItem)itemPanel.getComponent(i)).getShoppingItem() == (ShoppingItem)evt.getNewValue()) {
+					((CartItem)itemPanel.getComponent(i)).getShoppingItem().setAmount(((ShoppingItem)evt.getNewValue()).getAmount());
+					break;
+				}
+			}
+			
+			totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+			itemPanel.revalidate();
+			repaint();
+		}
+		
+		if (evt.getPropertyName() == "cart_clear") {
+			itemPanel.removeAll();
+			totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+			itemPanel.revalidate();
+			repaint();
 		}
 	}
-
-	private void addItem(ShoppingItem item) {
-		itemPanel.add(new CartItem(item, model));
-	}
 	
-	private void clearCart(){
-		itemPanel.removeAll();
-	}
-	
-	
-	
-	private void removeItem(ShoppingItem item) {
-	}
-	
-	private void updateCartView(){
-		itemList = model.getShoppingCart().getItems();
-		itemPanel.removeAll();
-		for(int i=0; i < itemList.size(); i++){
-			itemPanel.add(new CartItem(itemList.get(i), model), "wrap");
+	private void updateColors() {
+		for (int i = 0; i < itemPanel.getComponentCount(); i++) {
+			if (i % 2 == 0) {
+				itemPanel.getComponents()[i].setBackground(Constants.ALT_COLOR);
+			} else {
+				itemPanel.getComponents()[i].setBackground(null);
+			}
 		}
-		totalPriceLabel.setText("" + model.getShoppingCart().getTotal());
+	}
+	
+	private void updateCartView() {
+		for (int i = 0; i < model.getShoppingCart().getItems().size(); i++) {
+			CartItem ci = new CartItem(model.getShoppingCart().getItems().get(i), model);
+			itemPanel.add(ci, "wrap,growx");
+		}
+		
+		totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+		updateColors();
+		itemPanel.revalidate();
+		repaint();
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		if (event.getSource() == btnRensaKassan) {
+			model.cartClear();
+		}
 	}
 }

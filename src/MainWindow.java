@@ -89,10 +89,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private final static Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
 
 	private JPanel checkoutPanel;
-	private JButton checkOutButton;
 	private JButton confirmPurchaseButton;
-	private JPanel checkoutButtonPanel;
-	private JLabel lblTotalprice;
 	private SettingsWindow settingsWindow;
 	private LogInWindow loginWindow;
 
@@ -255,27 +252,15 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		
 		checkoutPanel = new JPanel();
 		sidebarTabbedPane.addTab("Varukorg", null, checkoutPanel, null);
-		checkoutPanel.setLayout(new MigLayout("", "[2px,grow]", "[2px,grow][]"));
+		checkoutPanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 
 		cartScrollPane = new JScrollPane();
-		checkoutPanel.add(cartScrollPane, "cell 0 0,grow");
+		checkoutPanel.add(new CartView(model), "cell 0 0,grow");
 
 		varukorgPanel = new JPanel();
-		cartScrollPane.setViewportView(varukorgPanel);
+		//cartScrollPane.setViewportView();
 
 		varukorgPanel.setLayout(new GridLayout(100,1));
-		
-		checkoutButtonPanel = new JPanel();
-		checkoutPanel.add(checkoutButtonPanel, "cell 0 1,grow");
-		checkoutButtonPanel.setLayout(new MigLayout("", "[grow][95px]", "[23px]"));
-		
-		lblTotalprice = new JLabel("0:-");
-		checkoutButtonPanel.add(lblTotalprice, "cell 0 0");
-		
-		checkOutButton = new JButton("Gå till kassan");
-		checkoutButtonPanel.add(checkOutButton, "cell 1 0,alignx right,aligny top");
-		checkOutButton.addActionListener(this);
-		checkOutButton.setActionCommand("check_out");
 
 		frame.getContentPane().add(sidebarTabbedPane, "cell 3 2,grow");
 
@@ -440,7 +425,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		}
 		
 		
-		if(action.getSource() == signInButton){
+		if (action.getSource() == signInButton) {
 			loginWindow = new LogInWindow(frame, model);
 			loginWindow.setLocationRelativeTo(frame);
 			loginWindow.setVisible(true);
@@ -514,7 +499,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			ItemList item = new ItemList(new ShoppingItem(product), model);
 			
 			// Alternate background in list view
-			if (i % 2 == 1) item.setBackground(new Color(248, 248, 248));
+			if (i % 2 == 1) item.setBackground(Constants.ALT_COLOR);
 			cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), model));
 			cardPanelList.add(item);
 		}
@@ -551,11 +536,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			
 			populateResults((ArrayList<Product>)evt.getNewValue());
 		}
-	}
-
-	public void setTotalPrice(String string) {
-		lblTotalprice.setText(string);
-		checkoutButtonPanel.revalidate();
 		
+		if (evt.getPropertyName() == "cart_additem" || evt.getPropertyName() == "cart_updateitem") {
+			sidebarTabbedPane.setSelectedIndex(0);
+		}
 	}
 }

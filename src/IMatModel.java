@@ -158,36 +158,48 @@ public class IMatModel {
 		LOGGER.log(Level.INFO, "favorite_remove");
 	}
 	
-	public void cartAddItem(ShoppingItem item) {
+	public void cartAddItem(Product product) {
+		cartAddItem(product, 1.0);
+	}
+	
+	public void cartAddItem(Product product, double amount) {
 		for (ShoppingItem si : backend.getShoppingCart().getItems()) {
-			if (si.getProduct().equals(item.getProduct())) {
-				cartUpdateItem(si, item);
+			if (si.getProduct().equals(product)) {
+				cartUpdateItem(product, si.getAmount() + amount);
+				
 				return;
 			}
 		}
+		ShoppingItem item = new ShoppingItem(product, amount);
 		
 		backend.getShoppingCart().addItem(item);
 		pcs.firePropertyChange("cart_additem", null, item);
 		LOGGER.log(Level.INFO, "cart_additem");
 	}
 	
-	public void cartRemoveItem(ShoppingItem item) {
-		if (backend.getShoppingCart().getItems().contains(item)) {
-			backend.getShoppingCart().removeItem(item);
-			
-			pcs.firePropertyChange("cart_removeitem", null, item);
-			LOGGER.log(Level.INFO, "cart_removeitem");
+	public void cartRemoveItem(Product product) {
+		for (ShoppingItem item : backend.getShoppingCart().getItems()) {
+			if (item.getProduct().equals(product)) {
+				backend.getShoppingCart().removeItem(item);
+
+				pcs.firePropertyChange("cart_removeitem", null, item);
+				LOGGER.log(Level.INFO, "cart_removeitem");
+				
+				return;
+			}
 		}
 	}
 	
-	public void cartUpdateItem(ShoppingItem oldItem, ShoppingItem newItem) {
-		if (backend.getShoppingCart().getItems().contains(oldItem)) {
-			ShoppingItem item = new ShoppingItem(oldItem.getProduct(), oldItem.getAmount() + newItem.getAmount());
-			backend.getShoppingCart().getItems().set(backend.getShoppingCart().getItems().indexOf(oldItem), item);
-			
-			pcs.firePropertyChange("cart_updateitem", oldItem, item);
-			System.out.println("total" + oldItem.getAmount());
-			LOGGER.log(Level.INFO, "cart_updateitem");
+	public void cartUpdateItem(Product product, double amount) {
+		for (ShoppingItem item : backend.getShoppingCart().getItems()) {
+			if (item.getProduct().equals(product)) {
+				item.setAmount(amount);
+				
+				pcs.firePropertyChange("cart_updateitem", null, item);
+				LOGGER.log(Level.INFO, "cart_updateitem");
+				
+				return;
+			}
 		}
 	}
 	

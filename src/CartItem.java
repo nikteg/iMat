@@ -105,15 +105,16 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	@Override
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
-			
-			ShoppingItem item = new ShoppingItem(shoppingItem.getProduct(), shoppingItem.getAmount()); 
-			model.cartUpdateItem(shoppingItem, item);
+			System.out.println("RULLAR");
+			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
+			lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
+			repaint();
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnX){
+		if (e.getSource() == btnX) {
 			model.cartRemoveItem(shoppingItem);
 		}
 	}
@@ -121,10 +122,11 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "cart_updateitem") {
-			spinner.setValue(((ShoppingItem)evt.getNewValue()).getAmount());
-			lblTotalPriceLabel.setText(((ShoppingItem)evt.getNewValue()).getTotal() + ((ShoppingItem)evt.getNewValue()).getProduct().getUnit());
+			ShoppingItem item = (ShoppingItem)evt.getNewValue();
+			if (shoppingItem.getProduct().equals(item.getProduct())) {
+				spinner.setValue(((Double)(item).getAmount()).intValue());
+			}
 		}
-		
 	}
 
 

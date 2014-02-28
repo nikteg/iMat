@@ -159,24 +159,36 @@ public class IMatModel {
 	}
 	
 	public void cartAddItem(ShoppingItem item) {
-		backend.getShoppingCart().addItem(item);
+		for (ShoppingItem si : backend.getShoppingCart().getItems()) {
+			if (si.getProduct().equals(item.getProduct())) {
+				cartUpdateItem(si, item);
+				return;
+			}
+		}
 		
+		backend.getShoppingCart().addItem(item);
 		pcs.firePropertyChange("cart_additem", null, item);
 		LOGGER.log(Level.INFO, "cart_additem");
 	}
 	
 	public void cartRemoveItem(ShoppingItem item) {
-		backend.getShoppingCart().removeItem(item);
-		
-		pcs.firePropertyChange("cart_removeitem", null, item);
-		LOGGER.log(Level.INFO, "cart_removeitem");
+		if (backend.getShoppingCart().getItems().contains(item)) {
+			backend.getShoppingCart().removeItem(item);
+			
+			pcs.firePropertyChange("cart_removeitem", null, item);
+			LOGGER.log(Level.INFO, "cart_removeitem");
+		}
 	}
 	
 	public void cartUpdateItem(ShoppingItem oldItem, ShoppingItem newItem) {
-		backend.getShoppingCart().getItems().set(backend.getShoppingCart().getItems().indexOf(oldItem), newItem);
-		
-		pcs.firePropertyChange("cart_updateitem", oldItem, newItem);
-		LOGGER.log(Level.INFO, "cart_updateitem");
+		if (backend.getShoppingCart().getItems().contains(oldItem)) {
+			ShoppingItem item = new ShoppingItem(oldItem.getProduct(), oldItem.getAmount() + newItem.getAmount());
+			backend.getShoppingCart().getItems().set(backend.getShoppingCart().getItems().indexOf(oldItem), item);
+			
+			pcs.firePropertyChange("cart_updateitem", oldItem, item);
+			System.out.println("total" + oldItem.getAmount());
+			LOGGER.log(Level.INFO, "cart_updateitem");
+		}
 	}
 	
 	public void cartClear() {

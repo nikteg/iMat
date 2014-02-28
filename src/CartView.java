@@ -63,7 +63,7 @@ public class CartView extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		String command = evt.getPropertyName();
-		switch (command){
+		switch (command) {
 			case "cart_add_item": updateCartView();
 			break;
 			case "cart_remove_item": updateCartView();

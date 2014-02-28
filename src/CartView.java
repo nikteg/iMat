@@ -2,8 +2,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,17 +20,18 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	private JLabel totalPriceLabel;
 	private JButton btnRensaKassan;
 	
-	/**
-	 * 
-	 * @param cart The cart to monitor;
-	 */
+	public CartView() {
+		super();
+	}
+
 	public CartView(IMatModel model) {
 		this.model = model;
+		this.model.addPropertyChangeListener(this);
 		initialize();
 		updateCartView();
 	}
+	
 	private void initialize() {
-		this.model.addPropertyChangeListener(this);
 		setLayout(new MigLayout("insets 2px", "[][grow][grow]", "[grow][][]"));
 		
 		JScrollPane scrollPane = new JScrollPane();

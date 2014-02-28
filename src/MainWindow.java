@@ -92,6 +92,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JButton confirmPurchaseButton;
 	private SettingsWindow settingsWindow;
 	private LogInWindow loginWindow;
+	private Constants.Category currentCategory;
 
 	/**
 	 * Launch the application.
@@ -310,15 +311,24 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	}
 
 	private void calculateResults(int width, int height) {
+		int num = 0;
+		for (Product product : searchResults) {
+			if (product.getCategory().equals(currentCategory)) {
+				num++;
+			}
+		}
+		
+		int totalnum = num == 0 ? searchResults.size() : num;
+		
 		if (toggleGridViewButton.isSelected()) {
 			int cols = Math.max(1, width / (180 + margin));
-			int rows = searchResults.size() / cols;
-			rows += ((rows * cols < searchResults.size()) ? 1 : 0);
+			int rows = totalnum / cols;
+			rows += ((rows * cols < totalnum) ? 1 : 0);
 
 			contentPanel.setPreferredSize(new Dimension(width - 32, (rows * (240 + margin)) + margin));
 			contentScrollPane.revalidate();
 		} else if (toggleListViewButton.isSelected()) {
-			contentPanel.setPreferredSize(new Dimension(width - 32, (searchResults.size() * 77)));
+			contentPanel.setPreferredSize(new Dimension(width - 32, (totalnum * 77)));
 			
 			contentScrollPane.revalidate();
 		}
@@ -411,6 +421,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		*/
 		
 		if (action.getActionCommand() == "category_change") {
+			currentCategory = ((CategoryToggleButton)action.getSource()).getCategory();
 			List<Product> results = new ArrayList<Product>();
 			
 			for (Product product : searchResults) {
@@ -449,7 +460,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	
 	private void updateButtonNumbers() {
 		
-		buttonAllCategories.SetNumber(searchResults.size());
+		buttonAllCategories.setNumber(searchResults.size());
 		for (int i = 0; i < Constants.Category.values().length; i++) {
 			int num = 0;
 			
@@ -460,23 +471,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			}
 			
 			categorybuttons.get(i).setName(Constants.Category.values()[i].getName());
-			categorybuttons.get(i).SetNumber(num);
+			categorybuttons.get(i).setNumber(num);
 		}		
-	}
-
-	private JPanel getCart() {
-		return varukorgPanel;
-	}
-
-	private class TxtSearchBoxKeyListener extends KeyAdapter {
-		@Override
-		public void keyReleased(KeyEvent keyEvent) {
-			searchTimer.restart();
-		}
 	}
 	
 	private void populateResults(List<Product> results) {
-		searchResults = results;
 		// Clear panel search results
 		cardPanelGrid.removeAll();
 		cardPanelList.removeAll();
@@ -484,6 +483,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		for (int i = 0; i < results.size(); i++) {
 			
 			Product product = results.get(i);
+			
 			boolean skipstep = true;
 			for (CategoryToggleButton ctb : categorybuttons) {
 				if(ctb.isSelected()){
@@ -492,6 +492,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 					}
 				}
 			}
+			
 			if (skipstep && !buttonAllCategories.isSelected()) {
 				continue;
 			}

@@ -5,11 +5,13 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
+import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 
@@ -45,6 +47,7 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 		favoritePanel.setLayout(new MigLayout("insets 0px", "[grow]", "[36px]"));
 		
 		clearFavoritesButton = new JButton("Rensa favoriter");
+		clearFavoritesButton.addActionListener(this);
 		add(clearFavoritesButton, "cell 0 2,alignx center");
 	}
 
@@ -76,13 +79,10 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName() == "favorite_add") {
+		if (evt.getPropertyName().contains("favorite")) {
 			updateFavoriteView();
 		}
-		
-		if (evt.getPropertyName() == "favorite_remove") {
-			updateFavoriteView();
-		}
+	
 	}
 	
 	
@@ -90,6 +90,13 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
+		if (event.getSource() == clearFavoritesButton) {
+			if (JOptionPane.showConfirmDialog(this, "Är du säker", "Radera alla favoriter", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
+				model.favoriteClear();
+				repaint();
+			}
+
+		}
 		
 	}
 }

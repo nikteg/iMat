@@ -4,7 +4,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -22,15 +24,18 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	private JScrollPane scrollPane;
 	private JLabel totalPriceDescriptionLabel;
 	private JButton checkoutButton;
+	private CheckOutWindow checkoutWindow;
+	private JFrame frame;
 	
 	public CartView() {
 		super();
 		initialize();
 	}
 
-	public CartView(IMatModel model) {
+	public CartView(IMatModel model, JFrame frame) {
 		this();
 		this.model = model;
+		this.frame = frame;
 		this.model.addPropertyChangeListener(this);
 		updateCartView();
 	}
@@ -58,6 +63,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		add(btnRensaKassan, "cell 0 2,growx,aligny center");
 		
 		checkoutButton = new JButton("Gå till kassan");
+		checkoutButton.addActionListener(this);
 		add(checkoutButton, "cell 1 2,growx,aligny center");
 	}
 
@@ -133,7 +139,16 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == btnRensaKassan) {
-			model.cartClear();
+			if (JOptionPane.showConfirmDialog(this, "Är du säker på", "Radera alla favoriter", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
+				model.cartClear();
+			}
+		}
+		
+		if (event.getSource() == checkoutButton) {
+			checkoutWindow = new CheckOutWindow(frame, model);
+			checkoutWindow.setLocationRelativeTo(frame);
+			checkoutWindow.setVisible(true);
+			
 		}
 	}
 }

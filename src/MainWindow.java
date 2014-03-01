@@ -94,6 +94,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private Constants.Category currentCategory;
 	private JPanel favoritePanel;
 	private FavoriteView favoriteView;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Launch the application.
@@ -246,8 +247,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 				.setLayout(new FlowLayout(FlowLayout.LEFT, margin, margin));
 
 		cardPanelList = new JPanel();
-		cardPanelList.setLayout(new BoxLayout(cardPanelList, BoxLayout.Y_AXIS));
 		contentPanel.add(cardPanelList, "cardPanelList");
+		cardPanelList.setLayout(new MigLayout("", "[grow]", "[64]"));
 
 		sidebarTabbedPane = new WebTabbedPane();
 		sidebarTabbedPane.setFocusable(false);
@@ -257,7 +258,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		checkoutPanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 
 		cartScrollPane = new JScrollPane();
-		checkoutPanel.add(new CartView(model), "cell 0 0,grow");
+		checkoutPanel.add(new CartView(model, frame), "cell 0 0,grow");
 
 		varukorgPanel = new JPanel();
 		//cartScrollPane.setViewportView();
@@ -270,9 +271,13 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		contentPanel.add(confirmPurchasePanel, "cardConfrimPanel");
 		confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[200.00][][grow]"));
 		
+		scrollPane = new JScrollPane();
+		confirmPurchasePanel.add(scrollPane, "cell 0 0 2 1,grow");
+		
 		cartConfirmationPanel = new JPanel();
+		scrollPane.setViewportView(cartConfirmationPanel);
 		cartConfirmationPanel.setBorder(new TitledBorder(null, "Varukorg", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		confirmPurchasePanel.add(cartConfirmationPanel, "cell 0 0 2 1,grow");
+		cartConfirmationPanel.setLayout(new MigLayout("insets 0px", "[grow]", "[64px]"));
 		
 		addressSettingsPanel_1 = new AddressSettingsPanel();
 		confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
@@ -300,6 +305,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		buttonAllCategories.setActionCommand("category_change");
 		panel.add(buttonAllCategories, "growx");
 		categoryButtonGroup.add(buttonAllCategories);
+		
+		if (model.accountIsAnonymous()) {
+			sidebarTabbedPane.setEnabledAt(1, false);
+			sidebarTabbedPane.setEnabledAt(2, false);
+		}
 
 		for (Constants.Category c : Constants.Category.values()) {
 			CategoryToggleButton button = new CategoryToggleButton(c.getName(), 0);
@@ -504,7 +514,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			// Alternate background in list view
 			if (i % 2 == 1) item.setBackground(Constants.ALT_COLOR);
 			cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), model));
-			cardPanelList.add(item);
+			cardPanelList.add(item, "wrap,growx");
 		}
 		
 		updateButtonNumbers();
@@ -526,11 +536,16 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			userComboBox.setModel(new DefaultComboBoxModel(new String[] { account.getUserName(), "Kontoinst\u00E4llningar", "Logga ut" }));
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedInPanel");
+			sidebarTabbedPane.setEnabledAt(1, true);
+			sidebarTabbedPane.setEnabledAt(2, true);
 		}
 		
 		if (evt.getPropertyName() == "account_signout") {
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedOutPanel");
+			sidebarTabbedPane.setEnabledAt(1, false);
+			sidebarTabbedPane.setEnabledAt(2, false);
+			sidebarTabbedPane.setSelectedIndex(0);
 		}
 		
 		if (evt.getPropertyName() == "search") {
@@ -543,5 +558,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		if (evt.getPropertyName() == "cart_additem" || evt.getPropertyName() == "cart_updateitem") {
 			sidebarTabbedPane.setSelectedIndex(0);
 		}
+		
+		if (evt.getPropertyName() == "favorite_add") {
+			sidebarTabbedPane.setSelectedIndex(1);
+		}
+	
+
 	}
 }

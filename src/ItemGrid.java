@@ -79,6 +79,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		tglFavorite.setBorder(null);
 		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
+		tglFavorite.setVisible((!model.accountIsAnonymous()));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setActionCommand("favorite");
 		
@@ -108,6 +109,20 @@ public class ItemGrid extends Item implements ChangeListener{
 				tglFavorite.setSelected(false);
 			}
 		}
+		
+		if (evt.getPropertyName() == "account_signedin") {
+			tglFavorite.setVisible(true);
+		}
+		
+		if (evt.getPropertyName() == "account_signedup") {
+			tglFavorite.setVisible(true);
+		}
+		
+		if (evt.getPropertyName() == "account_signout") {
+			tglFavorite.setVisible(false);
+		}
+		
+		
 		
 	}
 

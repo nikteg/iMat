@@ -31,6 +31,7 @@ public class SettingsWindow extends WebDialog implements ActionListener, Propert
 		this.model = model;
 		init();
 	}
+	
 	private void init() {
 		setSize(660, 600);
 		setResizable(false);
@@ -58,6 +59,10 @@ public class SettingsWindow extends WebDialog implements ActionListener, Propert
 		
 		
 		settingsPanel.add(btnSave, "cell 1 3,alignx right,growy");
+	}
+	
+	public void setCartView() {
+		
 	}
 	
 	public String getFirstName() {

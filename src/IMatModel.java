@@ -36,6 +36,7 @@ public class IMatModel {
 	private Account account = new Account(backend.getUser(), backend.getCustomer());
 	
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
 	
 	private final static Logger LOGGER = Logger.getLogger(IMatModel.class.getName());
 
@@ -79,6 +80,7 @@ public class IMatModel {
 		LOGGER.log(Level.INFO, "account_signin");
 		
 		if (errors.isEmpty()) {
+			account.setAnonymous(false);
 			pcs.firePropertyChange("account_signedin", null, account);
 			LOGGER.log(Level.INFO, "account_signedin");
 			
@@ -100,6 +102,7 @@ public class IMatModel {
 		account.setPostAddress(postAddress);
 		account.setPostCode(postCode);
 	}
+	
 	
 	public boolean accountSignUp(String userName, String password, String email) {
 		List<String> errors = new ArrayList<String>();
@@ -137,6 +140,12 @@ public class IMatModel {
 		pcs.firePropertyChange("account_signout", null, account);
 		LOGGER.log(Level.INFO, "account_signout");
 	}
+	
+	public boolean accountIsAnonymous() {
+		System.out.println(account.isAnonymous());
+		return account.isAnonymous();
+	}
+
 
 	/**
 	 * Adds gives a product to favorites. Does not affect favorite lists.
@@ -156,6 +165,13 @@ public class IMatModel {
 		
 		pcs.firePropertyChange("favorite_remove", null, product);
 		LOGGER.log(Level.INFO, "favorite_remove");
+	}
+	
+	public void favoriteClear() {
+		backend.favorites().clear();
+		
+		pcs.firePropertyChange("favorite_clear", null, backend.favorites());
+		LOGGER.log(Level.INFO, "favorite_clear");
 	}
 	
 	public void cartAddItem(Product product) {
@@ -209,6 +225,7 @@ public class IMatModel {
 		pcs.firePropertyChange("cart_clear", null, backend.getShoppingCart());
 		LOGGER.log(Level.INFO, "cart_clear");
 	}
+	
 
 	/**
 	 * Returns the path to the directory where the backend stores it's data.
@@ -515,6 +532,9 @@ public class IMatModel {
 	public void removeFavorite(Product p) {
 		backend.removeFavorite(p);
 	}
+	
+
+
 
 	/**
 	 * Resets the backend to it's initial state. Mostly useful during
@@ -527,4 +547,11 @@ public class IMatModel {
 	public void shutDown() {
 		backend.shutDown();
 	}
+
+
+
+
+
+
+
 }

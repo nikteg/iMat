@@ -4,7 +4,9 @@ import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
 import net.miginfocom.swing.MigLayout;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
@@ -13,18 +15,18 @@ public class AddressSettingsPanel extends JPanel {
 	private JLabel firstNameLabel;
 	private JTextField firstNameTextField;
 	private JLabel lastNameLabel;
-	private JLabel streetAddressLabel;
-	private JLabel zipCodeCityLabel;
-	private JLabel phoneLabel;
-	private JLabel cellPhoneLabel;
+	private JLabel addressLabel;
+	private JLabel postCodePostAddressLabel;
+	private JLabel phoneNumberLabel;
+	private JLabel mobilePhoneNumberLabel;
 	private JTextField lastNameTextField;
-	private JTextField streetAddressTextField;
-	private JTextField zipCodeTextField;
-	private JTextField phoneTextField;
-	private JTextField cellPhoneTextField;
+	private JTextField addressTextField;
+	private JTextField postCodeTextField;
+	private JTextField phoneNumberTextField;
+	private JTextField mobilePhoneNumberTextField;
 	private JSeparator separator;
 	private JSeparator separator_1;
-	private JTextField cityTextField;
+	private JTextField postAddressTextField;
 
 	public AddressSettingsPanel() {
 		initialize();
@@ -50,40 +52,40 @@ public class AddressSettingsPanel extends JPanel {
 		separator = new JSeparator();
 		add(separator, "cell 0 2 3 1,grow");
 		
-		streetAddressLabel = new JLabel("Gatuadress");
-		add(streetAddressLabel, "cell 0 3,alignx left");
+		addressLabel = new JLabel("Gatuadress");
+		add(addressLabel, "cell 0 3,alignx left");
 		
-		streetAddressTextField = new JTextField();
-		streetAddressTextField.setColumns(10);
-		add(streetAddressTextField, "cell 1 3 2 1,growx");
+		addressTextField = new JTextField();
+		addressTextField.setColumns(10);
+		add(addressTextField, "cell 1 3 2 1,growx");
 		
-		zipCodeCityLabel = new JLabel("Postnr/Postort");
-		add(zipCodeCityLabel, "cell 0 4,alignx left");
+		postCodePostAddressLabel = new JLabel("Postnr/Postort");
+		add(postCodePostAddressLabel, "cell 0 4,alignx left");
 		
-		zipCodeTextField = new JTextField();
-		zipCodeTextField.setColumns(10);
-		add(zipCodeTextField, "cell 1 4,growx");
+		postCodeTextField = new JTextField();
+		postCodeTextField.setColumns(10);
+		add(postCodeTextField, "cell 1 4,growx");
 		
-		cityTextField = new JTextField();
-		cityTextField.setColumns(10);
-		add(cityTextField, "cell 2 4,growx");
+		postAddressTextField = new JTextField();
+		postAddressTextField.setColumns(10);
+		add(postAddressTextField, "cell 2 4,growx");
 		
 		separator_1 = new JSeparator();
 		add(separator_1, "cell 0 5 3 1,grow");
 		
-		phoneLabel = new JLabel("Tel (inkl riktnr.)");
-		add(phoneLabel, "cell 0 6,alignx left");
+		phoneNumberLabel = new JLabel("Tel (inkl riktnr.)");
+		add(phoneNumberLabel, "cell 0 6,alignx left");
 		
-		phoneTextField = new JTextField();
-		phoneTextField.setColumns(10);
-		add(phoneTextField, "cell 1 6 2 1,growx");
+		phoneNumberTextField = new JTextField();
+		phoneNumberTextField.setColumns(10);
+		add(phoneNumberTextField, "cell 1 6 2 1,growx");
 		
-		cellPhoneLabel = new JLabel("Mobiltelefon");
-		add(cellPhoneLabel, "cell 0 7,alignx left");
+		mobilePhoneNumberLabel = new JLabel("Mobiltelefon");
+		add(mobilePhoneNumberLabel, "cell 0 7,alignx left");
 		
-		cellPhoneTextField = new JTextField();
-		cellPhoneTextField.setColumns(10);
-		add(cellPhoneTextField, "cell 1 7 2 1,growx");
+		mobilePhoneNumberTextField = new JTextField();
+		mobilePhoneNumberTextField.setColumns(10);
+		add(mobilePhoneNumberTextField, "cell 1 7 2 1,growx");
 	}
 	
 	public String getFirstName() {
@@ -92,36 +94,44 @@ public class AddressSettingsPanel extends JPanel {
 	public void setFirstName(String firstName) {
 		this.firstNameTextField.setText(firstName);
 	}
-	public String getStreetAddress() {
-		return streetAddressTextField.getText();
+	public String getLastName() {
+		return lastNameTextField.getText();
 	}
-	public void setStreetAddress(String streetAddress) {
-		this.streetAddressTextField.setText(streetAddress);
+	public void setLastName(String lastName) {
+		this.lastNameTextField.setText(lastName);
+		
 	}
-	public String getZipCode() {
-		return zipCodeTextField.getText();
+	public String getAddress() {
+		return addressTextField.getText();
 	}
-	public void setZipCode(String zipCode) {
-		this.zipCodeTextField.setText(zipCode);
+	public void setAddress(String streetAddress) {
+		this.addressTextField.setText(streetAddress);
 	}
-	public String getPhone() {
-		return phoneTextField.getText();
+	public String getPostCode() {
+		return postCodeTextField.getText();
 	}
-	public void setPhone(String phone) {
-		this.phoneTextField.setText(phone);
+	public void setPostCode(String zipCode) {
+		this.postCodeTextField.setText(zipCode);
 	}
-	public String getCellPhone() {
-		return cellPhoneTextField.getText();
+	public String getPhoneNumber() {
+		return phoneNumberTextField.getText();
 	}
-	public void setCellPhone(String cellPhone) {
-		this.cellPhoneTextField.setText(cellPhone);
+	public void setPhoneNumber(String phone) {
+		this.phoneNumberTextField.setText(phone);
 	}
-	public String getCity() {
-		return cityTextField.getText();
+	public String getMobilePhoneNumber() {
+		return mobilePhoneNumberTextField.getText();
 	}
-	public void setCity(String city) {
-		this.cityTextField.setText(city);
+	public void setMobilePhoneNumber(String cellPhone) {
+		this.mobilePhoneNumberTextField.setText(cellPhone);
 	}
+	public String getPostAddress() {
+		return postAddressTextField.getText();
+	}
+	public void setPostAddress(String city) {
+		this.postAddressTextField.setText(city);
+	}
+
 	
 	
 }

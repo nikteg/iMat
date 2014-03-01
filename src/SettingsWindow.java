@@ -6,16 +6,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.alee.laf.rootpane.WebDialog;
 
-
-public class SettingsWindow extends WebDialog implements ActionListener, PropertyChangeListener {
+public class SettingsWindow extends JDialog implements ActionListener, PropertyChangeListener {
 	private JFrame frame;
 	private IMatModel model;
 	private JPanel settingsPanel;
@@ -29,13 +28,13 @@ public class SettingsWindow extends WebDialog implements ActionListener, Propert
 		super(frame,true);
 		this.frame = frame;
 		this.model = model;
-		init();
+		initialize();
+		
 	}
 	
-	private void init() {
+	private void initialize() {
 		setSize(660, 600);
 		setResizable(false);
-		requestFocusInWindow();
 		
 		settingsPanel = new JPanel();
 		getContentPane().add(settingsPanel, BorderLayout.CENTER);
@@ -59,80 +58,22 @@ public class SettingsWindow extends WebDialog implements ActionListener, Propert
 		
 		
 		settingsPanel.add(btnSave, "cell 1 3,alignx right,growy");
-	}
-	
-	public void setCartView() {
+		
+		addressSettingsPanel.setFirstName(model.getAccount().getFirstName());
+		addressSettingsPanel.setLastName(model.getAccount().getLastName());
+		addressSettingsPanel.setPhoneNumber(model.getAccount().getPhoneNumber());
+		addressSettingsPanel.setMobilePhoneNumber(model.getAccount().getMobilePhoneNumber());
+		addressSettingsPanel.setAddress(model.getAccount().getAddress());
+		addressSettingsPanel.setPostAddress(model.getAccount().getPostAddress());
+		addressSettingsPanel.setPostCode(model.getAccount().getPostCode());
+		
+		
+		
 		
 	}
 	
-	public String getFirstName() {
-		return addressSettingsPanel.getFirstName();
-	}
-	
-	public void setFirstName(String firstName) {
 
-		addressSettingsPanel.setFirstName(firstName);
-	}
 	
-	public String getStreetAddress() {
-
-		return addressSettingsPanel.getStreetAddress();
-	}
-	
-	public void setStreetAddress(String streetAddress) {
-
-		addressSettingsPanel.setStreetAddress(streetAddress);
-	}
-	
-	public String getZipCode() {
-
-		return addressSettingsPanel.getZipCode();
-	}
-	
-	public void setZipCode(String zipCode) {
-
-		addressSettingsPanel.setZipCode(zipCode);
-	}
-	
-	public String getPhone() {
-
-		return addressSettingsPanel.getPhone();
-	}
-	
-	public void setPhone(String phone) {
-
-		addressSettingsPanel.setPhone(phone);
-	}
-	
-	public String getCellPhone() {
-		
-		return addressSettingsPanel.getCellPhone();
-	}
-	
-	public void setCellPhone(String cellPhone) {
-
-		addressSettingsPanel.setCellPhone(cellPhone);
-	}
-	
-	public String getCity() {
-
-		return addressSettingsPanel.getCity();
-	}
-	
-	public void setCity(String city) {
-
-		addressSettingsPanel.setCity(city);
-	}
-	
-	public String getEmail(){
-		
-		return logInSettingsPanel.getEmail();
-	}
-	
-	public void setEmail(String email){
-		
-		this.logInSettingsPanel.setEmail(email);
-	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSave){

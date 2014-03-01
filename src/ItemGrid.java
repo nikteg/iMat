@@ -30,6 +30,7 @@ public class ItemGrid extends Item implements ChangeListener{
 	private JLabel lblPrice;
 	private WebSpinner spinner;
 	public JToggleButton tglFavorite;
+	private JLabel lblSuffix;
 
 	public ItemGrid() {
 		super();
@@ -44,12 +45,12 @@ public class ItemGrid extends Item implements ChangeListener{
 	private void initialize() {
 		setBackground(new Color(248, 248, 248));
 		setPreferredSize(new Dimension(180, 240));
-		setLayout(new MigLayout("insets 8px", "[grow][grow][]", "[164px:164px][26px:26px][26px:26px][]"));
+		setLayout(new MigLayout("insets 8px", "[48][48,grow][grow][][]", "[164px:164px][26px:26px][26px:26px][]"));
 
 		lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(164, 164)));
 		lblBild.setPreferredSize(new Dimension(164, 164));
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblBild, "cell 0 0 3 1,growx,aligny top");
+		add(lblBild, "cell 0 0 5 1,growx,aligny top");
 
 		btnKp = new JButton("K\u00F6p");
 		btnKp.addActionListener(this);
@@ -58,16 +59,14 @@ public class ItemGrid extends Item implements ChangeListener{
 		add(lblName, "flowx,cell 0 1 3 1,alignx left,aligny center");
 		
 		lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
-		add(lblPrice, "cell 0 2,alignx left,aligny center");
+		add(lblPrice, "cell 3 1 2 1,alignx right,aligny center");
 		
 		spinner = new WebSpinner();
 		spinner.setDrawFocus(false);
 		spinner.setPreferredSize(new Dimension(32, 20));
 		spinner.addChangeListener(this);
 		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
-		add(spinner, "cell 1 2,grow");
-		btnKp.setActionCommand("add_cart");
-		add(btnKp, "cell 2 2,alignx right,aligny center");
+		add(spinner, "cell 0 2,grow");
 		
 		tglFavorite = new JToggleButton("");
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
@@ -79,13 +78,18 @@ public class ItemGrid extends Item implements ChangeListener{
 		tglFavorite.setBorder(null);
 		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
-		tglFavorite.setVisible((!model.accountIsAnonymous()));
+		tglFavorite.setVisible((!model.getAccount().isAnonymous()));
 		tglFavorite.addActionListener(this);
+		
+		lblSuffix = new JLabel(shoppingItem.getProduct().getUnitSuffix());
+		add(lblSuffix, "cell 1 2,alignx left");
 		tglFavorite.setActionCommand("favorite");
 		
+		add(tglFavorite, "cell 3 2,alignx center,aligny center");
+		btnKp.setActionCommand("add_cart");
+		add(btnKp, "cell 4 2,alignx right,aligny center");
+		
 		if (model.isFavorite(shoppingItem.getProduct())) tglFavorite.setSelected(true);
-			
-		add(tglFavorite, "cell 2 1,alignx right,aligny center");
 		
 	}
 	

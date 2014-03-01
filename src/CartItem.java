@@ -41,6 +41,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	private IMatModel model;
 	private JLabel lblTotalPriceLabel;
 	private JButton btnX;
+	private JLabel lblSuffix;
 
 	public CartItem() {
 		super();
@@ -58,11 +59,12 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		this.model.addPropertyChangeListener(this);
 		lblNameLabel.setText(shoppingItem.getProduct().getName());
 		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
+		lblSuffix.setText(shoppingItem.getProduct().getUnitSuffix());
 		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
 	}
 	
 	private void initialize() {
-		setLayout(new MigLayout("insets 4px", "[grow][][64px][pref:18.00px:pref]", "[60px]"));
+		setLayout(new MigLayout("insets 4px", "[grow][][28][48px][pref:18.00px:pref]", "[60px]"));
 		
 		lblNameLabel = new JLabel("nameLabel");
 		add(lblNameLabel, "cell 0 0,alignx left,aligny center");
@@ -73,8 +75,11 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		spinner.setPreferredSize(new Dimension(48, 10));
 		add(spinner, "cell 1 0,alignx right,aligny baseline");
 		
+		lblSuffix = new JLabel("unit");
+		add(lblSuffix, "cell 2 0,alignx left");
+		
 		lblTotalPriceLabel = new JLabel("20:-");
-		add(lblTotalPriceLabel, "cell 2 0,alignx right,aligny center");
+		add(lblTotalPriceLabel, "cell 3 0,alignx right,aligny center");
 		
 		btnX = new JButton("");
 		btnX.setPreferredSize(new Dimension(18, 18));
@@ -85,7 +90,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		btnX.addActionListener(this);
 		btnX.setActionCommand("remove_from_cart");
 		btnX.setMinimumSize(new Dimension(0, 0));
-		add(btnX, "cell 3 0");
+		add(btnX, "cell 4 0");
 	}
 	
 	public ShoppingItem getShoppingItem() {

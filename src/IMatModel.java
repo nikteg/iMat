@@ -145,6 +145,10 @@ public class IMatModel {
 		System.out.println(account.isAnonymous());
 		return account.isAnonymous();
 	}
+	
+	public Account getAccount() {
+		return account;
+	}
 
 
 	/**
@@ -547,6 +551,8 @@ public class IMatModel {
 	public void shutDown() {
 		backend.shutDown();
 	}
+
+
 
 
 

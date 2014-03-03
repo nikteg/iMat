@@ -120,7 +120,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 				//if (shoppingItem.getAmount() == item.getAmount()) return;
 				
 				spinner.setValue(((Double)item.getAmount()).intValue());
-				lblTotalPriceLabel.setText(item.getTotal() + ":-");
+				lblTotalPriceLabel.setText(Constants.currencyFormat.format(item.getTotal()) + ":-");
 				shoppingItem = item;
 				repaint();
 			}

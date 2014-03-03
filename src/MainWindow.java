@@ -141,6 +141,10 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	public IMatModel getModel() {
 		return model;
 	}
+	
+	public void changeLogo() {
+		lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo2.png")));
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -158,7 +162,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		lblImat.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(lblImat, "cell 0 0 1 2,growx,aligny center");
 
-		frame.getContentPane().add(new SearchField(model), "cell 1 1,grow");
+		frame.getContentPane().add(new SearchField(model, this), "cell 1 1,grow");
 
 		toggleGridViewButton = new WebToggleButton(
 				new ImageIcon(

@@ -87,7 +87,7 @@ public class ItemList extends Item implements ChangeListener {
 		
 		add(tglFavorite, "cell 4 0,alignx center");
 		
-		btnKp = new JButton("K\u00F6p");
+		btnKp = new JButton("Lägg till");
 		btnKp.addActionListener(this);
 		btnKp.setActionCommand("add_cart");
 		add(btnKp, "cell 6 0,alignx center");

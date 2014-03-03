@@ -98,6 +98,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JScrollPane scrollPane;
 	private JPanel historyPanel;
 	private HistoryView historyView;
+	private boolean logoChanged = true;
 
 	/**
 	 * Launch the application.
@@ -142,6 +143,16 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	public IMatModel getModel() {
 		return model;
 	}
+	
+	public void changeLogo() {
+		if (logoChanged) {
+			lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo2.png")));
+		} else {
+			lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
+		}
+		
+		logoChanged = !logoChanged;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -158,8 +169,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 				.getResource("/resources/logo.png")));
 		lblImat.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(lblImat, "cell 0 0 1 2,growx,aligny center");
-		
-		searchField = new SearchField(model);
+
+		searchField = new SearchField(model, this);
 		frame.getContentPane().add(searchField , "cell 1 1,grow");
 
 		toggleGridViewButton = new WebToggleButton(
@@ -363,67 +374,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
-/*
-		if (action.getActionCommand() == "favorite") {
-			if (!((ItemGrid)action.getSource()).tglFavorite.isSelected()) return;
-			Product product = ((Item)action.getSource()).shoppingItem.getProduct();
-			System.out.println("DU FAVORISERADE JUST .... BAM BAM BAM: " + product.getName());
-		}
-		
-		if (action.getActionCommand() == "add_cart") {
-<<<<<<< HEAD
-			Product product = ((Item)action.getSource()).product;
-			System.out.println(product.getName());
-			model.getShoppingCart().addProduct(product, 1.0);
-			if(!model.getShoppingCart().getItems().contains(product)){
-				varukorgPanel.add(new CartItem(new ShoppingItem(product, 1.0)));
-				varukorgPanel.revalidate();
-			}
-=======
-			ShoppingItem shoppingItem = ((Item)action.getSource()).shoppingItem;
-			
-						 
-				if (model.getShoppingCart().getItems().contains(shoppingItem)){
-					
-					for(Component c : varukorgPanel.getComponents()){
-						System.out.println((((CartItem) c).getShoppingItem().getProduct().getName()));
-						if((((CartItem) c).getShoppingItem().getProduct()).equals(shoppingItem.getProduct())){
-							((CartItem) c).addItem(((Item)action.getSource()).getAmount());
-							break;
-						}
-					}
-				
-				}else {
-					
-					shoppingItem.setAmount(((Item)action.getSource()).getAmount());
-					varukorgPanel.add(new CartItem(shoppingItem,this));
-					model.getShoppingCart().addItem(shoppingItem);
-					varukorgPanel.revalidate();
-					
-				} 
-			
-			setTotalPrice(model.getShoppingCart().getTotal()+":-");
-		}
-		
-		if(action.getActionCommand() == "remove_from_cart"){
-			CartItem cartItem = (CartItem)action.getSource();
-			varukorgPanel.remove(cartItem);
-			model.getShoppingCart().removeItem(cartItem.getShoppingItem());
-			setTotalPrice(model.getShoppingCart().getTotal()+":-");
-			varukorgPanel.revalidate();
-
-		}
-		
-		if (action.getActionCommand() == "check_out"){
-			CardLayout cl = (CardLayout) (contentPanel.getLayout());
-			cl.show(contentPanel, "cardConfrimPanel");
-			contentPanel.setPreferredSize(new Dimension(cartConfirmationPanel.getWidth(), cartConfirmationPanel.getHeight()));
-			
-			contentScrollPane.revalidate();
-			
->>>>>>> origin/mlonn
-		}
-		*/
 		if (action.getActionCommand() == "toggle_grid") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
@@ -435,18 +385,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			cl.show(contentPanel, "cardPanelList");
 			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		}
-		/*
-		if (action.getActionCommand() == "search") {
-			if (action.getSource() == searchTimer) {
-				categoryButtonGroup.clearSelection();
-				buttonAllCategories.setSelected(true);
-			}
-			search();
-			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
-			
-		}
-		*/
-		
+
 		if (action.getActionCommand() == "category_change") {
 			currentCategory = ((CategoryToggleButton)action.getSource()).getCategory();
 			List<Product> results = new ArrayList<Product>();

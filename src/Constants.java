@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.text.DecimalFormat;
 
 public class Constants {
 	public static enum Category {
@@ -20,4 +21,6 @@ public class Constants {
 	
 	public static final Color ERROR_COLOR = new Color(250, 150, 150);
 	public static final Color ALT_COLOR = new Color(248, 248, 248);
+	
+	public static final DecimalFormat currencyFormat = new DecimalFormat("#.##");
 }

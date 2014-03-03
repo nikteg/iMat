@@ -102,7 +102,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 				}
 			}
 			
-			totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+			totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + ":-");
 			itemPanel.revalidate();
 			repaint();
 		}

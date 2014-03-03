@@ -44,6 +44,8 @@ public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeL
 		lblNameLabel.setText(shoppingItem.getProduct().getName());
 		lblPriceLabel.setText(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
 		labelAmount.setText((int)shoppingItem.getAmount() + " " + shoppingItem.getProduct().getUnitSuffix());
+		tglFavorite.setSelected(model.isFavorite(shoppingItem.getProduct()));
+
 	}
 	
 	private void initialize() {
@@ -82,7 +84,6 @@ public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeL
 		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
-		tglFavorite.setSelected(true);
 		tglFavorite.setActionCommand("favorite");
 		
 		add(tglFavorite, "cell 3 0,alignx right,aligny center");

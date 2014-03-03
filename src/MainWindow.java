@@ -32,6 +32,8 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
@@ -44,9 +46,10 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.tabbedpane.WebTabbedPane;
 import com.alee.laf.text.WebTextField;
+
 import java.awt.BorderLayout;
 
-public class MainWindow implements ActionListener, PropertyChangeListener {
+public class MainWindow implements ActionListener, PropertyChangeListener, ChangeListener {
 
 	private JFrame frame;
 	private JLabel lblImat;
@@ -270,6 +273,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		
 		checkoutPanel = new JPanel();
 		sidebarTabbedPane.addTab("Varukorg", null, checkoutPanel, null);
+		sidebarTabbedPane.addChangeListener(this);
 		checkoutPanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 
 		cartScrollPane = new JScrollPane();
@@ -374,6 +378,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
+
 		if (action.getActionCommand() == "toggle_grid") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
@@ -516,5 +521,13 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		}
 	
 
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if (((WebTabbedPane)e.getSource()).getSelectedIndex() == 0 || ((WebTabbedPane)e.getSource()).getSelectedIndex() == 2) {
+			favoriteView.updateFavoriteView();
+		}
+		
 	}
 }

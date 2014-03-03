@@ -70,7 +70,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		oneOrderPanel = new JPanel();
 		add(oneOrderPanel, "oneOrderPanel");
-		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[145px][grow]", "[][2px,grow][]"));
+		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[145px,left][grow]", "[][2px,grow][]"));
 		
 		backButton = new JButton("<-- Bakåt");
 		backButton.addActionListener(this);

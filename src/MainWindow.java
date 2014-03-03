@@ -32,6 +32,8 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
@@ -44,9 +46,10 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.tabbedpane.WebTabbedPane;
 import com.alee.laf.text.WebTextField;
+
 import java.awt.BorderLayout;
 
-public class MainWindow implements ActionListener, PropertyChangeListener {
+public class MainWindow implements ActionListener, PropertyChangeListener, ChangeListener {
 
 	private JFrame frame;
 	private JLabel lblImat;
@@ -259,6 +262,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		
 		checkoutPanel = new JPanel();
 		sidebarTabbedPane.addTab("Varukorg", null, checkoutPanel, null);
+		sidebarTabbedPane.addChangeListener(this);
 		checkoutPanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 
 		cartScrollPane = new JScrollPane();
@@ -363,67 +367,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
-/*
-		if (action.getActionCommand() == "favorite") {
-			if (!((ItemGrid)action.getSource()).tglFavorite.isSelected()) return;
-			Product product = ((Item)action.getSource()).shoppingItem.getProduct();
-			System.out.println("DU FAVORISERADE JUST .... BAM BAM BAM: " + product.getName());
-		}
-		
-		if (action.getActionCommand() == "add_cart") {
-<<<<<<< HEAD
-			Product product = ((Item)action.getSource()).product;
-			System.out.println(product.getName());
-			model.getShoppingCart().addProduct(product, 1.0);
-			if(!model.getShoppingCart().getItems().contains(product)){
-				varukorgPanel.add(new CartItem(new ShoppingItem(product, 1.0)));
-				varukorgPanel.revalidate();
-			}
-=======
-			ShoppingItem shoppingItem = ((Item)action.getSource()).shoppingItem;
-			
-						 
-				if (model.getShoppingCart().getItems().contains(shoppingItem)){
-					
-					for(Component c : varukorgPanel.getComponents()){
-						System.out.println((((CartItem) c).getShoppingItem().getProduct().getName()));
-						if((((CartItem) c).getShoppingItem().getProduct()).equals(shoppingItem.getProduct())){
-							((CartItem) c).addItem(((Item)action.getSource()).getAmount());
-							break;
-						}
-					}
-				
-				}else {
-					
-					shoppingItem.setAmount(((Item)action.getSource()).getAmount());
-					varukorgPanel.add(new CartItem(shoppingItem,this));
-					model.getShoppingCart().addItem(shoppingItem);
-					varukorgPanel.revalidate();
-					
-				} 
-			
-			setTotalPrice(model.getShoppingCart().getTotal()+":-");
-		}
-		
-		if(action.getActionCommand() == "remove_from_cart"){
-			CartItem cartItem = (CartItem)action.getSource();
-			varukorgPanel.remove(cartItem);
-			model.getShoppingCart().removeItem(cartItem.getShoppingItem());
-			setTotalPrice(model.getShoppingCart().getTotal()+":-");
-			varukorgPanel.revalidate();
 
-		}
-		
-		if (action.getActionCommand() == "check_out"){
-			CardLayout cl = (CardLayout) (contentPanel.getLayout());
-			cl.show(contentPanel, "cardConfrimPanel");
-			contentPanel.setPreferredSize(new Dimension(cartConfirmationPanel.getWidth(), cartConfirmationPanel.getHeight()));
-			
-			contentScrollPane.revalidate();
-			
->>>>>>> origin/mlonn
-		}
-		*/
 		if (action.getActionCommand() == "toggle_grid") {
 			CardLayout cl = (CardLayout) (contentPanel.getLayout());
 			cl.show(contentPanel, "cardPanelGrid");
@@ -435,17 +379,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			cl.show(contentPanel, "cardPanelList");
 			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		}
-		/*
-		if (action.getActionCommand() == "search") {
-			if (action.getSource() == searchTimer) {
-				categoryButtonGroup.clearSelection();
-				buttonAllCategories.setSelected(true);
-			}
-			search();
-			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
-			
-		}
-		*/
 		
 		if (action.getActionCommand() == "category_change") {
 			currentCategory = ((CategoryToggleButton)action.getSource()).getCategory();
@@ -577,5 +510,13 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		}
 	
 
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if (((WebTabbedPane)e.getSource()).getSelectedIndex() == 0 || ((WebTabbedPane)e.getSource()).getSelectedIndex() == 2) {
+			favoriteView.updateFavoriteView();
+		}
+		
 	}
 }

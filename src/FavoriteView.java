@@ -63,7 +63,7 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 		}
 	}
 	
-	private void updateFavoriteView() {
+	public void updateFavoriteView() {
 		
 		favoritePanel.removeAll();
 		for (int i = 0; i < model.getFavorites().size(); i++) {
@@ -80,7 +80,7 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().contains("favorite")) {
-			updateFavoriteView();
+			//updateFavoriteView();
 		}
 	
 	}

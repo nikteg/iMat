@@ -28,14 +28,19 @@ public class SearchField extends WebTextField implements ActionListener {
 		setInputPrompt("Sök...");
 		addActionListener(this);
 		addKeyListener(new KeyListener());
+		timer.restart();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == timer) {
-			if (getText().length() < 2) return;
-			
-			model.getSearchResults(getText());
+			if (this.getText().length() == 0){
+				model.getSearchResults("");
+			} else if (getText().length() < 2){
+				return;
+			}else{
+				model.getSearchResults(getText());
+			}
 		}
 	}
 	

@@ -556,7 +556,15 @@ public class IMatModel {
 	}
 	
 
-
+	/**
+	 * Set model to show all products.
+	 */
+	public void showAllProducts(){
+		List<Product> results = backend.getProducts();
+		
+		pcs.firePropertyChange("search", null, results);
+		LOGGER.log(Level.INFO, "search");
+	}
 
 	/**
 	 * Resets the backend to it's initial state. Mostly useful during

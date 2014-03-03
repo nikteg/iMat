@@ -59,6 +59,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private int numResults;
 	private WebTabbedPane sidebarTabbedPane;
 
+	private SearchField searchField;
 	private WebToggleButton toggleGridViewButton;
 	private WebToggleButton toggleListViewButton;
 	private WebButtonGroup toggleViewButtonGroup;
@@ -157,8 +158,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 				.getResource("/resources/logo.png")));
 		lblImat.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(lblImat, "cell 0 0 1 2,growx,aligny center");
-
-		frame.getContentPane().add(new SearchField(model), "cell 1 1,grow");
+		
+		searchField = new SearchField(model);
+		frame.getContentPane().add(searchField , "cell 1 1,grow");
 
 		toggleGridViewButton = new WebToggleButton(
 				new ImageIcon(
@@ -330,6 +332,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			panel.add(button, "growx");
 			categoryButtonGroup.add(button);
 		}
+	
+		//Show all products at startup (for now)
+		this.populateResults(model.getProducts());
 	}
 
 	private void calculateResults(int width, int height) {
@@ -479,8 +484,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		}
 	}
 	
-	private void updateButtonNumbers() {
-		
+	private void updateButtonNumbers() {		
 		buttonAllCategories.setNumber(searchResults.size());
 		for (int i = 0; i < Constants.Category.values().length; i++) {
 			int num = 0;
@@ -500,7 +504,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		// Clear panel search results
 		cardPanelGrid.removeAll();
 		cardPanelList.removeAll();
-	
+				
 		for (int i = 0; i < results.size(); i++) {
 			
 			Product product = results.get(i);

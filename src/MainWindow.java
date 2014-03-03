@@ -1,5 +1,6 @@
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -147,15 +148,19 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		return model;
 	}
 	
+	/* KONAMI STUFF */
 	public void changeLogo() {
 		if (logoChanged) {
+			this.frame.setCursor(Cursor.CROSSHAIR_CURSOR);
 			lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo2.png")));
 		} else {
 			lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
+			this.frame.setCursor(Cursor.DEFAULT_CURSOR);
 		}
 		
 		logoChanged = !logoChanged;
 	}
+	/* END KONAMI STUFF */
 
 	/**
 	 * Initialize the contents of the frame.
@@ -168,6 +173,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 				new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));
 
 		lblImat = new JLabel();
+		lblImat.setToolTipText("KONAMI?");
 		lblImat.setIcon(new ImageIcon(MainWindow.class
 				.getResource("/resources/logo.png")));
 		lblImat.setHorizontalAlignment(SwingConstants.CENTER);

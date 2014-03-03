@@ -52,7 +52,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblBild, "cell 0 0 5 1,growx,aligny top");
 
-		btnKp = new JButton("K\u00F6p");
+		btnKp = new JButton("Lägg till");
 		btnKp.addActionListener(this);
 		
 		lblName = new JLabel(shoppingItem.getProduct().getName());

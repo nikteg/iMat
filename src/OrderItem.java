@@ -45,6 +45,7 @@ public class OrderItem extends JPanel implements  ActionListener, PropertyChange
 	private JLabel label;
 	private JLabel lblDatum;
 	private JButton btnInfo;
+	private HistoryView historyView;
 
 	public OrderItem() {
 		super();
@@ -55,10 +56,11 @@ public class OrderItem extends JPanel implements  ActionListener, PropertyChange
 	 * Creates a CartItem instance from the given ShoppingItem.
 	 * @param shoppingItem - The item to track
 	 */
-	public OrderItem(Order order, IMatModel model){
+	public OrderItem(HistoryView historyView, Order order, IMatModel model){
 		this();
 		this.order = order;
 		this.model = model;
+		this.historyView = historyView;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
 		lblDatum.setText(sdf.format(order.getDate()));
 		label.setText((totalPrice(order)) + ":-");
@@ -102,7 +104,7 @@ public class OrderItem extends JPanel implements  ActionListener, PropertyChange
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == btnInfo) {
-			model.orderMoreInfo(order);
+			historyView.addShoppingItems(order);
 		}
 	}
 

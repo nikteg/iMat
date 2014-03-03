@@ -532,11 +532,6 @@ public class IMatModel {
 		return order;
 	}
 	
-	public void orderMoreInfo(Order order) {
-		
-		pcs.firePropertyChange("order_moreinfo", null, order);
-		LOGGER.log(Level.INFO, "order_moreinfo");
-	}
 	
 	public void orderRemove(Order order) {
 		backend.getOrders().remove(order);

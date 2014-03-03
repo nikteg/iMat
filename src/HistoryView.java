@@ -1,10 +1,11 @@
+import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.SimpleDateFormat;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -14,15 +15,8 @@ import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
-import com.alee.extended.panel.WebAccordion;
-import com.alee.extended.panel.WebAccordionStyle;
 import com.alee.laf.scroll.WebScrollPane;
-
-import javax.swing.BoxLayout;
-
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import javax.swing.JButton;
+import javax.swing.JLabel;
 
 
 public class HistoryView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -38,6 +32,9 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 	private JPanel oneOrderItem;
 	private JPanel panel_1;
 	private JButton backButton;
+	private JButton addAllToCartButton;
+	private Order order;
+	private JLabel lblSumma;
 	
 	public HistoryView() {
 		super();
@@ -73,14 +70,14 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		oneOrderPanel = new JPanel();
 		add(oneOrderPanel, "oneOrderPanel");
-		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[2px,grow]", "[][2px,grow]"));
+		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[145px][grow]", "[][2px,grow][]"));
 		
 		backButton = new JButton("<-- Bakåt");
 		backButton.addActionListener(this);
-		oneOrderPanel.add(backButton, "cell 0 0");
+		oneOrderPanel.add(backButton, "cell 0 0,alignx left,aligny center");
 		
 		panel_1 = new JPanel();
-		oneOrderPanel.add(panel_1, "cell 0 1,grow");
+		oneOrderPanel.add(panel_1, "cell 0 1 2 1,grow");
 		panel_1.setLayout(new MigLayout("insets 0px", "[2px,grow]", "[2px,grow]"));
 		
 		scrollPaneOneOrder = new JScrollPane();
@@ -91,20 +88,38 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		oneOrderItem = new JPanel();
 		scrollPaneOneOrder.setViewportView(oneOrderItem);
 		oneOrderItem.setLayout(new MigLayout("insets 0px", "[grow]", "[36px]"));
+		
+		addAllToCartButton = new JButton("Lägg till alla varukorg");
+		addAllToCartButton.addActionListener(this);
+		oneOrderPanel.add(addAllToCartButton, "cell 0 2,alignx center");
+		
+		lblSumma = new JLabel("Summa: ");
+		oneOrderPanel.add(lblSumma, "cell 1 2,alignx center");
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 
-		if (event.getPropertyName() == "order_moreinfo") {
-			addShoppingItems((Order)event.getNewValue());
+	
+		if (event.getPropertyName() == "order_place") {
+			updateHistoryView();
 		}
 	}
 	
-	private void addShoppingItems(Order order) {
+	public double getOrderTotal(Order order) {
+		double total = 0;
 		for (ShoppingItem si : order.getItems()) {
-			FavoriteItem fi = new FavoriteItem(si.getProduct(), model);
-			System.out.println("hej");
+			total += si.getTotal();
+		}
+		return total;
+	}
+	
+	public void addShoppingItems(Order order) {
+		this.order = order;
+		lblSumma.setText(getOrderTotal(order) + ":-");
+		oneOrderItem.removeAll();
+		for (ShoppingItem si : order.getItems()) {
+			ItemOrderDetailed fi = new ItemOrderDetailed(si, model);
 			oneOrderItem.add(fi, "wrap,growx");
 		}
 		updateColors(oneOrderItem);
@@ -128,13 +143,12 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 	
 	private void updateHistoryView() {
 		
-		
+		allOrdersItem.removeAll();
 		
 		for (Order order : model.getOrders()) {
-			OrderItem oi = new OrderItem(order, model);
+			OrderItem oi = new OrderItem(this, order, model);
 			allOrdersItem.add(oi, "wrap,growx");
 		}
-		
 		
 		updateColors(allOrdersItem);
 		allOrdersItem.revalidate();
@@ -151,7 +165,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new MigLayout("insets 4px", "[grow]", "[60px]"));
-		panel.add(new OrderItem(order,model), "growx");
+		panel.add(new OrderItem(this, order, model), "growx");
 		
 		WebScrollPane scrollPane = new WebScrollPane ( panel, false );
         scrollPane.setPreferredSize ( new Dimension ( 200, 200 ) );
@@ -164,6 +178,12 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		if (event.getSource() == backButton) {
 			CardLayout cl = (CardLayout) (this.getLayout());
 			cl.show(this, "allOrdersPanel");
+		}
+		
+		if (event.getSource() == addAllToCartButton) {
+			for (ShoppingItem si : order.getItems()) {
+				model.cartAddItem(si.getProduct(), si.getAmount());
+			}
 		}
 		
 	}

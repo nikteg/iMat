@@ -347,9 +347,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			panel.add(button, "growx");
 			categoryButtonGroup.add(button);
 		}
-	
-		//Show all products at startup (for now)
-		this.populateResults(model.getProducts());
 	}
 
 	private void calculateResults(int width, int height) {
@@ -394,6 +391,10 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		if (action.getActionCommand() == "category_change") {
 			currentCategory = ((CategoryToggleButton)action.getSource()).getCategory();
 			List<Product> results = new ArrayList<Product>();
+			
+			if(searchResults.size() == 0 && searchField.getText().length() == 0){
+				model.showAllProducts();
+			}
 			
 			for (Product product : searchResults) {
 				if (buttonAllCategories.isSelected() || ((CategoryToggleButton)action.getSource()).getCategory().equals(model.getCategory(product))) {

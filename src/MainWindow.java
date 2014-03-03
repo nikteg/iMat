@@ -332,9 +332,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			panel.add(button, "growx");
 			categoryButtonGroup.add(button);
 		}
-	
-		//Show all products at startup (for now)
-		this.populateResults(model.getProducts());
 	}
 
 	private void calculateResults(int width, int height) {

@@ -76,7 +76,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		add(spinner, "cell 1 0,alignx right,aligny baseline");
 		
 		lblSuffix = new JLabel("unit");
-		add(lblSuffix, "cell 2 0,alignx left");
+		add(lblSuffix, "cell 2 0,alignx left,aligny center");
 		
 		lblTotalPriceLabel = new JLabel("20:-");
 		add(lblTotalPriceLabel, "cell 3 0,alignx right,aligny center");

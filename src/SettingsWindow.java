@@ -67,6 +67,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		addressSettingsPanel.setPostAddress(model.getAccount().getPostAddress());
 		addressSettingsPanel.setPostCode(model.getAccount().getPostCode());
 		
+		logInSettingsPanel.setEmail(model.getAccount().getEmail());
 		
 		
 		
@@ -77,8 +78,19 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSave){
-			//TODO save user settings
-			//parent.getModel().saveUserSettings();
+			
+			model.getAccount().setFirstName(addressSettingsPanel.getFirstName());
+			model.getAccount().setLastName(addressSettingsPanel.getLastName());
+			model.getAccount().setPhoneNumber(addressSettingsPanel.getPhoneNumber());
+			model.getAccount().setMobilePhoneNumber(addressSettingsPanel.getMobilePhoneNumber());
+			model.getAccount().setAddress(addressSettingsPanel.getAddress());
+			model.getAccount().setPostAddress(addressSettingsPanel.getPostAddress());
+			model.getAccount().setPostCode(addressSettingsPanel.getPostCode());
+			
+			model.getAccount().setEmail(logInSettingsPanel.getEmail());
+			
+			
+			
 			dispose();
 		}
 		

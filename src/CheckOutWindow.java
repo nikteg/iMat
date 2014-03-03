@@ -19,13 +19,13 @@ import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import javax.swing.SwingConstants;
 
 
 public class CheckOutWindow extends WebDialog implements ActionListener, PropertyChangeListener {
 	private JFrame frame;
 	private IMatModel model;
 	private JPanel settingsPanel;
-	private JLabel lblSettings;
 	private CardSettingsPanel cardSettingsPanel;
 	private AddressSettingsPanel addressSettingsPanel;
 	private JButton btnConfirm;
@@ -33,14 +33,10 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 	private JScrollPane scrollPane;
 	private JPanel cartPanel;
 	private JLabel lblAmountValue;
-	private JLabel lblMoms;
-	private JLabel lblNetto;
-	private JLabel lblAmount;
-	private JLabel lblNettoValue;
-	private JLabel lblMomsValue;
+	private JPanel amountPanel;
 
 	public CheckOutWindow(JFrame frame, IMatModel model) {
-		super(frame,true);
+		super(frame,"Checkout",true);
 		this.frame = frame;
 		this.model = model;
 		this.model.addPropertyChangeListener(this);
@@ -53,8 +49,6 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 			ItemCheckOut ci = new ItemCheckOut(model.getShoppingCart().getItems().get(i), model);
 			cartPanel.add(ci, "wrap,growx");
 			lblAmountValue.setText(model.getShoppingCart().getTotal() + ":-");
-			lblNettoValue.setText(model.getShoppingCart().getTotal() - (model.getShoppingCart().getTotal() * 0.06) + ":-");
-			lblMomsValue.setText(model.getShoppingCart().getTotal()  * 0.06 +  ":-");
 
 			updateColors();
 			cartPanel.revalidate();
@@ -81,14 +75,11 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 		
 		settingsPanel = new JPanel();
 		getContentPane().add(settingsPanel, BorderLayout.CENTER);
-		settingsPanel.setLayout(new MigLayout("", "[grow][][grow]", "[64][195.00,grow][][][][][][28]"));
-		
-		lblSettings = new JLabel("Checkout");
-		settingsPanel.add(lblSettings, "cell 0 0");
+		settingsPanel.setLayout(new MigLayout("", "[320px,grow][grow]", "[195.00,grow][][grow][28]"));
 		
 		panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Varukorg", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		settingsPanel.add(panel, "cell 0 1 3 1,grow");
+		settingsPanel.add(panel, "cell 0 0 1 3,grow");
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		scrollPane = new JScrollPane();
@@ -96,38 +87,38 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 		
 		cartPanel = new JPanel();
 		scrollPane.setViewportView(cartPanel);
-		cartPanel.setLayout(new MigLayout("", "[grow]", "[64px]"));
-		
-		lblNetto = new JLabel("Netto:");
-		lblNetto.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		settingsPanel.add(lblNetto, "cell 1 4,alignx right");
-		
-		lblNettoValue = new JLabel("Brutto");
-		settingsPanel.add(lblNettoValue, "cell 2 4");
-		
-		lblMoms = new JLabel("Varav moms:");
-		settingsPanel.add(lblMoms, "cell 1 5,alignx right");
-		
-		lblMomsValue = new JLabel("Moms");
-		settingsPanel.add(lblMomsValue, "cell 2 5");
-		
-		lblAmount = new JLabel("Att Betala:");
-		settingsPanel.add(lblAmount, "cell 1 6,alignx right");
-		
-		lblAmountValue = new JLabel("Summa");
-		settingsPanel.add(lblAmountValue, "cell 2 6,alignx left");
+		cartPanel.setLayout(new MigLayout("insets 0px, gapy 0px", "[grow]", "[32px]"));
 		
 		addressSettingsPanel = new AddressSettingsPanel();
-		settingsPanel.add(addressSettingsPanel, "cell 0 3,grow");
+		settingsPanel.add(addressSettingsPanel, "cell 1 0,grow");
+		
+		addressSettingsPanel.setFirstName(model.getAccount().getFirstName());
+		addressSettingsPanel.setLastName(model.getAccount().getLastName());
+		addressSettingsPanel.setPhoneNumber(model.getAccount().getPhoneNumber());
+		addressSettingsPanel.setMobilePhoneNumber(model.getAccount().getMobilePhoneNumber());
+		addressSettingsPanel.setAddress(model.getAccount().getAddress());
+		addressSettingsPanel.setPostAddress(model.getAccount().getPostAddress());
+		addressSettingsPanel.setPostCode(model.getAccount().getPostCode());
 		
 		btnConfirm = new JButton("Bekräfta");
 		btnConfirm.addActionListener(this);
 		
 		cardSettingsPanel = new CardSettingsPanel();
-		settingsPanel.add(cardSettingsPanel, "cell 1 3 2 1,grow");
+		settingsPanel.add(cardSettingsPanel, "cell 1 1,grow");
+		
+		amountPanel = new JPanel();
+		amountPanel.setBorder(new TitledBorder(null, "Summa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		settingsPanel.add(amountPanel, "cell 1 2,grow");
+		amountPanel.setLayout(new MigLayout("insets 0px 0px 8px 0px", "[282.00,grow]", "[grow]"));
+		
+		lblAmountValue = new JLabel("0:-");
+		lblAmountValue.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAmountValue.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+		amountPanel.add(lblAmountValue, "cell 0 0,grow");
 		
 		
-		settingsPanel.add(btnConfirm, "cell 2 7,alignx right,growy");
+		settingsPanel.add(btnConfirm, "cell 1 3,alignx right,growy");
+		
 	}
 	
 
@@ -137,6 +128,9 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnConfirm){
 			JOptionPane.showMessageDialog(this, "Tack för din beställning!", "Order bekräftad", JOptionPane.INFORMATION_MESSAGE);
+			
+			model.orderPlace();
+			model.cartClear();
 			dispose();
 		}
 		

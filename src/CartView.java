@@ -44,13 +44,14 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		setLayout(new MigLayout("insets 2px", "[grow][grow]", "[grow][20.00][24.00]"));
 		
 		scrollPane = new JScrollPane();
+		scrollPane.setFocusable(false);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scrollPane, "cell 0 0 2 1,grow");
 		
 		itemPanel = new JPanel();
 		scrollPane.setViewportView(itemPanel);
-		itemPanel.setLayout(new MigLayout("insets 0px", "[grow]", "[20px]"));
+		itemPanel.setLayout(new MigLayout("insets 0px, gapy 0", "[grow]", "[20px]"));
 		
 		totalPriceDescriptionLabel = new JLabel("Totalpris:");
 		add(totalPriceDescriptionLabel, "flowx,cell 0 1,alignx right");

@@ -301,6 +301,8 @@ public class IMatModel {
 	public List<Order> getOrders() {
 		return backend.getOrders();
 	}
+	
+
 
 	/**
 	 * Returns the product with the given idNbr.
@@ -511,8 +513,8 @@ public class IMatModel {
 	 * 
 	 * @return An Order object containing information about the order.
 	 */
-	public Order placeOrder() {
-		return backend.placeOrder();
+	public Order orderPlace () {
+		return orderPlace(true);
 	}
 
 	/**
@@ -523,9 +525,25 @@ public class IMatModel {
 	 *            - indicates whether the shopping cart is cleared or not.
 	 * @return An Order object containing information about the order.
 	 */
-	public Order placeOrder(boolean clearShoppingCart) {
-		return backend.placeOrder(clearShoppingCart);
+	public Order orderPlace(boolean clearShoppingCart) {
+		Order order = backend.placeOrder(clearShoppingCart);
+		pcs.firePropertyChange("order_place", null, order);
+		LOGGER.log(Level.INFO, "order_place");
+		return order;
 	}
+	
+	public void orderMoreInfo(Order order) {
+		
+		pcs.firePropertyChange("order_moreinfo", null, order);
+		LOGGER.log(Level.INFO, "order_moreinfo");
+	}
+	
+	public void orderRemove(Order order) {
+		backend.getOrders().remove(order);
+		pcs.firePropertyChange("order_remove", order, null);
+		LOGGER.log(Level.INFO, "order_remove");
+	}
+	
 
 	/**
 	 * Removes favorite status from a product. Does not affect favorite lists.
@@ -551,6 +569,8 @@ public class IMatModel {
 	public void shutDown() {
 		backend.shutDown();
 	}
+
+
 
 
 

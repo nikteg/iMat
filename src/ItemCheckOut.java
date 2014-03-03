@@ -29,10 +29,9 @@ import com.alee.laf.spinner.WebSpinner;
 public class ItemCheckOut extends JPanel {
 	private ShoppingItem shoppingItem;
 	private IMatModel model;
-	private JLabel lblBild;
-	private JSeparator separator;
 	private JLabel lblNamelabel;
 	private JLabel lblPricelabel;
+	private JLabel lblAmountLabel;
 
 	public ItemCheckOut() {
 		super();
@@ -47,24 +46,18 @@ public class ItemCheckOut extends JPanel {
 	}
 	
 	private void initialize() {
-		setPreferredSize(new Dimension(512, 64));
-		setLayout(new MigLayout("insets 0px", "[64px:64.00][5px:5px][92px:92px,grow][64px]", "[64px]"));
-		
-		lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(48, 48)));
-		lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
-		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblBild, "cell 0 0,alignx center,aligny center");
-		
-		separator = new JSeparator();
-		separator.setOrientation(SwingConstants.VERTICAL);
-		add(separator, "cell 1 0,growy");
+		setPreferredSize(new Dimension(256, 64));
+		setLayout(new MigLayout("insets 0px  8px 0px  8px", "[grow][72px][72px]", "[64px]"));
 		
 		lblNamelabel = new JLabel(shoppingItem.getProduct().getName());
-		add(lblNamelabel, "cell 2 0,alignx left");
+		add(lblNamelabel, "cell 0 0,alignx left");
 		
-		lblPricelabel = new JLabel(shoppingItem.getAmount() + " á " + shoppingItem.getProduct().getPrice() + " " + shoppingItem.getProduct().getUnit());
+		lblAmountLabel = new JLabel(((Double)shoppingItem.getAmount()).intValue() + " " + shoppingItem.getProduct().getUnitSuffix());
+		add(lblAmountLabel, "cell 1 0,alignx left");
+		
+		lblPricelabel = new JLabel(shoppingItem.getTotal() + ":-");
 		lblPricelabel.setBackground(Color.RED);
-		add(lblPricelabel, "cell 3 0");
+		add(lblPricelabel, "cell 2 0,alignx right");
 		
 	}
 

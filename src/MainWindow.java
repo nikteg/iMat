@@ -44,6 +44,7 @@ import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.tabbedpane.WebTabbedPane;
 import com.alee.laf.text.WebTextField;
+import java.awt.BorderLayout;
 
 public class MainWindow implements ActionListener, PropertyChangeListener {
 
@@ -82,7 +83,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private ButtonGroup categoryButtonGroup = new ButtonGroup();
 	private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
 	private CategoryToggleButton buttonAllCategories;
-	private JScrollPane historyScrollPane;
 
 	
 	private final static Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
@@ -95,6 +95,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JPanel favoritePanel;
 	private FavoriteView favoriteView;
 	private JScrollPane scrollPane;
+	private JPanel historyPanel;
+	private HistoryView historyView;
 
 	/**
 	 * Launch the application.
@@ -248,7 +250,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 
 		cardPanelList = new JPanel();
 		contentPanel.add(cardPanelList, "cardPanelList");
-		cardPanelList.setLayout(new MigLayout("", "[grow]", "[64]"));
+		cardPanelList.setLayout(new MigLayout("insets 0px, gapy 0px", "[grow]", "[64]"));
 
 		sidebarTabbedPane = new WebTabbedPane();
 		sidebarTabbedPane.setFocusable(false);
@@ -258,7 +260,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		checkoutPanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 
 		cartScrollPane = new JScrollPane();
-		checkoutPanel.add(new CartView(model, frame), "cell 0 0,grow");
+		CartView cartView = new CartView(model, frame);
+		cartView.setFocusable(false);
+		checkoutPanel.add(cartView, "cell 0 0,grow");
 
 		varukorgPanel = new JPanel();
 		//cartScrollPane.setViewportView();
@@ -295,9 +299,14 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 		favoriteView = new FavoriteView(model);
 		favoritePanel.add(favoriteView, "cell 0 0,grow");
 		
-		historyScrollPane = new JScrollPane();
-		historyScrollPane.setFocusable(false);
-		sidebarTabbedPane.addTab("Historik", null, historyScrollPane, null);
+		historyPanel = new JPanel();
+		historyPanel.setFocusable(false);
+		sidebarTabbedPane.addTab("Historik", null, historyPanel, null);
+		historyPanel.setLayout(new MigLayout("insets 4px", "[296px]", "[646px]"));
+		
+		historyView = new HistoryView(model, frame);
+		historyView.setFocusable(false);
+		historyPanel.add(historyView, "cell 0 0,grow");
 		
 		buttonAllCategories = new CategoryToggleButton("Alla kategorier", numResults);
 		buttonAllCategories.setSelected(true);
@@ -341,7 +350,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			contentPanel.setPreferredSize(new Dimension(width - 32, (rows * (240 + margin)) + margin));
 			contentScrollPane.revalidate();
 		} else if (toggleListViewButton.isSelected()) {
-			contentPanel.setPreferredSize(new Dimension(width - 32, (totalnum * 77)));
+			contentPanel.setPreferredSize(new Dimension(width - 32, (totalnum * 64)));
 			
 			contentScrollPane.revalidate();
 		}

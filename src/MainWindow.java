@@ -448,6 +448,10 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 			currentCategory = ((CategoryToggleButton)action.getSource()).getCategory();
 			List<Product> results = new ArrayList<Product>();
 			
+			if(searchResults.size() == 0 && searchField.getText().length() == 0){
+				model.showAllProducts();
+			}
+			
 			for (Product product : searchResults) {
 				if (buttonAllCategories.isSelected() || ((CategoryToggleButton)action.getSource()).getCategory().equals(model.getCategory(product))) {
 					

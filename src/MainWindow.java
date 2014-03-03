@@ -97,6 +97,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	private JScrollPane scrollPane;
 	private JPanel historyPanel;
 	private HistoryView historyView;
+	private boolean logoChanged = true;
 
 	/**
 	 * Launch the application.
@@ -143,7 +144,13 @@ public class MainWindow implements ActionListener, PropertyChangeListener {
 	}
 	
 	public void changeLogo() {
-		lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo2.png")));
+		if (logoChanged) {
+			lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo2.png")));
+		} else {
+			lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
+		}
+		
+		logoChanged = !logoChanged;
 	}
 
 	/**

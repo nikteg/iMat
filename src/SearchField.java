@@ -61,8 +61,6 @@ public class SearchField extends WebTextField implements ActionListener {
 	private class KeyListener extends KeyAdapter {
 		@Override
 		public void keyReleased(KeyEvent keyEvent) {
-			System.out.println(keyEvent.getKeyCode());
-			
 			if (((Integer)keyEvent.getKeyCode()).equals(konami.get(konamiProgress.size()))) {
 				konamiProgress.add(keyEvent.getKeyCode());
 				

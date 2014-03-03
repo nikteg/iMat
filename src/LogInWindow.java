@@ -1,6 +1,6 @@
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
@@ -133,50 +134,18 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == btnLogIn) {
-			model.accountSignIn(userNameTextField.getText(), new String(passwordField.getPassword()));
-/*			userNameTextField.setBackground(Color.WHITE);
+			userNameTextField.setBackground(Color.WHITE);
 			passwordField.setBackground(Color.WHITE);
-			
 			model.accountSignIn(userNameTextField.getText(), new String(passwordField.getPassword()));
-			
-			if (!errors.isEmpty()) {
-				userNameTextField.setBackground(Constants.ERROR_COLOR);
-				passwordField.setBackground(Constants.ERROR_COLOR);
-				JOptionPane.showMessageDialog(this, errors.get("signin"), "Fel vid inloggning", JOptionPane.WARNING_MESSAGE);
-			} else {
-				dispose();
-			}*/
 		}
 		
 		if (event.getSource() == btnRegister) {
-			model.accountSignUp(newUserNameTextField.getText(), new String(newUserPassword.getPassword()), newUserEmailTextField.getText());
-/*			newUserNameTextField.setBackground(Color.WHITE);
+			newUserNameTextField.setBackground(Color.WHITE);
 			newUserPassword.setBackground(Color.WHITE);
 			newUserEmailTextField.setBackground(Color.WHITE);
 			newUserPasswordRepeat.setBackground(Color.WHITE);
 			
 			model.accountSignUp(newUserNameTextField.getText(), new String(newUserPassword.getPassword()), newUserEmailTextField.getText());
-			
-			if (errors.containsKey("username")) newUserNameTextField.setBackground(Constants.ERROR_COLOR);
-			if (errors.containsKey("password")) newUserPassword.setBackground(Constants.ERROR_COLOR);
-			if (errors.containsKey("email")) newUserEmailTextField.setBackground(Constants.ERROR_COLOR);
-			
-			if (!new String(newUserPassword.getPassword()).equals(new String(newUserPasswordRepeat.getPassword()))) {
-				errors.put("passwordrepeat", "Upprepning av lösenord stämmer inte");
-				newUserPassword.setBackground(Constants.ERROR_COLOR);
-				newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
-			}
-			
-			if (!errors.isEmpty()) {
-				String msg = "";
-				for (String error : errors.values()) {
-					msg += error + "\n";
-				}
-				
-				JOptionPane.showMessageDialog(this, msg, "Fel vid registering", JOptionPane.WARNING_MESSAGE);
-			} else {
-				dispose();
-			}*/
 		}
 	}
 
@@ -185,9 +154,9 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		if (evt.getPropertyName() == "account_signin") {
 			List<String> errors = (ArrayList<String>)evt.getNewValue();
 			if (!errors.isEmpty()) {
-				for (String error : errors) {
-					System.out.println(error);
-				}
+				userNameTextField.setBackground(Constants.ERROR_COLOR);
+				passwordField.setBackground(Constants.ERROR_COLOR);
+				JOptionPane.showMessageDialog(this, "Felaktigt användarnamn eller lösenord", "Fel vid inloggning", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 		
@@ -199,9 +168,31 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		if (evt.getPropertyName() == "account_signup") {
 			List<String> errors = (ArrayList<String>)evt.getNewValue();
 			if (!errors.isEmpty()) {
-				for (String error : errors) {
-					System.out.println(error);
+				String msg = "";
+				
+				if (errors.contains("username_too_short")) {
+					newUserNameTextField.setBackground(Constants.ERROR_COLOR);
+					msg += "För kort användarnamn\n";
 				}
+				
+				if (errors.contains("password_too_short")) {
+					newUserPassword.setBackground(Constants.ERROR_COLOR);
+					newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
+					msg += "För kort lösenord\n";
+				}
+				
+				if (errors.contains("email_invalid")) {
+					newUserEmailTextField.setBackground(Constants.ERROR_COLOR);
+					msg += "Felaktig epostadress\n";
+				}
+				
+				if (!new String(newUserPassword.getPassword()).equals(new String(newUserPasswordRepeat.getPassword()))) {
+					newUserPassword.setBackground(Constants.ERROR_COLOR);
+					newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
+					msg += "Lösenorden stämmer inte överens\n";
+				}
+				
+				JOptionPane.showMessageDialog(this, msg, "Fel vid registering", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 		

@@ -40,7 +40,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		getContentPane().add(settingsPanel, BorderLayout.CENTER);
 		settingsPanel.setLayout(new MigLayout("", "[grow][grow]", "[64][195.00,grow][][28]"));
 		
-		lblSettings = new JLabel("settings");
+		lblSettings = new JLabel("Profilinställningar");
 		lblSettings.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		settingsPanel.add(lblSettings, "cell 0 0");
 		

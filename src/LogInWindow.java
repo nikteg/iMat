@@ -151,6 +151,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		if (!isVisible()) return; // TODO
 		if (evt.getPropertyName() == "account_signin") {
 			List<String> errors = (ArrayList<String>)evt.getNewValue();
 			if (!errors.isEmpty()) {

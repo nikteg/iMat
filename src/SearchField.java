@@ -62,6 +62,7 @@ public class SearchField extends WebTextField implements ActionListener {
 		
 		setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		setInputPrompt("Sök...");
+		this.setToolTipText("Skriv här för att söka. Resultaten visas i realtid");
 		addActionListener(this);
 		addKeyListener(new KeyListener());
 		timer.restart();

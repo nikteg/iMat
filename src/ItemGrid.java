@@ -53,6 +53,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		add(lblBild, "cell 0 0 5 1,growx,aligny top");
 
 		btnKp = new JButton("Lägg till");
+		btnKp.setToolTipText("Lägg till produkt i varukorgen");
 		btnKp.addActionListener(this);
 		
 		lblName = new JLabel(shoppingItem.getProduct().getName());

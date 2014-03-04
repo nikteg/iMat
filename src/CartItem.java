@@ -82,6 +82,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		add(lblTotalPriceLabel, "cell 3 0,alignx right,aligny center");
 		
 		btnX = new JButton("");
+		btnX.setToolTipText("Ta bort artikel från varukorg");
 		btnX.setPreferredSize(new Dimension(18, 18));
 		btnX.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		btnX.setContentAreaFilled(false);

@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
@@ -60,10 +61,12 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		add(totalPriceLabel, "cell 1 1");
 		
 		btnRensaKassan = new JButton("Rensa varukorg");
+		btnRensaKassan.setToolTipText("Ta bort alla artiklar från varukorgen");
 		btnRensaKassan.addActionListener(this);
 		add(btnRensaKassan, "cell 0 2,growx,aligny center");
 		
 		checkoutButton = new JButton("Gå till kassan");
+		checkoutButton.setToolTipText("Gå vidare till kassan");
 		checkoutButton.addActionListener(this);
 		add(checkoutButton, "cell 1 2,growx,aligny center");
 	}
@@ -140,7 +143,10 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == btnRensaKassan) {
-			if (JOptionPane.showConfirmDialog(this, "Är du säker på", "Radera alla favoriter", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
+			String[] options = new String[2];
+			options[0] = new String("Ja");
+			options[1] = new String("Nej");
+			if (JOptionPane.showOptionDialog(this, "Är du säker på att du vill ta bort alla varor ur varukorgen?", "Rensa varukorg?", 0, JOptionPane.WARNING_MESSAGE,null,options,null) == 0) {
 				model.cartClear();
 			}
 		}

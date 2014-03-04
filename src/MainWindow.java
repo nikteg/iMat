@@ -110,7 +110,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 	public static void main(String[] args) {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 		    public void run() {
-				System.out.println("SHUTDOWN EMINENT");
+				System.out.println("SHUTDOWN IMMINENT");
 				IMatModel.getInstance().shutDown();
 				
 		    }
@@ -279,6 +279,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		
 		checkoutPanel = new JPanel();
 		sidebarTabbedPane.addTab("Varukorg", null, checkoutPanel, null);
+		sidebarTabbedPane.setToolTipTextAt(0, "Visa din varukorg");
 		sidebarTabbedPane.addChangeListener(this);
 		checkoutPanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 
@@ -317,6 +318,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		
 		favoritePanel = new JPanel();
 		sidebarTabbedPane.addTab("Favoriter", null, favoritePanel, null);
+		sidebarTabbedPane.setToolTipTextAt(1, "Visa dina favoritmärkta varor");
 		favoritePanel.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 		
 		favoriteView = new FavoriteView(model);
@@ -325,6 +327,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		historyPanel = new JPanel();
 		historyPanel.setFocusable(false);
 		sidebarTabbedPane.addTab("Historik", null, historyPanel, null);
+		sidebarTabbedPane.setToolTipTextAt(2, "Visa dina tidigare beställningar");
 		historyPanel.setLayout(new MigLayout("insets 4px", "[296px]", "[646px]"));
 		
 		historyView = new HistoryView(model, frame);
@@ -340,7 +343,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		
 		if (model.accountIsAnonymous()) {
 			sidebarTabbedPane.setEnabledAt(1, false);
+			sidebarTabbedPane.setToolTipTextAt(1, "Logga in för att se dina favoriter");
 			sidebarTabbedPane.setEnabledAt(2, false);
+			sidebarTabbedPane.setToolTipTextAt(2,  "Logga in för att se din orderhistorik");
 		}
 
 		for (Constants.Category c : Constants.Category.values()) {
@@ -501,7 +506,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedInPanel");
 			sidebarTabbedPane.setEnabledAt(1, true);
+			sidebarTabbedPane.setToolTipTextAt(1, "Visa dina favoritmärkta varor");
 			sidebarTabbedPane.setEnabledAt(2, true);
+			sidebarTabbedPane.setToolTipTextAt(2, "Visa din tidigare beställningar");
 		}
 		
 		if (evt.getPropertyName() == "account_signout") {
@@ -519,9 +526,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			populateResults((ArrayList<Product>)evt.getNewValue());
 		}
 		
-		if (evt.getPropertyName() == "cart_additem" || evt.getPropertyName() == "cart_updateitem") {
-			sidebarTabbedPane.setSelectedIndex(0);
-		}
+//		if (evt.getPropertyName() == "cart_additem" || evt.getPropertyName() == "cart_updateitem") {
+//			sidebarTabbedPane.setSelectedIndex(0);
+//		}
 		
 		if (evt.getPropertyName() == "favorite_add") {
 			sidebarTabbedPane.setSelectedIndex(1);

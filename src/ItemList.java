@@ -32,7 +32,6 @@ public class ItemList extends Item implements ChangeListener {
 	private WebSpinner spinner;
 	private JLabel lblPricelabel;
 	public JToggleButton tglFavorite;
-	private WebTabbedPane tabbedPane;
 	private FavoriteView favoriteView;
 	public ItemList() {
 		super();
@@ -40,9 +39,7 @@ public class ItemList extends Item implements ChangeListener {
 	}
 	
 	public ItemList(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
-		super(shoppingItem, model);
-		this.tabbedPane = tabbedPane;
-		this.favoriteView = favoriteView;
+		super(shoppingItem, favoriteView, model);
 		initialize();
 	}
 	
@@ -114,16 +111,17 @@ public class ItemList extends Item implements ChangeListener {
 		if (evt.getPropertyName() == "favorite_add") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(true);
-				favoriteView.updateFavoriteView();
 					
 			}
 		}
 		if (evt.getPropertyName() == "favorite_remove") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(false);
-				favoriteView.updateFavoriteView();
-				
 			}
+		}
+		
+		if (evt.getPropertyName() == "favorite_clear") {
+			tglFavorite.setSelected(false);
 		}
 		
 		if (evt.getPropertyName() == "account_signedin") {

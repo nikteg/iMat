@@ -36,7 +36,7 @@ import java.awt.Color;
 
 public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener{
 	private JLabel lblNameLabel;
-	private WebSpinner spinner;
+	private JSpinner spinner;
 	private ShoppingItem shoppingItem;
 	private IMatModel model;
 	private JLabel lblTotalPriceLabel;
@@ -64,12 +64,12 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	}
 	
 	private void initialize() {
-		setLayout(new MigLayout("insets 4px", "[grow][][28][48px][pref:18.00px:pref]", "[60px]"));
+		setLayout(new MigLayout("insets 4px", "[grow][52][28][48px][pref:18.00px:pref]", "[60px]"));
 		
 		lblNameLabel = new JLabel("nameLabel");
 		add(lblNameLabel, "cell 0 0,alignx left,aligny center");
 		
-		spinner = new WebSpinner();
+		spinner = new JSpinner();
 		spinner.addChangeListener(this);
 		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spinner.setPreferredSize(new Dimension(48, 10));
@@ -101,7 +101,6 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	@Override
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
-			System.out.println("RULLAR");
 			model.cartUpdateItem(shoppingItem.getProduct(), ((Integer)spinner.getValue()).doubleValue());
 		}
 	}

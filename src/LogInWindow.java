@@ -162,7 +162,6 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		}
 		
 		if (evt.getPropertyName() == "account_signedin") {
-			System.out.println("DET GICK! Du är inloggad nu...");
 			dispose();
 		}
 		

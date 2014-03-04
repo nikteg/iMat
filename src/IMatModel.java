@@ -142,7 +142,6 @@ public class IMatModel {
 	}
 	
 	public boolean accountIsAnonymous() {
-		System.out.println(account.isAnonymous());
 		return account.isAnonymous();
 	}
 	

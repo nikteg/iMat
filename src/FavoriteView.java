@@ -2,6 +2,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,6 +23,7 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 	private JButton clearFavoritesButton;
 	private JPanel favoritePanel;
 	private JScrollPane scrollPane;
+	private List<Product> favItemList = new ArrayList<Product>();
 	
 	public FavoriteView() {
 		super();
@@ -66,9 +69,11 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 	public void updateFavoriteView() {
 		
 		favoritePanel.removeAll();
+		favItemList.clear();
 		for (int i = 0; i < model.getFavorites().size(); i++) {
 			FavoriteItem fi = new FavoriteItem(model.getFavorites().get(i),model);
 			favoritePanel.add(fi, "wrap,growx");
+			favItemList.add(fi.getProduct());
 		}
 		
 		updateColors();
@@ -76,11 +81,28 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 		repaint();
 	}
 	
+	public void addFavorite(Product product) {
+		System.out.println(favItemList.size());
+		if (!favItemList.contains(product)) {
+			FavoriteItem fi = new FavoriteItem(product,model);
+			favoritePanel.add(fi, "wrap,growx");
+			favItemList.add(product);
+			updateColors();
+			favoritePanel.revalidate();
+			repaint();
+		}
+		
+
+		
+		
+	}
+
+	
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().contains("favorite")) {
-			//updateFavoriteView();
+		if (evt.getPropertyName() == "favorite_clear") {
+			updateFavoriteView();
 		}
 	
 	}
@@ -99,4 +121,6 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 		}
 		
 	}
+
+
 }

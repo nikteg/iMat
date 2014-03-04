@@ -30,7 +30,7 @@ import se.chalmers.ait.dat215.project.Product;
 import java.awt.Color;
 
 
-public class FavoriteItem extends JPanel implements ActionListener{
+public class FavoriteItem extends JPanel implements ActionListener, PropertyChangeListener{
 	private JLabel lblNameLabel;
 	private Product product;
 	private IMatModel model;
@@ -51,6 +51,7 @@ public class FavoriteItem extends JPanel implements ActionListener{
 		this();
 		this.product = product;
 		this.model = model;
+		model.addPropertyChangeListener(this);
 		lblNameLabel.setText(product.getName());
 		lblPriceLabel.setText(product.getPrice() + product.getUnit());
 	}
@@ -111,6 +112,24 @@ public class FavoriteItem extends JPanel implements ActionListener{
 			model.cartAddItem(product);
 		}
 		
+	}
+	
+	public Product getProduct() {
+		return product;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName() == "favorite_add") {
+			if(((Product)evt.getNewValue()).equals(product)) {
+				tglFavorite.setSelected(true);
+			}
+		}
+		if (evt.getPropertyName() == "favorite_remove") {
+			if(((Product)evt.getNewValue()).equals(product)) {
+				tglFavorite.setSelected(false);
+			}
+		}
 	}
 	
 	

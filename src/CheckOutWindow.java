@@ -142,7 +142,6 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 			
 			for (int i = 0; i < cartPanel.getComponentCount(); i++) {
 				if (((ItemCheckOut)cartPanel.getComponent(i)).getShoppingItem() == (ShoppingItem)evt.getNewValue()) {
-					System.out.println("hej");
 					cartPanel.remove(i);
 					break;
 				}

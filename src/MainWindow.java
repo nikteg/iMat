@@ -526,9 +526,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			populateResults((ArrayList<Product>)evt.getNewValue());
 		}
 		
-		if (evt.getPropertyName() == "cart_additem" || evt.getPropertyName() == "cart_updateitem") {
-			sidebarTabbedPane.setSelectedIndex(0);
-		}
+//		if (evt.getPropertyName() == "cart_additem" || evt.getPropertyName() == "cart_updateitem") {
+//			sidebarTabbedPane.setSelectedIndex(0);
+//		}
 		
 		if (evt.getPropertyName() == "favorite_add") {
 			sidebarTabbedPane.setSelectedIndex(1);

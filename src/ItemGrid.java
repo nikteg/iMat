@@ -21,6 +21,7 @@ import javax.swing.plaf.ButtonUI;
 import javax.swing.SpinnerNumberModel;
 
 import com.alee.laf.spinner.WebSpinner;
+import com.alee.laf.tabbedpane.WebTabbedPane;
 
 @SuppressWarnings("serial")
 public class ItemGrid extends Item implements ChangeListener{
@@ -31,14 +32,18 @@ public class ItemGrid extends Item implements ChangeListener{
 	private WebSpinner spinner;
 	public JToggleButton tglFavorite;
 	private JLabel lblSuffix;
+	private WebTabbedPane tabbedpane;
+	private FavoriteView favoriteView;
 
 	public ItemGrid() {
 		super();
 		initialize();
 	}
 	
-	public ItemGrid(ShoppingItem shoppingItem, IMatModel model) {
+	public ItemGrid(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
 		super(shoppingItem, model);
+		this.tabbedpane = tabbedpane;
+		this.favoriteView = favoriteView;
 		initialize();
 	}
 
@@ -107,11 +112,13 @@ public class ItemGrid extends Item implements ChangeListener{
 		if (evt.getPropertyName() == "favorite_add") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(true);
+				favoriteView.updateFavoriteView();
 			}
 		}
 		if (evt.getPropertyName() == "favorite_remove") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(false);
+				favoriteView.updateFavoriteView();
 			}
 		}
 		

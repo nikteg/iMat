@@ -112,6 +112,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		    public void run() {
 				System.out.println("SHUTDOWN EMINENT");
 				IMatModel.getInstance().shutDown();
+				
 		    }
 		}));
 		EventQueue.invokeLater(new Runnable() {
@@ -139,7 +140,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		
 		searchTimer.setRepeats(false);
 		searchTimer.setActionCommand("search");
-
 		model.addPropertyChangeListener(this);
 		initialize();
 	}
@@ -473,11 +473,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 				continue;
 			}
 			
-			ItemList item = new ItemList(new ShoppingItem(product), model);
+			ItemList item = new ItemList(new ShoppingItem(product), favoriteView , model);
 			
 			// Alternate background in list view
 			if (i % 2 == 1) item.setBackground(Constants.ALT_COLOR);
-			cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), model));
+			cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), favoriteView , model));
 			cardPanelList.add(item, "wrap,growx");
 		}
 		

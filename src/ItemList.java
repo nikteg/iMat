@@ -20,6 +20,7 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 import javax.swing.SpinnerNumberModel;
 
 import com.alee.laf.spinner.WebSpinner;
+import com.alee.laf.tabbedpane.WebTabbedPane;
 
 
 @SuppressWarnings("serial")
@@ -31,14 +32,17 @@ public class ItemList extends Item implements ChangeListener {
 	private WebSpinner spinner;
 	private JLabel lblPricelabel;
 	public JToggleButton tglFavorite;
-
+	private WebTabbedPane tabbedPane;
+	private FavoriteView favoriteView;
 	public ItemList() {
 		super();
 		initialize();
 	}
 	
-	public ItemList(ShoppingItem shoppingItem , IMatModel model) {
+	public ItemList(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
 		super(shoppingItem, model);
+		this.tabbedPane = tabbedPane;
+		this.favoriteView = favoriteView;
 		initialize();
 	}
 	
@@ -110,11 +114,15 @@ public class ItemList extends Item implements ChangeListener {
 		if (evt.getPropertyName() == "favorite_add") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(true);
+				favoriteView.updateFavoriteView();
+					
 			}
 		}
 		if (evt.getPropertyName() == "favorite_remove") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(false);
+				favoriteView.updateFavoriteView();
+				
 			}
 		}
 		

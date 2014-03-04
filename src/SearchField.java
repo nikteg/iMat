@@ -24,7 +24,7 @@ public class SearchField extends WebTextField implements ActionListener {
 	
 	/* KONAMI STUFF */
 	private List<Integer> konami = new ArrayList<Integer>();
-	private List<Integer> konamiProgress = new ArrayList<Integer>();
+	private int konamiProgress = 0;
 	AudioInputStream inputStream;
 	Clip clip;
 	/* END KONAMI STUFF */
@@ -80,10 +80,8 @@ public class SearchField extends WebTextField implements ActionListener {
 		@Override
 		public void keyReleased(KeyEvent keyEvent) {
 			/* KONAMI STUFF */
-			if (((Integer)keyEvent.getKeyCode()).equals(konami.get(konamiProgress.size()))) {
-				konamiProgress.add(keyEvent.getKeyCode());
-				
-				if (konamiProgress.size() == konami.size()) {
+			if (((Integer)keyEvent.getKeyCode()).equals(konami.get(konamiProgress))) {
+				if (++konamiProgress == konami.size()) {
 					new Thread(new Runnable() {
 						public void run() {
 							clip.setFramePosition(0);
@@ -91,11 +89,11 @@ public class SearchField extends WebTextField implements ActionListener {
 						}
 					}).start();
 					parent.changeLogo();
-					konamiProgress.clear();
+					konamiProgress = 0;
 					setText(getText().substring(0, Math.max(getText().length() - 2, 0)));
 				}
 			} else {
-				konamiProgress.clear();
+				konamiProgress = 0;
 			}
 			/* END KONAMI STUFF */
 			

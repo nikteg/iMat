@@ -1,6 +1,7 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -78,6 +79,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		signInPanel.add(passwordField, "cell 1 2 2 1,growx");
 		
 		btnCancel = new JButton("Avbryt");
+		btnCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		signInPanel.add(btnCancel, "cell 1 3,alignx right,aligny top");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -86,6 +88,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		});
 
 		btnLogIn = new JButton("Logga in");
+		btnLogIn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		signInPanel.add(btnLogIn, "cell 2 3,aligny top");
 		btnLogIn.addActionListener(this);
 
@@ -121,6 +124,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 
 		btnRegister = new JButton("Registrera");
 		btnRegister.addActionListener(this);
+		btnRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		newCustomerPanel.add(btnRegister, "cell 1 5,alignx right,aligny top");
 		
 		userNameLabel.requestFocusInWindow();

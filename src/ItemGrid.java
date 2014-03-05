@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 
@@ -54,6 +55,7 @@ public class ItemGrid extends Item implements ChangeListener{
 
 		btnKp = new JButton("Lägg till");
 		btnKp.setToolTipText("Lägg till produkt i varukorgen");
+		btnKp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnKp.addActionListener(this);
 		
 		lblName = new JLabel(shoppingItem.getProduct().getName());
@@ -82,6 +84,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.setVisible(!model.getAccount().isAnonymous());
 		tglFavorite.addActionListener(this);
+		tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tglFavorite.setBounds( 136, 4, 24, 24);
 		lblBild.setBounds( 0, 0, 164, 164); 
 		

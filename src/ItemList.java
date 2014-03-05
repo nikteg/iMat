@@ -1,14 +1,14 @@
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
-import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -17,10 +17,7 @@ import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
-import javax.swing.SpinnerNumberModel;
-
 import com.alee.laf.spinner.WebSpinner;
-import com.alee.laf.tabbedpane.WebTabbedPane;
 
 
 @SuppressWarnings("serial")
@@ -82,6 +79,7 @@ public class ItemList extends Item implements ChangeListener {
 		tglFavorite.setSelectedIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
+		tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tglFavorite.setActionCommand("favorite");
 		tglFavorite.setVisible(!model.getAccount().isAnonymous());
 
@@ -91,6 +89,7 @@ public class ItemList extends Item implements ChangeListener {
 		add(tglFavorite, "cell 4 0,alignx center");
 		
 		btnKp = new JButton("Lägg till");
+		btnKp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnKp.addActionListener(this);
 		
 		lblUnitsuffix = new JLabel(shoppingItem.getProduct().getUnitSuffix());

@@ -1,37 +1,22 @@
-import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
+import java.awt.Cursor;
 import java.awt.Dimension;
-
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import javax.swing.ImageIcon;
-
-import se.chalmers.ait.dat215.project.CartEvent;
-import se.chalmers.ait.dat215.project.ShoppingCartListener;
-import se.chalmers.ait.dat215.project.ShoppingItem;
-
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.SpinnerNumberModel;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import com.alee.laf.spinner.WebSpinner;
-
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import net.miginfocom.swing.MigLayout;
+import se.chalmers.ait.dat215.project.ShoppingItem;
+
+import com.alee.laf.spinner.WebSpinner;
 
 
 public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener{
@@ -90,6 +75,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		btnX.addActionListener(this);
 		btnX.setActionCommand("remove_from_cart");
 		btnX.setMinimumSize(new Dimension(0, 0));
+		btnX.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		add(btnX, "cell 4 0");
 	}
 	

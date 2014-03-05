@@ -199,7 +199,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 
 		toggleGridViewButton.addActionListener(this);
 		toggleGridViewButton.setActionCommand("toggle_grid");
+		toggleGridViewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toggleListViewButton.addActionListener(this);
+		toggleListViewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toggleListViewButton.setActionCommand("toggle_list");
 
 		toggleGridViewButton.setSelected(true);
@@ -215,6 +217,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		signedOutPanel.setLayout(new MigLayout("insets 0", "[89px,grow]", "[23px,grow]"));
 		
 		signInButton = new JButton("Logga in");
+		signInButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		signInButton.addActionListener(this);
 		signedOutPanel.add(signInButton, "cell 0 0,grow");
 		

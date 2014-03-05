@@ -1,40 +1,18 @@
-import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
-import java.awt.Dimension;
-
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import javax.swing.ImageIcon;
-
-import se.chalmers.ait.dat215.project.CartEvent;
-import se.chalmers.ait.dat215.project.Order;
-import se.chalmers.ait.dat215.project.ShoppingCartListener;
-import se.chalmers.ait.dat215.project.ShoppingItem;
-
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.SpinnerNumberModel;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
+import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 
-import com.alee.laf.spinner.WebSpinner;
-
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import java.awt.Color;
+import net.miginfocom.swing.MigLayout;
+import se.chalmers.ait.dat215.project.Order;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 
 
 public class OrderItem extends JPanel implements  ActionListener, PropertyChangeListener{
@@ -85,6 +63,7 @@ public class OrderItem extends JPanel implements  ActionListener, PropertyChange
 		btnInfo = new JButton("Mer info");
 		btnInfo.setMargin(new Insets(2, 5, 2, 5));
 		btnInfo.addActionListener(this);
+		btnInfo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
 		add(btnInfo, "cell 2 0");
 	}

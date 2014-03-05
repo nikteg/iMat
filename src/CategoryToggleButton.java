@@ -1,7 +1,11 @@
+import java.awt.Cursor;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import com.alee.laf.button.WebToggleButton;
 
 
-public class CategoryToggleButton extends WebToggleButton {
+public class CategoryToggleButton extends WebToggleButton{
 	private String name;
 	private int number;
 	
@@ -12,6 +16,8 @@ public class CategoryToggleButton extends WebToggleButton {
 	}
 	
 	public CategoryToggleButton(String name, int number) {
+		this();
+		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		this.name = name;
 		this.number = number;
 		
@@ -39,6 +45,7 @@ public class CategoryToggleButton extends WebToggleButton {
 	public Constants.Category getCategory() {
 		return cat;
 	}
-	
+
+
 
 }

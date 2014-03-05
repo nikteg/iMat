@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -104,6 +105,7 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 		
 		btnConfirm = new JButton("Bekräfta");
 		btnConfirm.addActionListener(this);
+		btnConfirm.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
 		cardSettingsPanel = new CardSettingsPanel();
 		settingsPanel.add(cardSettingsPanel, "cell 1 1,grow");

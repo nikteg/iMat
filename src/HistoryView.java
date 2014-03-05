@@ -54,7 +54,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		allOrdersPanel = new JPanel();
 		add(allOrdersPanel, "allOrdersPanel");
-		allOrdersPanel.setLayout(new MigLayout("insets 0px", "[grow]", "[grow]"));
+		allOrdersPanel.setLayout(new MigLayout("insets 0px,gapy 0px", "[grow]", "[grow]"));
 		
 		scrollPaneAllOrders = new JScrollPane();
 		allOrdersPanel.add(scrollPaneAllOrders, "cell 0 0,grow");

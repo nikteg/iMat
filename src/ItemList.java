@@ -46,7 +46,7 @@ public class ItemList extends Item implements ChangeListener {
 	private void initialize() {
 		setPreferredSize(new Dimension(512, 64));
 		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		setLayout(new MigLayout("insets 0px", "[64px:64.00][5px:5px][92px:92px,grow][64px][][48px:48px][64px:64px]", "[64px]"));
+		setLayout(new MigLayout("insets 0px 0px 0px 8px", "[64px:64.00][5px:5px][92px:92px,grow][64px][][48px:48px][]", "[64px]"));
 		
 		lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(48, 48)));
 		lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -92,7 +92,7 @@ public class ItemList extends Item implements ChangeListener {
 		btnKp = new JButton("Lägg till");
 		btnKp.addActionListener(this);
 		btnKp.setActionCommand("add_cart");
-		add(btnKp, "cell 6 0,alignx center");
+		add(btnKp, "cell 6 0");
 		
 
 	}

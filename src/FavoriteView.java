@@ -47,7 +47,7 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 		
 		favoritePanel = new JPanel();
 		scrollPane.setViewportView(favoritePanel);
-		favoritePanel.setLayout(new MigLayout("insets 0px", "[grow]", "[36px]"));
+		favoritePanel.setLayout(new MigLayout("insets 0px,gapy 0px", "[grow]", "[36px]"));
 		
 		clearFavoritesButton = new JButton("Rensa favoriter");
 		clearFavoritesButton.addActionListener(this);

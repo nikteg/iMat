@@ -73,15 +73,16 @@ public class ItemList extends Item implements ChangeListener {
 		add(spinner, "cell 5 0,growx");
 		
 		tglFavorite = new JToggleButton("");
+		tglFavorite.setPressedIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star2.png")));
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		tglFavorite.setContentAreaFilled(false);
 		tglFavorite.setBorderPainted(false);
-		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-inactive.png")));
+		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star.png")));
+		tglFavorite.setRolloverIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star-inactive.png")));
 		tglFavorite.setRolloverEnabled(true);
 		tglFavorite.setBorder(null);
-		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
+		tglFavorite.setSelectedIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star.png")));
+		tglFavorite.setIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setActionCommand("favorite");
 		tglFavorite.setVisible(!model.getAccount().isAnonymous());

@@ -2,23 +2,19 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-
-import se.chalmers.ait.dat215.project.Product;
-import se.chalmers.ait.dat215.project.ShoppingItem;
-import net.miginfocom.swing.MigLayout;
-
-import javax.swing.JSpinner;
+import javax.swing.JLayeredPane;
 import javax.swing.JToggleButton;
-import javax.swing.ImageIcon;
-import javax.swing.border.EmptyBorder;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.ButtonUI;
-import javax.swing.SpinnerNumberModel;
+
+import net.miginfocom.swing.MigLayout;
+import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 
 import com.alee.laf.spinner.WebSpinner;
 import com.alee.laf.tabbedpane.WebTabbedPane;
@@ -50,12 +46,14 @@ public class ItemGrid extends Item implements ChangeListener{
 	private void initialize() {
 		setBackground(new Color(248, 248, 248));
 		setPreferredSize(new Dimension(180, 240));
-		setLayout(new MigLayout("insets 8px", "[48][48,grow][grow][][]", "[164px:164px][26px:26px][26px:26px][]"));
+		setLayout(new MigLayout("insets 8px", "[48][48,grow][grow][]", "[164px:164px][26px:26px][26px:26px][]"));
 
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setPreferredSize(new Dimension(164, 164));
+		
 		lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(164, 164)));
 		lblBild.setPreferredSize(new Dimension(164, 164));
 		lblBild.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblBild, "cell 0 0 5 1,growx,aligny top");
 
 		btnKp = new JButton("Lägg till");
 		btnKp.setToolTipText("Lägg till produkt i varukorgen");
@@ -65,7 +63,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		add(lblName, "flowx,cell 0 1 3 1,alignx left,aligny center");
 		
 		lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
-		add(lblPrice, "cell 3 1 2 1,alignx right,aligny center");
+		add(lblPrice, "cell 2 1 2 1,alignx right,aligny center");
 		
 		spinner = new WebSpinner();
 		spinner.setDrawFocus(false);
@@ -75,6 +73,7 @@ public class ItemGrid extends Item implements ChangeListener{
 		add(spinner, "cell 0 2,grow");
 		
 		tglFavorite = new JToggleButton("");
+		tglFavorite.setPressedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star2.png")));
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		tglFavorite.setContentAreaFilled(false);
 		tglFavorite.setBorderPainted(false);
@@ -84,16 +83,22 @@ public class ItemGrid extends Item implements ChangeListener{
 		tglFavorite.setBorder(null);
 		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
-		tglFavorite.setVisible((!model.getAccount().isAnonymous()));
+		tglFavorite.setVisible(!model.getAccount().isAnonymous());
 		tglFavorite.addActionListener(this);
+		tglFavorite.setBounds( 136, 4, 24, 24);
+		lblBild.setBounds( 0, 0, 164, 164); 
+		
+		layeredPane.add(lblBild, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(tglFavorite, JLayeredPane.MODAL_LAYER);
+		add(layeredPane, "cell 0 0 5 1,grow,aligny top");
 		
 		lblSuffix = new JLabel(shoppingItem.getProduct().getUnitSuffix());
 		add(lblSuffix, "cell 1 2,alignx left");
 		tglFavorite.setActionCommand("favorite");
 		
-		add(tglFavorite, "cell 3 2,alignx center,aligny center");
+		//add(tglFavorite, "cell 3 2,alignx center,aligny center");
 		btnKp.setActionCommand("add_cart");
-		add(btnKp, "cell 4 2,alignx right,aligny center");
+		add(btnKp, "cell 3 2,alignx right,aligny center");
 		
 		if (model.isFavorite(shoppingItem.getProduct())) tglFavorite.setSelected(true);
 		

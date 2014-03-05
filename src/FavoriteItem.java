@@ -65,9 +65,7 @@ public class FavoriteItem extends JPanel implements ActionListener{
 		
 		lblPriceLabel = new JLabel("20:-");
 		add(lblPriceLabel, "cell 1 0,alignx right,aligny center");
-		
 		btnAddToCart = new JButton("");
-		btnAddToCart.setPreferredSize(new Dimension(18, 18));
 		btnAddToCart.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		btnAddToCart.setContentAreaFilled(false);
 		btnAddToCart.setBorderPainted(false);
@@ -78,14 +76,15 @@ public class FavoriteItem extends JPanel implements ActionListener{
 				
 		
 		tglFavorite = new JToggleButton("");
+		tglFavorite.setPressedIcon(new ImageIcon(FavoriteItem.class.getResource("/resources/icons/star2.png")));
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		tglFavorite.setContentAreaFilled(false);
 		tglFavorite.setBorderPainted(false);
-		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
+		tglFavorite.setRolloverSelectedIcon(new ImageIcon(FavoriteItem.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-inactive.png")));
 		tglFavorite.setRolloverEnabled(true);
 		tglFavorite.setBorder(null);
-		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
+		tglFavorite.setSelectedIcon(new ImageIcon(FavoriteItem.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setSelected(true);

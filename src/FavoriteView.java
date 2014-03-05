@@ -1,3 +1,4 @@
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -6,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -14,7 +14,6 @@ import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
-import se.chalmers.ait.dat215.project.ShoppingItem;
 
 
 public class FavoriteView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -51,6 +50,7 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 		
 		clearFavoritesButton = new JButton("Rensa favoriter");
 		clearFavoritesButton.addActionListener(this);
+		clearFavoritesButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		add(clearFavoritesButton, "cell 0 2,alignx center");
 	}
 

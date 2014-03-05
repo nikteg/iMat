@@ -1,3 +1,4 @@
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -10,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
@@ -21,7 +21,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	private IMatModel model;
 	private JPanel itemPanel;
 	private JLabel totalPriceLabel;
-	private JButton btnRensaKassan;
+	private JButton btnClearCart;
 	private JScrollPane scrollPane;
 	private JLabel totalPriceDescriptionLabel;
 	private JButton checkoutButton;
@@ -60,14 +60,16 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		totalPriceLabel = new JLabel("TOTALPRIS");
 		add(totalPriceLabel, "cell 1 1");
 		
-		btnRensaKassan = new JButton("Rensa varukorg");
-		btnRensaKassan.setToolTipText("Ta bort alla artiklar från varukorgen");
-		btnRensaKassan.addActionListener(this);
-		add(btnRensaKassan, "cell 0 2,growx,aligny center");
+		btnClearCart = new JButton("Rensa varukorg");
+		btnClearCart.setToolTipText("Ta bort alla artiklar från varukorgen");
+		btnClearCart.addActionListener(this);
+		btnClearCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		add(btnClearCart, "cell 0 2,growx,aligny center");
 		
 		checkoutButton = new JButton("Gå till kassan");
 		checkoutButton.setToolTipText("Gå vidare till kassan");
 		checkoutButton.addActionListener(this);
+		checkoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		add(checkoutButton, "cell 1 2,growx,aligny center");
 	}
 
@@ -142,7 +144,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource() == btnRensaKassan) {
+		if (event.getSource() == btnClearCart) {
 			String[] options = new String[2];
 			options[0] = new String("Ja");
 			options[1] = new String("Nej");

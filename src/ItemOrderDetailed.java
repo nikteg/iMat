@@ -1,22 +1,18 @@
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
-import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
-
-import com.alee.laf.spinner.WebSpinner;
 
 
 public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeListener{
@@ -69,6 +65,7 @@ public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeL
 		btnAddToCart.setBorderPainted(false);
 		btnAddToCart.setIcon(new ImageIcon(CartItem.class.getResource("/resources/icons/cart.png")));
 		btnAddToCart.addActionListener(this);
+		btnAddToCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnAddToCart.setMinimumSize(new Dimension(0, 0));
 		add(btnAddToCart, "cell 2 0");
 				
@@ -84,6 +81,7 @@ public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeL
 		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
+		tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tglFavorite.setActionCommand("favorite");
 		
 		add(tglFavorite, "cell 3 0,alignx right,aligny center");

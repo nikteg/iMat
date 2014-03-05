@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,9 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.alee.extended.image.WebImage;
-
 import net.miginfocom.swing.MigLayout;
+
+import com.alee.extended.image.WebImage;
 
 
 public class SettingsWindow extends JDialog implements ActionListener, PropertyChangeListener {
@@ -60,6 +61,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		
 		btnSave = new JButton("Spara");
 		btnSave.addActionListener(this);
+		btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
 		
 		settingsPanel.add(btnSave, "cell 1 3,alignx right,growy");

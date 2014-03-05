@@ -1,4 +1,5 @@
 import java.awt.CardLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +8,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -16,7 +18,6 @@ import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 import com.alee.laf.scroll.WebScrollPane;
-import javax.swing.JLabel;
 
 
 public class HistoryView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -73,6 +74,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[145px,left][grow]", "[][2px,grow][]"));
 		
 		backButton = new JButton("<-- Bakåt");
+		backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		backButton.addActionListener(this);
 		oneOrderPanel.add(backButton, "cell 0 0,alignx left,aligny center");
 		
@@ -91,6 +93,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		addAllToCartButton = new JButton("Lägg till alla varukorg");
 		addAllToCartButton.addActionListener(this);
+		addAllToCartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		oneOrderPanel.add(addAllToCartButton, "cell 0 2,alignx center");
 		
 		lblSumma = new JLabel("Summa: ");

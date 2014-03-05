@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 
 import javax.swing.SpinnerNumberModel;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -74,6 +75,7 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
 		btnAddToCart.setIcon(new ImageIcon(CartItem.class.getResource("/resources/icons/cart.png")));
 		btnAddToCart.addActionListener(this);
 		btnAddToCart.setMinimumSize(new Dimension(0, 0));
+		btnAddToCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		add(btnAddToCart, "cell 2 0");
 				
 		
@@ -90,6 +92,7 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
 		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setSelected(true);
+		tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tglFavorite.setActionCommand("favorite");
 		
 		add(tglFavorite, "cell 3 0,alignx right,aligny center");

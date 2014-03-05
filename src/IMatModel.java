@@ -512,8 +512,15 @@ public class IMatModel {
 	 * 
 	 * @return An Order object containing information about the order.
 	 */
-	public Order orderPlace () {
-		return orderPlace(true);
+	public Order orderPlace (String firstName,
+								String lastName, 
+								String address, 
+								String mobilePhoneNumber, 
+								String phoneNumber, 
+								String postAddress, 
+								String postCode) {
+		
+		return orderPlace(true, firstName, lastName, address, mobilePhoneNumber, phoneNumber, postAddress, postCode);
 	}
 
 	/**
@@ -524,11 +531,46 @@ public class IMatModel {
 	 *            - indicates whether the shopping cart is cleared or not.
 	 * @return An Order object containing information about the order.
 	 */
-	public Order orderPlace(boolean clearShoppingCart) {
-		Order order = backend.placeOrder(clearShoppingCart);
-		pcs.firePropertyChange("order_place", null, order);
+	public Order orderPlace(boolean clearShoppingCart,String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
+		List<String> errors = new ArrayList<String>();
+		
+		
+		if (firstName.length() < 1) errors.add("firstname_invalid");
+		
+		if (lastName.length() < 1) errors.add("lastname_invalid");
+		
+		if (address.length() < 1) errors.add("address_invalid");
+		
+		Pattern numberPattern = Pattern.compile("^[0-9\\+ ]+$");
+		Matcher mpm = numberPattern.matcher(mobilePhoneNumber);
+		
+		if (!mpm.matches() && mobilePhoneNumber.length() != 0) errors.add("mobilephone_invalid");
+		
+		Matcher pm = numberPattern.matcher(phoneNumber);
+		
+		if (!pm.matches() && phoneNumber.length() != 0) errors.add("phone_invalid");
+		
+		if (postAddress.length() < 1) errors.add("postaddress_invalid");
+		
+		Pattern postCodePattern = Pattern.compile("^[0-9 ]{5,6}$");
+		Matcher pcm = postCodePattern.matcher(postCode);
+		
+		if (!pcm.matches()) errors.add("postcode_invalid");
+			
+		pcs.firePropertyChange("order_place", null, errors);
 		LOGGER.log(Level.INFO, "order_place");
-		return order;
+		
+		if (errors.isEmpty()) {
+			Order order = backend.placeOrder(clearShoppingCart);
+			pcs.firePropertyChange("order_placed", null, order);
+			LOGGER.log(Level.INFO, "order_placed");
+			return order;
+		}
+
+		
+		return null;
+		
+
 	}
 	
 	

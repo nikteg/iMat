@@ -20,6 +20,7 @@ import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 import com.alee.laf.scroll.WebScrollPane;
+import javax.swing.ImageIcon;
 
 
 public class ListView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -74,16 +75,17 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 		
 		oneListPanel = new JPanel();
 		add(oneListPanel, "oneOrderPanel");
-		oneListPanel.setLayout(new MigLayout("insets 0px", "[145px,left][grow]", "[][2px,grow][]"));
+		oneListPanel.setLayout(new MigLayout("insets 0px", "[50%,grow,left][50%,grow]", "[][2px,grow][]"));
 		
-		backButton = new JButton("<-- Bakåt");
+		backButton = new JButton("Tillbaka");
+		backButton.setIcon(new ImageIcon(ListView.class.getResource("/resources/icons/back.png")));
 		backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		backButton.addActionListener(this);
 		oneListPanel.add(backButton, "cell 0 0,alignx left,aligny center");
 		
 		panel_1 = new JPanel();
 		oneListPanel.add(panel_1, "cell 0 1 2 1,grow");
-		panel_1.setLayout(new MigLayout("insets 0px", "[2px,grow]", "[2px,grow]"));
+		panel_1.setLayout(new MigLayout("insets 0px,gapy 0px", "[2px,grow]", "[2px,grow]"));
 		
 		scrollPaneOneOrder = new JScrollPane();
 		panel_1.add(scrollPaneOneOrder, "cell 0 0,grow");
@@ -92,12 +94,12 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 		
 		oneListItem = new JPanel();
 		scrollPaneOneOrder.setViewportView(oneListItem);
-		oneListItem.setLayout(new MigLayout("insets 0px", "[grow]", "[36px]"));
+		oneListItem.setLayout(new MigLayout("insets 0px,gapy 0px", "[grow]", "[36px]"));
 		
 		addAllToCartButton = new JButton("Lägg till alla varukorg");
 		addAllToCartButton.addActionListener(this);
 		addAllToCartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		oneListPanel.add(addAllToCartButton, "cell 0 2,alignx center");
+		oneListPanel.add(addAllToCartButton, "cell 0 2,growx");
 		
 		lblSumma = new JLabel("Summa: ");
 		oneListPanel.add(lblSumma, "cell 1 2,alignx center");
@@ -155,7 +157,6 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 		
 		allListsItem.removeAll();
 		Map<String, List<ShoppingItem>> listMap = model.getListHandler().getLists(model.getAccount().getUserName());
-		System.out.println("hej");
 		
 		if (listMap != null) {
 			for (String s : listMap.keySet()) {

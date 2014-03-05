@@ -19,7 +19,6 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
 	private JLabel lblNameLabel;
 	private ShoppingItem shoppingItem;
 	private IMatModel model;
-	private JLabel lblPriceLabel;
 	private JToggleButton tglFavorite;
 	private JButton btnAddToCart;
 	private JLabel labelAmount;
@@ -38,7 +37,6 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
 		this.shoppingItem = shoppingItem;
 		this.model = model;
 		lblNameLabel.setText(shoppingItem.getProduct().getName());
-		lblPriceLabel.setText(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
 		labelAmount.setText((int)shoppingItem.getAmount() + " " + shoppingItem.getProduct().getUnitSuffix());
 		tglFavorite.setSelected(model.isFavorite(shoppingItem.getProduct()));
 
@@ -54,12 +52,7 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
 		labelAmount.setPreferredSize(new Dimension(48, 10));
 		add(labelAmount, "cell 1 0,alignx left,aligny center");
 		
-		
-		lblPriceLabel = new JLabel("20:-");
-		add(lblPriceLabel, "cell 2 0,alignx right,aligny center");
-		
 		btnAddToCart = new JButton("");
-		btnAddToCart.setPreferredSize(new Dimension(18, 18));
 		btnAddToCart.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		btnAddToCart.setContentAreaFilled(false);
 		btnAddToCart.setBorderPainted(false);

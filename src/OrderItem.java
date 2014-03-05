@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import javax.swing.ImageIcon;
 
 
 public class OrderItem extends JPanel implements  ActionListener, PropertyChangeListener{
@@ -50,7 +51,7 @@ public class OrderItem extends JPanel implements  ActionListener, PropertyChange
 
 
 	private void initialize() {
-		setLayout(new MigLayout("insets 4px", "[grow][][48]", "[60px]"));
+		setLayout(new MigLayout("insets 4px", "[grow][][]", "[60px]"));
 		
 		
 		
@@ -60,12 +61,16 @@ public class OrderItem extends JPanel implements  ActionListener, PropertyChange
 		label = new JLabel("");
 		add(label, "cell 1 0");
 		
-		btnInfo = new JButton("Mer info");
-		btnInfo.setMargin(new Insets(2, 5, 2, 5));
+		btnInfo = new JButton("");
+		btnInfo.setToolTipText("Expandera order");
+		btnInfo.setUI(new javax.swing.plaf.basic.BasicButtonUI());
+		btnInfo.setContentAreaFilled(false);
+		btnInfo.setBorderPainted(false);
+		btnInfo.setIcon(new ImageIcon(OrderItem.class.getResource("/resources/icons/more.png")));
 		btnInfo.addActionListener(this);
 		btnInfo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
-		add(btnInfo, "cell 2 0");
+		add(btnInfo, "cell 2 0,alignx right");
 	}
 	
 	private double totalPrice(Order order) {

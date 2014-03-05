@@ -20,6 +20,7 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 
 import com.alee.laf.scroll.WebScrollPane;
 import com.alee.laf.text.WebTextField;
+import javax.swing.ImageIcon;
 
 
 public class HistoryView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -76,9 +77,10 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		oneOrderPanel = new JPanel();
 		add(oneOrderPanel, "oneOrderPanel");
-		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[145px,grow,left][grow]", "[][][2px,grow][]"));
+		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[50%,grow,left][50%,grow]", "[][][2px,grow][]"));
 		
-		backButton = new JButton("<-- Bakåt");
+		backButton = new JButton("Tillbaka");
+		backButton.setIcon(new ImageIcon(HistoryView.class.getResource("/resources/icons/back.png")));
 		backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		backButton.addActionListener(this);
 		oneOrderPanel.add(backButton, "cell 0 0,alignx left,aligny center");
@@ -97,7 +99,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		panel_1 = new JPanel();
 		oneOrderPanel.add(panel_1, "cell 0 2 2 1,grow");
-		panel_1.setLayout(new MigLayout("insets 0px", "[2px,grow]", "[2px,grow]"));
+		panel_1.setLayout(new MigLayout("insets 0px,gapy 0px", "[2px,grow]", "[2px,grow]"));
 		
 		scrollPaneOneOrder = new JScrollPane();
 		panel_1.add(scrollPaneOneOrder, "cell 0 0,grow");
@@ -111,7 +113,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		addAllToCartButton = new JButton("Lägg till alla varukorg");
 		addAllToCartButton.addActionListener(this);
 		addAllToCartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		oneOrderPanel.add(addAllToCartButton, "cell 0 3,alignx center");
+		oneOrderPanel.add(addAllToCartButton, "cell 0 3,growx");
 		
 		lblSumma = new JLabel("Summa: ");
 		oneOrderPanel.add(lblSumma, "cell 1 3,alignx center");

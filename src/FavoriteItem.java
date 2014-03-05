@@ -30,7 +30,7 @@ import se.chalmers.ait.dat215.project.Product;
 import java.awt.Color;
 
 
-public class FavoriteItem extends JPanel implements ActionListener{
+public class FavoriteItem extends JPanel implements ActionListener, PropertyChangeListener{
 	private JLabel lblNameLabel;
 	private Product product;
 	private IMatModel model;
@@ -51,6 +51,7 @@ public class FavoriteItem extends JPanel implements ActionListener{
 		this();
 		this.product = product;
 		this.model = model;
+		model.addPropertyChangeListener(this);
 		lblNameLabel.setText(product.getName());
 		lblPriceLabel.setText(product.getPrice() + product.getUnit());
 	}
@@ -66,6 +67,10 @@ public class FavoriteItem extends JPanel implements ActionListener{
 		lblPriceLabel = new JLabel("20:-");
 		add(lblPriceLabel, "cell 1 0,alignx right,aligny center");
 		btnAddToCart = new JButton("");
+<<<<<<< HEAD
+=======
+		btnAddToCart.setPreferredSize(new Dimension(24, 24));
+>>>>>>> mlonn
 		btnAddToCart.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		btnAddToCart.setContentAreaFilled(false);
 		btnAddToCart.setBorderPainted(false);
@@ -110,6 +115,24 @@ public class FavoriteItem extends JPanel implements ActionListener{
 			model.cartAddItem(product);
 		}
 		
+	}
+	
+	public Product getProduct() {
+		return product;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName() == "favorite_add") {
+			if(((Product)evt.getNewValue()).equals(product)) {
+				tglFavorite.setSelected(true);
+			}
+		}
+		if (evt.getPropertyName() == "favorite_remove") {
+			if(((Product)evt.getNewValue()).equals(product)) {
+				tglFavorite.setSelected(false);
+			}
+		}
 	}
 	
 	

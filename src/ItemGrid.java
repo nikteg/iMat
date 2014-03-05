@@ -28,7 +28,6 @@ public class ItemGrid extends Item implements ChangeListener{
 	private WebSpinner spinner;
 	public JToggleButton tglFavorite;
 	private JLabel lblSuffix;
-	private WebTabbedPane tabbedpane;
 	private FavoriteView favoriteView;
 
 	public ItemGrid() {
@@ -37,9 +36,7 @@ public class ItemGrid extends Item implements ChangeListener{
 	}
 	
 	public ItemGrid(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
-		super(shoppingItem, model);
-		this.tabbedpane = tabbedpane;
-		this.favoriteView = favoriteView;
+		super(shoppingItem, favoriteView, model);
 		initialize();
 	}
 
@@ -117,14 +114,16 @@ public class ItemGrid extends Item implements ChangeListener{
 		if (evt.getPropertyName() == "favorite_add") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(true);
-				favoriteView.updateFavoriteView();
 			}
 		}
 		if (evt.getPropertyName() == "favorite_remove") {
 			if(((Product)evt.getNewValue()).equals(shoppingItem.getProduct())) {
 				tglFavorite.setSelected(false);
-				favoriteView.updateFavoriteView();
 			}
+		}
+		
+		if (evt.getPropertyName() == "favorite_clear") {
+			tglFavorite.setSelected(false);
 		}
 		
 		if (evt.getPropertyName() == "account_signedin") {

@@ -101,7 +101,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 	public void propertyChange(PropertyChangeEvent event) {
 
 	
-		if (event.getPropertyName() == "order_place") {
+		if (event.getPropertyName() == "order_placed") {
 			updateHistoryView();
 		}
 	}

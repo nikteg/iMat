@@ -14,31 +14,33 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+
+import com.alee.extended.image.WebImage;
+import com.alee.laf.text.WebPasswordField;
+import com.alee.laf.text.WebTextField;
 
 public class LogInWindow extends JDialog implements ActionListener, PropertyChangeListener {
 	private JTabbedPane signInTabbedPane;
 	private JPanel newCustomerPanel;
 	private JPanel signInPanel;
 	private JLabel userNameLabel;
-	private JTextField userNameTextField;
+	private WebTextField userNameTextField;
 	private JLabel lblNewLabel_1;
 	private JPanel buttonPanel;
 	private JButton btnNewCostumer;
 	private JButton btnLogIn;
-	private JPasswordField passwordField;
+	private WebPasswordField passwordField;
 	private JLabel lblAnvndarnamn;
 	private JLabel lblEpost;
 	private JLabel lblNyttLsenord;
 	private JLabel lbligen;
-	private JTextField newUserNameTextField;
-	private JTextField newUserEmailTextField;
-	private JPasswordField newUserPassword;
-	private JPasswordField newUserPasswordRepeat;
+	private WebTextField newUserNameTextField;
+	private WebTextField newUserEmailTextField;
+	private WebPasswordField newUserPassword;
+	private WebPasswordField newUserPasswordRepeat;
 	private JButton btnRegister;
 	private JFrame frame;
 	private IMatModel model;
@@ -67,14 +69,14 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		userNameLabel = new JLabel("Användarnamn");
 		signInPanel.add(userNameLabel, "cell 0 1,alignx trailing");
 
-		userNameTextField = new JTextField();
+		userNameTextField = new WebTextField();
 		signInPanel.add(userNameTextField, "cell 1 1,growx");
 		userNameTextField.setColumns(10);
 
 		lblNewLabel_1 = new JLabel("Lösenord");
 		signInPanel.add(lblNewLabel_1, "cell 0 2,alignx trailing");
 
-		passwordField = new JPasswordField();
+		passwordField = new WebPasswordField();
 		signInPanel.add(passwordField, "cell 1 2,growx");
 
 		buttonPanel = new JPanel();
@@ -101,27 +103,27 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		lblAnvndarnamn = new JLabel("Användarnamn");
 		newCustomerPanel.add(lblAnvndarnamn, "cell 0 0,alignx trailing");
 
-		newUserNameTextField = new JTextField();
+		newUserNameTextField = new WebTextField();
 		newCustomerPanel.add(newUserNameTextField, "cell 1 0,growx");
 		newUserNameTextField.setColumns(10);
 
 		lblEpost = new JLabel("E-post");
 		newCustomerPanel.add(lblEpost, "cell 0 1,alignx trailing");
 
-		newUserEmailTextField = new JTextField();
+		newUserEmailTextField = new WebTextField();
 		newCustomerPanel.add(newUserEmailTextField, "cell 1 1,growx");
 		newUserEmailTextField.setColumns(10);
 
 		lblNyttLsenord = new JLabel("Nytt lösenord");
 		newCustomerPanel.add(lblNyttLsenord, "cell 0 2,alignx trailing");
 
-		newUserPassword = new JPasswordField();
+		newUserPassword = new WebPasswordField();
 		newCustomerPanel.add(newUserPassword, "cell 1 2,growx");
 
 		lbligen = new JLabel("(igen)");
 		newCustomerPanel.add(lbligen, "cell 0 3,alignx trailing");
 
-		newUserPasswordRepeat = new JPasswordField();
+		newUserPasswordRepeat = new WebPasswordField();
 		newCustomerPanel.add(newUserPasswordRepeat, "cell 1 3,growx");
 
 		btnRegister = new JButton("Registrera");
@@ -156,13 +158,14 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 			List<String> errors = (ArrayList<String>)evt.getNewValue();
 			if (!errors.isEmpty()) {
 				userNameTextField.setBackground(Constants.ERROR_COLOR);
+				userNameTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 				passwordField.setBackground(Constants.ERROR_COLOR);
+				passwordField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 				JOptionPane.showMessageDialog(this, "Felaktigt användarnamn eller lösenord", "Fel vid inloggning", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 		
 		if (evt.getPropertyName() == "account_signedin") {
-			System.out.println("DET GICK! Du är inloggad nu...");
 			dispose();
 		}
 		
@@ -173,23 +176,29 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 				
 				if (errors.contains("username_too_short")) {
 					newUserNameTextField.setBackground(Constants.ERROR_COLOR);
+					newUserNameTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					msg += "För kort användarnamn\n";
 				}
 				
 				if (errors.contains("password_too_short")) {
 					newUserPassword.setBackground(Constants.ERROR_COLOR);
+					newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
+					newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					msg += "För kort lösenord\n";
 				}
 				
 				if (errors.contains("email_invalid")) {
 					newUserEmailTextField.setBackground(Constants.ERROR_COLOR);
+					newUserEmailTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					msg += "Felaktig epostadress\n";
 				}
 				
 				if (!new String(newUserPassword.getPassword()).equals(new String(newUserPasswordRepeat.getPassword()))) {
 					newUserPassword.setBackground(Constants.ERROR_COLOR);
+					newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
+					newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					msg += "Lösenorden stämmer inte överens\n";
 				}
 				

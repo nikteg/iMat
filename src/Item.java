@@ -12,13 +12,15 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 public abstract class Item extends JPanel implements ActionListener, PropertyChangeListener {
 	public ShoppingItem shoppingItem;
 	public IMatModel model;
+	public FavoriteView favoriteView;
 	
 	public Item() {
 		super();
 	}
 	
-	public Item(ShoppingItem shoppingItem, IMatModel model) {
+	public Item(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
 		this();
+		this.favoriteView = favoriteView;
 		this.shoppingItem = shoppingItem;
 		this.model = model;
 		this.model.addPropertyChangeListener(this);
@@ -36,6 +38,7 @@ public abstract class Item extends JPanel implements ActionListener, PropertyCha
 			if (model.isFavorite(shoppingItem.getProduct())) {
 				model.favoriteRemove(shoppingItem.getProduct());
 			} else {
+				favoriteView.addFavorite(shoppingItem.getProduct());
 				model.favoriteAdd(shoppingItem.getProduct());
 			}
  		}

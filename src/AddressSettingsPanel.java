@@ -1,32 +1,33 @@
 
 
-import java.awt.LayoutManager;
+import java.awt.Color;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JSeparator;
+import com.alee.extended.image.WebImage;
+import com.alee.laf.text.WebTextField;
 
 public class AddressSettingsPanel extends JPanel {
 	private JLabel firstNameLabel;
-	private JTextField firstNameTextField;
+	private WebTextField firstNameTextField;
 	private JLabel lastNameLabel;
 	private JLabel addressLabel;
 	private JLabel postCodePostAddressLabel;
 	private JLabel phoneNumberLabel;
 	private JLabel mobilePhoneNumberLabel;
-	private JTextField lastNameTextField;
-	private JTextField addressTextField;
-	private JTextField postCodeTextField;
-	private JTextField phoneNumberTextField;
-	private JTextField mobilePhoneNumberTextField;
+	private WebTextField lastNameTextField;
+	private WebTextField addressTextField;
+	private WebTextField postCodeTextField;
+	private WebTextField phoneNumberTextField;
+	private WebTextField mobilePhoneNumberTextField;
 	private JSeparator separator;
 	private JSeparator separator_1;
-	private JTextField postAddressTextField;
+	private WebTextField postAddressTextField;
 
 	public AddressSettingsPanel() {
 		initialize();
@@ -38,14 +39,14 @@ public class AddressSettingsPanel extends JPanel {
 		firstNameLabel = new JLabel("Förnamn");
 		add(firstNameLabel, "cell 0 0,alignx left");
 		
-		firstNameTextField = new JTextField();
+		firstNameTextField = new WebTextField();
 		firstNameTextField.setColumns(10);
 		add(firstNameTextField, "cell 1 0 2 1,growx");
 		
 		lastNameLabel = new JLabel("Efternamn");
 		add(lastNameLabel, "cell 0 1,alignx left");
 		
-		lastNameTextField = new JTextField();
+		lastNameTextField = new WebTextField();
 		lastNameTextField.setColumns(10);
 		add(lastNameTextField, "cell 1 1 2 1,growx");
 		
@@ -55,18 +56,18 @@ public class AddressSettingsPanel extends JPanel {
 		addressLabel = new JLabel("Gatuadress");
 		add(addressLabel, "cell 0 3,alignx left");
 		
-		addressTextField = new JTextField();
+		addressTextField = new WebTextField();
 		addressTextField.setColumns(10);
 		add(addressTextField, "cell 1 3 2 1,growx");
 		
 		postCodePostAddressLabel = new JLabel("Postnr/Postort");
 		add(postCodePostAddressLabel, "cell 0 4,alignx left");
 		
-		postCodeTextField = new JTextField();
+		postCodeTextField = new WebTextField();
 		postCodeTextField.setColumns(10);
 		add(postCodeTextField, "cell 1 4,growx");
 		
-		postAddressTextField = new JTextField();
+		postAddressTextField = new WebTextField();
 		postAddressTextField.setColumns(10);
 		add(postAddressTextField, "cell 2 4,growx");
 		
@@ -76,14 +77,14 @@ public class AddressSettingsPanel extends JPanel {
 		phoneNumberLabel = new JLabel("Tel (inkl riktnr.)");
 		add(phoneNumberLabel, "cell 0 6,alignx left");
 		
-		phoneNumberTextField = new JTextField();
+		phoneNumberTextField = new WebTextField();
 		phoneNumberTextField.setColumns(10);
 		add(phoneNumberTextField, "cell 1 6 2 1,growx");
 		
 		mobilePhoneNumberLabel = new JLabel("Mobiltelefon");
 		add(mobilePhoneNumberLabel, "cell 0 7,alignx left");
 		
-		mobilePhoneNumberTextField = new JTextField();
+		mobilePhoneNumberTextField = new WebTextField();
 		mobilePhoneNumberTextField.setColumns(10);
 		add(mobilePhoneNumberTextField, "cell 1 7 2 1,growx");
 	}
@@ -130,6 +131,41 @@ public class AddressSettingsPanel extends JPanel {
 	}
 	public void setPostAddress(String city) {
 		this.postAddressTextField.setText(city);
+	}
+	
+	public void setFirstNameErros(Color bg, WebImage wi) {
+		firstNameTextField.setBackground(bg);
+		firstNameTextField.setTrailingComponent(wi);
+	}
+	
+	public void setLastNameErros(Color bg, WebImage wi) {
+		lastNameTextField.setBackground(bg);
+		lastNameTextField.setTrailingComponent(wi);
+	}
+	
+	public void setAddressErros(Color bg, WebImage wi) {
+		addressTextField.setBackground(bg);
+		addressTextField.setTrailingComponent(wi);
+	}
+	
+	public void setPostCodeErros(Color bg, WebImage wi) {
+		postCodeTextField.setBackground(bg);
+		postCodeTextField.setTrailingComponent(wi);
+	}
+	
+	public void setPostAddressErros(Color bg, WebImage wi) {
+		postAddressTextField.setBackground(bg);
+		postAddressTextField.setTrailingComponent(wi);
+	}
+	
+	public void setMobilePhoneErrors(Color bg, WebImage wi) {
+		mobilePhoneNumberTextField.setBackground(bg);
+		mobilePhoneNumberTextField.setTrailingComponent(wi);
+	}
+	
+	public void setPhoneErrors(Color bg, WebImage wi) {
+		phoneNumberTextField.setBackground(bg);
+		phoneNumberTextField.setTrailingComponent(wi);
 	}
 
 	

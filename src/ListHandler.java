@@ -47,6 +47,18 @@ public class ListHandler {
 	}
 	
 	/**
+	 * Removes the given user's list with the given name, if it exists.
+	 * @param listName
+	 * @param userName
+	 */
+	public void removeList(String listName, String userName) {
+		if (hasList(listName, userName)) {
+			Map<String, List<ShoppingItem>> lists = listMap.get(userName);
+			lists.remove(listName);
+		}
+	}
+	
+	/**
 	 * Save the favorite list with the given user name and list name.
 	 * If a list with matching user name and list name exists, it will be overwritten.
 	 * @param list - List of ShoppingItem to save.

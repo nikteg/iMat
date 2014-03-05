@@ -107,7 +107,7 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 		btnConfirm.addActionListener(this);
 		btnConfirm.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
-		cardSettingsPanel = new CardSettingsPanel();
+		cardSettingsPanel = new CardSettingsPanel(model);
 		settingsPanel.add(cardSettingsPanel, "cell 1 1,grow");
 		
 		amountPanel = new JPanel();

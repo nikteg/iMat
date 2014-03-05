@@ -35,6 +35,7 @@ public class IMatModel {
 	
 	private Account account = new Account(backend.getUser(), backend.getCustomer());
 	
+	private CCardHandler cardHandler;
 	private ListHandler listHandler;
 	
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -43,6 +44,7 @@ public class IMatModel {
 	private final static Logger LOGGER = Logger.getLogger(IMatModel.class.getName());
 
 	private IMatModel() {
+		cardHandler = new CCardHandler(this);
 		listHandler = new ListHandler(this);
 	}
 	
@@ -649,6 +651,9 @@ public class IMatModel {
 		return listHandler;
 	}
 	
+	public CCardHandler getCCardHandler(){
+		return cardHandler;
+	}
 
 	/**
 	 * Removes favorite status from a product. Does not affect favorite lists.

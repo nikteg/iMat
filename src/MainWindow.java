@@ -316,7 +316,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		addressSettingsPanel_1 = new AddressSettingsPanel();
 		confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
 		
-		cardSettingsPanel_1 = new CardSettingsPanel();
+		cardSettingsPanel_1 = new CardSettingsPanel(model);
 		confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
 		
 		confirmPurchaseButton = new JButton("Bekräfta köp");

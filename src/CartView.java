@@ -191,7 +191,9 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		}
 		
 		if (event.getSource() == btnSparaLista) {
+			
 			model.listSave(listNameTextField.getText(), model.getShoppingCart().getItems());
+			
 		}
 	}
 }

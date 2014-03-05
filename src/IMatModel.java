@@ -35,7 +35,7 @@ public class IMatModel {
 	
 	private Account account = new Account(backend.getUser(), backend.getCustomer());
 	
-	private ListHandler listHandler = new ListHandler(this);
+	private ListHandler listHandler;
 	
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -43,7 +43,7 @@ public class IMatModel {
 	private final static Logger LOGGER = Logger.getLogger(IMatModel.class.getName());
 
 	private IMatModel() {
-		
+		listHandler = new ListHandler(this);
 	}
 	
 	/**
@@ -632,7 +632,10 @@ public class IMatModel {
 	}
 	
 	public void listSave(String listName, List<ShoppingItem> shoppingItems) {
+		
+	
 		listHandler.saveFavoriteList(shoppingItems, listName, account.getUserName());
+		System.out.println(listHandler.getLists(account.getUserName()));
 		pcs.firePropertyChange("list_saved", null, null);
 		LOGGER.log(Level.INFO, "list_saved");
 	}
@@ -672,9 +675,11 @@ public class IMatModel {
 	}
 	
 	public void shutDown() {
+		System.out.println(listHandler.getLists(account.getUserName()));
 		listHandler.saveState();
 		backend.shutDown();
 	}
+	
 
 
 

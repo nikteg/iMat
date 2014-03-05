@@ -50,7 +50,7 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 		this.model = model;
 		this.frame = frame;
 		this.model.addPropertyChangeListener(this);
-		//updateListView();
+		updateListView();
 	}
 	
 	private void initialize() {
@@ -154,15 +154,18 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 		Map<String, List<ShoppingItem>> listMap = model.getListHandler().getLists(model.getAccount().getUserName());
 		System.out.println("hej");
 		
-		for (String s : listMap.keySet()) {
+		if (listMap != null) {
+			for (String s : listMap.keySet()) {
+				
+				ListItem li = new ListItem(this, s, listMap.get(s), model);
+				allListsItem.add(li, "wrap,growx");
+			}
 			
-			ListItem li = new ListItem(this, s, listMap.get(s), model);
-			allListsItem.add(li, "wrap,growx");
+			updateColors(allListsItem);
+			allListsItem.revalidate();
+			repaint();
 		}
-		
-		updateColors(allListsItem);
-		allListsItem.revalidate();
-		repaint();
+
 		
 
 

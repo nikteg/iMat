@@ -14,6 +14,8 @@ import java.util.Scanner;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 public class ListHandler {
+	
+	
 	private IMatModel model;
 	private Map<String, Map<String, List<ShoppingItem>>> listMap;
 	/**
@@ -29,6 +31,8 @@ public class ListHandler {
 			this.listMap = null;
 		}
 	}
+	
+
 	
 	/**
 	 * Returns the given user's lists.
@@ -66,14 +70,20 @@ public class ListHandler {
 	 * @param userName - The user name that the list belongs to.
 	 */
 	public void saveFavoriteList(List<ShoppingItem> list, String listName, String userName) {
+		List<ShoppingItem> favList = new ArrayList<ShoppingItem>();
+		
+		for (ShoppingItem si : list) {
+			favList.add(si);
+		}
+		
 		if (this.hasList(listName, userName)){
 			listMap.get(userName).remove(listName);
-			listMap.get(userName).put(listName, list);
+			listMap.get(userName).put(listName, favList);
 		} else if (this.hasUser(userName)){
-			listMap.get(userName).put(listName, list);
+			listMap.get(userName).put(listName, favList);
 		} else {
 			Map<String, List<ShoppingItem>> userMap = new HashMap<String, List<ShoppingItem>>();
-			userMap.put(listName, list);
+			userMap.put(listName, favList);
 			listMap.put(userName, userMap);
 		}
 	}

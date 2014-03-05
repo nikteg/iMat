@@ -15,6 +15,8 @@ import javax.swing.ScrollPaneConstants;
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
+import com.alee.laf.text.WebTextField;
+
 
 public class CartView extends JPanel implements ActionListener, PropertyChangeListener {
 
@@ -27,6 +29,9 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 	private JButton checkoutButton;
 	private CheckOutWindow checkoutWindow;
 	private JFrame frame;
+	private JPanel panel;
+	private WebTextField listNameTextField;
+	private JButton btnSparaLista;
 	
 	public CartView() {
 		super();
@@ -37,44 +42,69 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		this();
 		this.model = model;
 		this.frame = frame;
+		listNameTextField.setEnabled(!model.getAccount().isAnonymous());
+		btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
 		this.model.addPropertyChangeListener(this);
+		
 		updateCartView();
 	}
 	
 	private void initialize() {
-		setLayout(new MigLayout("insets 2px", "[grow][grow]", "[grow][20.00][24.00]"));
+		setLayout(new MigLayout("insets 2px", "[grow][grow]", "[][grow][20.00][24.00]"));
+		
+		panel = new JPanel();
+		add(panel, "cell 0 0 2 1,grow");
+		panel.setLayout(new MigLayout("insets 0px", "[grow][]", "[]"));
+		
+		listNameTextField = new WebTextField();
+		listNameTextField.setInputPrompt("Namn på lista...");
+		
+		panel.add(listNameTextField, "cell 0 0,growx");
+		
+		btnSparaLista = new JButton("Spara varukorg");
+		btnSparaLista.addActionListener(this);
+		btnSparaLista.setCursor(Cursor
+				.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
+		panel.add(btnSparaLista, "cell 1 0");
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setFocusable(false);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		add(scrollPane, "cell 0 0 2 1,grow");
+		add(scrollPane, "cell 0 1 2 1,grow");
 		
 		itemPanel = new JPanel();
 		scrollPane.setViewportView(itemPanel);
-		itemPanel.setLayout(new MigLayout("insets 0px, gapy 0", "[grow]", "[20px]"));
+		itemPanel.setLayout(new MigLayout("insets 0px, gapy 0", "[grow]", "[36px]"));
 		
 		totalPriceDescriptionLabel = new JLabel("Totalpris:");
-		add(totalPriceDescriptionLabel, "flowx,cell 0 1,alignx right");
+		add(totalPriceDescriptionLabel, "flowx,cell 0 2,alignx right");
 		
 		totalPriceLabel = new JLabel("TOTALPRIS");
-		add(totalPriceLabel, "cell 1 1");
+		add(totalPriceLabel, "cell 1 2");
 		
 		btnClearCart = new JButton("Rensa varukorg");
 		btnClearCart.setToolTipText("Ta bort alla artiklar från varukorgen");
 		btnClearCart.addActionListener(this);
 		btnClearCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		add(btnClearCart, "cell 0 2,growx,aligny center");
+		add(btnClearCart, "cell 0 3,growx,aligny center");
 		
 		checkoutButton = new JButton("Gå till kassan");
 		checkoutButton.setToolTipText("Gå vidare till kassan");
 		checkoutButton.addActionListener(this);
 		checkoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		add(checkoutButton, "cell 1 2,growx,aligny center");
+		add(checkoutButton, "cell 1 3,growx,aligny center");
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		
+		if (evt.getPropertyName() == "account_signedin") {
+			listNameTextField.setEnabled(!model.getAccount().isAnonymous());
+			btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
+		}
+		
 		if (evt.getPropertyName() == "cart_additem") {
 			itemPanel.add(new CartItem((ShoppingItem)evt.getNewValue(), model), "wrap,growx");
 			totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
@@ -158,6 +188,10 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 			checkoutWindow.setLocationRelativeTo(frame);
 			checkoutWindow.setVisible(true);
 			
+		}
+		
+		if (event.getSource() == btnSparaLista) {
+			model.listSave(listNameTextField.getText(), model.getShoppingCart().getItems());
 		}
 	}
 }

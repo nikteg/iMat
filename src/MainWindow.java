@@ -103,6 +103,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 	private JPanel historyPanel;
 	private HistoryView historyView;
 	private boolean logoChanged = true;
+	private JPanel listPanel;
+	private ListView listView;
 
 	/**
 	 * Launch the application.
@@ -329,10 +331,17 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		favoriteView = new FavoriteView(model);
 		favoritePanel.add(favoriteView, "cell 0 0,grow");
 		
+		listPanel = new JPanel();
+		sidebarTabbedPane.addTab("Listor", null, listPanel, null);
+		listPanel.setLayout(new MigLayout("insets 6px", "[grow]", "[grow]"));
+		
+		listView = new ListView(model, frame);
+		listPanel.add(listView, "cell 0 0,grow");
+		
 		historyPanel = new JPanel();
 		historyPanel.setFocusable(false);
 		sidebarTabbedPane.addTab("Historik", null, historyPanel, null);
-		sidebarTabbedPane.setToolTipTextAt(2, "Visa dina tidigare beställningar");
+		sidebarTabbedPane.setToolTipTextAt(3, "Visa dina tidigare beställningar");
 		historyPanel.setLayout(new MigLayout("insets 6px", "[296px]", "[646px]"));
 		
 		historyView = new HistoryView(model, frame);
@@ -350,7 +359,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			sidebarTabbedPane.setEnabledAt(1, false);
 			sidebarTabbedPane.setToolTipTextAt(1, "Logga in för att se dina favoriter");
 			sidebarTabbedPane.setEnabledAt(2, false);
-			sidebarTabbedPane.setToolTipTextAt(2,  "Logga in för att se din orderhistorik");
+			sidebarTabbedPane.setToolTipTextAt(2,  "Logga in för att se dina listor");
+			sidebarTabbedPane.setEnabledAt(3, false);
+			sidebarTabbedPane.setToolTipTextAt(3,  "Logga in för att se din orderhistorik");
 		}
 
 		for (Constants.Category c : Constants.Category.values()) {
@@ -511,9 +522,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedInPanel");
 			sidebarTabbedPane.setEnabledAt(1, true);
-			sidebarTabbedPane.setToolTipTextAt(1, "Visa dina favoritmärkta varor");
+			sidebarTabbedPane.setToolTipTextAt(1, "Favoritmärkta varor");
 			sidebarTabbedPane.setEnabledAt(2, true);
-			sidebarTabbedPane.setToolTipTextAt(2, "Visa din tidigare beställningar");
+			sidebarTabbedPane.setToolTipTextAt(2, "Sparade listor");
+			sidebarTabbedPane.setEnabledAt(3, true);
+			sidebarTabbedPane.setToolTipTextAt(3, "Tidigare beställningar");
 		}
 		
 		if (evt.getPropertyName() == "account_signout") {
@@ -531,14 +544,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			populateResults((ArrayList<Product>)evt.getNewValue());
 		}
 		
-//		if (evt.getPropertyName() == "cart_additem" || evt.getPropertyName() == "cart_updateitem") {
-//			sidebarTabbedPane.setSelectedIndex(0);
-//		}
-		
-		if (evt.getPropertyName() == "favorite_add") {
-			sidebarTabbedPane.setSelectedIndex(1);
-		}
-	
+
 
 	}
 

@@ -35,6 +35,8 @@ public class IMatModel {
 	
 	private Account account = new Account(backend.getUser(), backend.getCustomer());
 	
+	private ListHandler listHandler = new ListHandler(this);
+	
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	
@@ -629,6 +631,16 @@ public class IMatModel {
 		LOGGER.log(Level.INFO, "order_remove");
 	}
 	
+	public void listSave(String listName, List<ShoppingItem> shoppingItems) {
+		listHandler.saveFavoriteList(shoppingItems, listName, account.getUserName());
+		pcs.firePropertyChange("list_saved", null, null);
+		LOGGER.log(Level.INFO, "list_saved");
+	}
+	
+	public ListHandler getListHandler() {
+		return listHandler;
+	}
+	
 
 	/**
 	 * Removes favorite status from a product. Does not affect favorite lists.
@@ -660,6 +672,7 @@ public class IMatModel {
 	}
 	
 	public void shutDown() {
+		listHandler.saveState();
 		backend.shutDown();
 	}
 

@@ -33,6 +33,7 @@ public class ItemList extends Item implements ChangeListener {
 	private JLabel lblPricelabel;
 	public JToggleButton tglFavorite;
 	private FavoriteView favoriteView;
+	private JLabel lblUnitsuffix;
 	public ItemList() {
 		super();
 		initialize();
@@ -46,7 +47,7 @@ public class ItemList extends Item implements ChangeListener {
 	private void initialize() {
 		setPreferredSize(new Dimension(512, 64));
 		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		setLayout(new MigLayout("insets 0px 0px 0px 8px", "[64px:64.00][5px:5px][92px:92px,grow][64px][][48px:48px][]", "[64px]"));
+		setLayout(new MigLayout("insets 0px 0px 0px 8px", "[64px:64.00][5px:5px][92px:92px,grow][64px][][48px:48px][48][]", "[64px]"));
 		
 		lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(48, 48)));
 		lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -60,7 +61,7 @@ public class ItemList extends Item implements ChangeListener {
 		lblNamelabel = new JLabel(shoppingItem.getProduct().getName());
 		add(lblNamelabel, "cell 2 0,alignx left");
 		
-		lblPricelabel = new JLabel(shoppingItem.getProduct().getPrice() + ":-");
+		lblPricelabel = new JLabel(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
 		lblPricelabel.setBackground(Color.RED);
 		add(lblPricelabel, "cell 3 0");
 		
@@ -91,8 +92,11 @@ public class ItemList extends Item implements ChangeListener {
 		
 		btnKp = new JButton("Lägg till");
 		btnKp.addActionListener(this);
+		
+		lblUnitsuffix = new JLabel(shoppingItem.getProduct().getUnitSuffix());
+		add(lblUnitsuffix, "cell 6 0");
 		btnKp.setActionCommand("add_cart");
-		add(btnKp, "cell 6 0");
+		add(btnKp, "cell 7 0");
 		
 
 	}

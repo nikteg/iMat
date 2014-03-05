@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
@@ -18,6 +19,7 @@ import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 import com.alee.laf.scroll.WebScrollPane;
+import com.alee.laf.text.WebTextField;
 
 
 public class HistoryView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -36,6 +38,9 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 	private JButton addAllToCartButton;
 	private Order order;
 	private JLabel lblSumma;
+	private JPanel panel_2;
+	private WebTextField textField;
+	private JButton btnSparaLista;
 	
 	public HistoryView() {
 		super();
@@ -71,15 +76,27 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		
 		oneOrderPanel = new JPanel();
 		add(oneOrderPanel, "oneOrderPanel");
-		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[145px,left][grow]", "[][2px,grow][]"));
+		oneOrderPanel.setLayout(new MigLayout("insets 0px", "[145px,grow,left][grow]", "[][][2px,grow][]"));
 		
 		backButton = new JButton("<-- Bakåt");
 		backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		backButton.addActionListener(this);
 		oneOrderPanel.add(backButton, "cell 0 0,alignx left,aligny center");
 		
+		panel_2 = new JPanel();
+		oneOrderPanel.add(panel_2, "cell 0 1 2 1,grow");
+		panel_2.setLayout(new MigLayout("insets 0px", "[86px,grow][]", "[20px]"));
+		
+		textField = new WebTextField();
+		textField.setInputPrompt("Namn på lista...");
+		panel_2.add(textField, "cell 0 0,growx,aligny top");
+		
+		btnSparaLista = new JButton("Spara order");
+		btnSparaLista.addActionListener(this);
+		panel_2.add(btnSparaLista, "cell 1 0");
+		
 		panel_1 = new JPanel();
-		oneOrderPanel.add(panel_1, "cell 0 1 2 1,grow");
+		oneOrderPanel.add(panel_1, "cell 0 2 2 1,grow");
 		panel_1.setLayout(new MigLayout("insets 0px", "[2px,grow]", "[2px,grow]"));
 		
 		scrollPaneOneOrder = new JScrollPane();
@@ -94,10 +111,10 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 		addAllToCartButton = new JButton("Lägg till alla varukorg");
 		addAllToCartButton.addActionListener(this);
 		addAllToCartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		oneOrderPanel.add(addAllToCartButton, "cell 0 2,alignx center");
+		oneOrderPanel.add(addAllToCartButton, "cell 0 3,alignx center");
 		
 		lblSumma = new JLabel("Summa: ");
-		oneOrderPanel.add(lblSumma, "cell 1 2,alignx center");
+		oneOrderPanel.add(lblSumma, "cell 1 3,alignx center");
 	}
 
 	@Override
@@ -187,6 +204,12 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 			for (ShoppingItem si : order.getItems()) {
 				model.cartAddItem(si.getProduct(), si.getAmount());
 			}
+		}
+		
+		if (event.getSource() == btnSparaLista) {
+			
+			model.listSave(textField.getText(), order.getItems());
+			
 		}
 		
 	}

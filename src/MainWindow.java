@@ -114,7 +114,6 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		    public void run() {
 				System.out.println("SHUTDOWN IMMINENT");
 				IMatModel.getInstance().shutDown();
-				
 		    }
 		}));
 		EventQueue.invokeLater(new Runnable() {

@@ -674,9 +674,12 @@ public class IMatModel {
 		backend.reset();
 	}
 	
+	public void saveLists(){
+		listHandler.saveState();
+	}
+	
 	public void shutDown() {
 		System.out.println(listHandler.getLists(account.getUserName()));
-		listHandler.saveState();
 		backend.shutDown();
 	}
 	

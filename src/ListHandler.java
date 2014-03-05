@@ -86,6 +86,7 @@ public class ListHandler {
 			userMap.put(listName, favList);
 			listMap.put(userName, userMap);
 		}
+		this.saveState();
 	}
 	
 	/**
@@ -156,22 +157,22 @@ public class ListHandler {
 						userName = sc.next();
 						userMap = new HashMap<String, List<ShoppingItem>>();
 						shoppingItems = new ArrayList<ShoppingItem>();
-					}
-					if(sc.hasNext("listname")){
+					} else if (sc.hasNext("listname")){
 						sc.next();
 						listName = sc.next();
-					}
-					if(sc.hasNext("pid")){
+					} else if (sc.hasNext("pid")){
 						sc.next();
 						productId = Integer.parseInt(sc.next());
 						amount = Double.parseDouble(sc.next());
 						shoppingItems.add(new ShoppingItem(model.getProduct(productId), amount));
-					}
-					if(sc.hasNext("endlist")) {
+					} else if (sc.hasNext("endlist")) {
 						sc.next();
-						userMap.put(listName, shoppingItems);
-					}
-					if(sc.hasNext("enduser")){
+						
+						List<ShoppingItem> shoppingItemsClone = new ArrayList<ShoppingItem>();
+						shoppingItemsClone.addAll(shoppingItems);
+						userMap.put(listName, shoppingItemsClone);
+						shoppingItems.clear();
+					} else if (sc.hasNext("enduser")){
 						sc.next();
 						dbmap.put(userName, userMap);
 					}

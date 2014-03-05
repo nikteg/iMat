@@ -186,10 +186,12 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 				new ImageIcon(
 						MainWindow.class
 								.getResource("/resources/icons/application_view_tile.png")));
+		toggleGridViewButton.setToolTipText("Visa produkter i standardvy");
 		toggleListViewButton = new WebToggleButton(
 				new ImageIcon(
 						MainWindow.class
 								.getResource("/resources/icons/application_view_list.png")));
+		toggleListViewButton.setToolTipText("Visa produkter i listvy");
 		toggleViewButtonGroup = new WebButtonGroup(true, toggleGridViewButton,
 				toggleListViewButton);
 		toggleViewButtonGroup.setButtonsMargin(10);

@@ -330,7 +330,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		historyPanel.setFocusable(false);
 		sidebarTabbedPane.addTab("Historik", null, historyPanel, null);
 		sidebarTabbedPane.setToolTipTextAt(2, "Visa dina tidigare beställningar");
-		historyPanel.setLayout(new MigLayout("insets 4px", "[296px]", "[646px]"));
+		historyPanel.setLayout(new MigLayout("insets 6px", "[296px]", "[646px]"));
 		
 		historyView = new HistoryView(model, frame);
 		historyView.setFocusable(false);

@@ -29,7 +29,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 	private JLabel userNameLabel;
 	private WebTextField userNameTextField;
 	private JLabel lblNewLabel_1;
-	private JButton btnNewCostumer;
+	private JButton btnCancel;
 	private JButton btnLogIn;
 	private WebPasswordField passwordField;
 	private JLabel lblAnvndarnamn;
@@ -77,17 +77,17 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		passwordField = new WebPasswordField();
 		signInPanel.add(passwordField, "cell 1 2 2 1,growx");
 		
-				btnNewCostumer = new JButton("Avbryt");
-				signInPanel.add(btnNewCostumer, "cell 1 3,alignx right,aligny top");
-				btnNewCostumer.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						dispose();
-					}
-				});
-		
-				btnLogIn = new JButton("Logga in");
-				signInPanel.add(btnLogIn, "cell 2 3,aligny top");
-				btnLogIn.addActionListener(this);
+		btnCancel = new JButton("Avbryt");
+		signInPanel.add(btnCancel, "cell 1 3,alignx right,aligny top");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
+
+		btnLogIn = new JButton("Logga in");
+		signInPanel.add(btnLogIn, "cell 2 3,aligny top");
+		btnLogIn.addActionListener(this);
 
 		newCustomerPanel = new JPanel();
 		signInTabbedPane.addTab("Ny kund", null, newCustomerPanel, null);

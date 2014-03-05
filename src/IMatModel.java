@@ -90,13 +90,15 @@ public class IMatModel {
 		return false;
 	}
 	
-	public void setCredentials(String userName, String password, String email, String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
+	public void setCredentials(String userName, String password, String passwordRepeat, String email, String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
 		List<String> errors = new ArrayList<String>();
 		
 		Pattern emailPattern = Pattern.compile("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$");
 		Matcher m = emailPattern.matcher(email);
 		
 		if (!m.matches()) errors.add("email_invalid");
+		
+		if (!password.equals(passwordRepeat)) errors.add("passoword_invalid");
 		
 		if (firstName.length() < 1) errors.add("firstname_invalid");
 		
@@ -123,8 +125,9 @@ public class IMatModel {
 		pcs.firePropertyChange("account_save", null, errors);
 		
 		if (errors.isEmpty()) {
-			account.setUserName(userName);
-			account.setPassword(password);
+			if (!(password.length() == 0)) {
+				account.setPassword(password);
+			}
 			account.setEmail(email);
 			account.setFirstName(firstName);
 			account.setLastName(lastName);

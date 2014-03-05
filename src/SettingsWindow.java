@@ -88,6 +88,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 			
 			model.setCredentials(model.getAccount().getUserName(),
 									logInSettingsPanel.getPassword(),
+									logInSettingsPanel.getPasswordRepeat(),
 									logInSettingsPanel.getEmail(),
 									addressSettingsPanel.getFirstName(),
 									addressSettingsPanel.getLastName(),
@@ -115,7 +116,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 					msg += "Fel format på Email\n";
 				}
 				
-				if (!(logInSettingsPanel.getPassword()).equals(logInSettingsPanel.getPasswordRepeat())) {
+				if (errors.contains("password_invalid")) {
 					logInSettingsPanel.setPasswordErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					logInSettingsPanel.setPasswordRepeatErrors(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					msg += "Lösenorden stämmer inte överens\n";

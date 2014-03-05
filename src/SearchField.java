@@ -43,7 +43,7 @@ public class SearchField extends WebTextField implements ActionListener {
 			inputStream = AudioSystem.getAudioInputStream(SearchField.class.getResourceAsStream("/resources/powerup.wav"));
 			clip = AudioSystem.getClip();
 			clip.open(inputStream);
-		} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {}
+		} catch (Exception e) {}
 		
 		konami.add(KeyEvent.VK_UP);
 		konami.add(KeyEvent.VK_UP);

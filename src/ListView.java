@@ -110,6 +110,9 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 		if (event.getPropertyName() == "list_saved") {
 			updateListView();
 		}
+		if (event.getPropertyName() == "list_removed") {
+			updateListView();
+		}
 	}
 	
 	public double getOrderTotal(List<ShoppingItem> shoppingItems) {

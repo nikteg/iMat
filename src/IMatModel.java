@@ -635,9 +635,14 @@ public class IMatModel {
 		
 	
 		listHandler.saveFavoriteList(shoppingItems, listName, account.getUserName());
-		System.out.println(listHandler.getLists(account.getUserName()));
 		pcs.firePropertyChange("list_saved", null, null);
 		LOGGER.log(Level.INFO, "list_saved");
+	}
+	
+	public void listRemove(String title) {
+		listHandler.removeList(title, account.getUserName());
+		pcs.firePropertyChange("list_removed", null, null);
+		LOGGER.log(Level.INFO, "list_removed");
 	}
 	
 	public ListHandler getListHandler() {
@@ -682,6 +687,8 @@ public class IMatModel {
 		System.out.println(listHandler.getLists(account.getUserName()));
 		backend.shutDown();
 	}
+
+
 	
 
 

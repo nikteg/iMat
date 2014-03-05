@@ -60,6 +60,7 @@ public class ListHandler {
 			Map<String, List<ShoppingItem>> lists = listMap.get(userName);
 			lists.remove(listName);
 		}
+		this.saveState();
 	}
 	
 	/**

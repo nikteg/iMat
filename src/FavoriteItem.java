@@ -67,10 +67,7 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
 		lblPriceLabel = new JLabel("20:-");
 		add(lblPriceLabel, "cell 1 0,alignx right,aligny center");
 		btnAddToCart = new JButton("");
-<<<<<<< HEAD
-=======
-		btnAddToCart.setPreferredSize(new Dimension(24, 24));
->>>>>>> mlonn
+
 		btnAddToCart.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		btnAddToCart.setContentAreaFilled(false);
 		btnAddToCart.setBorderPainted(false);

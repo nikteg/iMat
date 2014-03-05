@@ -53,7 +53,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		logInSettingsPanel = new LogInSettingsPanel();
 		settingsPanel.add(logInSettingsPanel, "cell 0 1,grow");
 		
-		cardSettingsPanel = new CardSettingsPanel();
+		cardSettingsPanel = new CardSettingsPanel(model);
 		settingsPanel.add(cardSettingsPanel, "cell 1 1,grow");
 		
 		addressSettingsPanel = new AddressSettingsPanel();

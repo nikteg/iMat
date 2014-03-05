@@ -1,14 +1,24 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
 import net.miginfocom.swing.MigLayout;
+
 import com.alee.laf.combobox.WebComboBox;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
 
 
-public class CardSettingsPanel extends JPanel{
+public class CardSettingsPanel extends JPanel implements ActionListener {
 	private JPanel panel;
 	private JPanel panel_1;
 	private WebComboBox savedCardsWebComboBox;
@@ -21,20 +31,37 @@ public class CardSettingsPanel extends JPanel{
 	private JTextField cvcTextField;
 	private JTextField cardNumberTextField;
 	private JLabel cardNumberLabel;
+	private JButton saveCardButton;
+	private CCardHandler cardHandler;
+	private List<CCard> cardList;
+	private IMatModel model;
 
-	public CardSettingsPanel() {
-		// TODO Auto-generated constructor stub
+	public CardSettingsPanel(IMatModel model) {
+		this.model = model;
+		cardHandler = model.getCCardHandler();
+		cardList = cardHandler.getCCards(model.getAccount().getUserName());
 		initialize();
+		this.addCards();
 	}
+	
+	private void addCards(){
+		savedCardsWebComboBox.removeAll();
+		if (cardList != null) {
+			for (CCard cc : cardList) {
+				savedCardsWebComboBox.addItem(cc.getCardNumber());
+			}
+		}
+	}
+	
 	private void initialize() {
 		setBorder(new TitledBorder(null, "Betalningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setLayout(new MigLayout("", "[grow]", "[83][]"));
+		setLayout(new MigLayout("", "[grow]", "[83][][112.00]"));
 		
 		panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Sparade kort", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		add(panel, "cell 0 0,grow");
 		panel.setLayout(new MigLayout("", "[grow][]", "[]"));
-		
+
 		savedCardsWebComboBox = new WebComboBox();
 		panel.add(savedCardsWebComboBox, "cell 0 0,growx");
 		
@@ -43,8 +70,8 @@ public class CardSettingsPanel extends JPanel{
 		
 		panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "L\u00E4gg till kort", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		add(panel_1, "cell 0 1,grow");
-		panel_1.setLayout(new MigLayout("", "[][42,grow,right][12.00,grow][42,grow,left][][48]", "[][]"));
+		add(panel_1, "cell 0 1 1 2,grow");
+		panel_1.setLayout(new MigLayout("", "[][42,grow,right][12.00,grow][42,grow,left][][48]", "[][][]"));
 		
 		cardNumberLabel = new JLabel("Kortnr");
 		panel_1.add(cardNumberLabel, "cell 0 0,alignx trailing");
@@ -73,6 +100,25 @@ public class CardSettingsPanel extends JPanel{
 		cvcTextField = new JTextField();
 		cvcTextField.setColumns(10);
 		panel_1.add(cvcTextField, "cell 5 1,growx");
+		
+		saveCardButton = new JButton("Spara kort");
+		panel_1.add(saveCardButton, "cell 5 2");
+		saveCardButton.addActionListener(this);
+		saveCardButton.setActionCommand("card_save");
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand() == "card_save") {
+			System.out.println(cardHandler);
+			String cardNumber = cardNumberTextField.getText();
+			String cardType = "Visa";
+			String holdersName = "Korvblock";
+			int validMonth = Integer.parseInt((String)monthWebComboBox.getSelectedItem());
+			int validYear = Integer.parseInt((String)yearWebComboBox.getSelectedItem());
+			int cvc = Integer.parseInt(cvcTextField.getText());
+			CCard card = new CCard(cardNumber, cardType, holdersName, validMonth, validYear, cvc);
+			cardHandler.saveCard(card, model.getAccount().getUserName());
+		}
+	}
 }

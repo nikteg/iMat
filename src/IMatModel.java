@@ -430,9 +430,8 @@ public class IMatModel {
 		default:
 			return null;
 		}
-
 	}
-
+	
 	/**
 	 * 
 	 * @param s
@@ -445,6 +444,14 @@ public class IMatModel {
 		
 		pcs.firePropertyChange("search", null, results);
 		LOGGER.log(Level.INFO, "search");
+	}
+	
+	/**
+	 * Get a string of the working directory.
+	 * @return String of the directory where the data files are stored.
+	 */
+	public String getWorkingDirectory(){
+		return backend.imatDirectory();
 	}
 
 	/**

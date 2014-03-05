@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -57,7 +58,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		setSize(360, 250);
 		setResizable(false);
 
-		signInTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		signInTabbedPane = new JTabbedPane(SwingConstants.TOP);
 		signInTabbedPane.setFocusable(false);
 		getContentPane().add(signInTabbedPane, BorderLayout.CENTER);
 
@@ -82,6 +83,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		btnCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		signInPanel.add(btnCancel, "cell 1 3,alignx right,aligny top");
 		btnCancel.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				dispose();
 			}

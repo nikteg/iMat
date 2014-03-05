@@ -1,6 +1,5 @@
 import java.awt.CardLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -16,10 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
-import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
-
-import com.alee.laf.scroll.WebScrollPane;
 
 
 public class ListView extends JPanel implements ActionListener, PropertyChangeListener {

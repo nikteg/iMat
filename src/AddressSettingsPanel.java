@@ -1,8 +1,6 @@
 
 
 import java.awt.Color;
-import java.awt.Component;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -11,7 +9,6 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 
 import com.alee.extended.image.WebImage;
-import com.alee.extended.panel.WebComponentPanel;
 import com.alee.laf.text.WebTextField;
 
 public class AddressSettingsPanel extends JPanel {

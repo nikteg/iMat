@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 
-import se.chalmers.ait.dat215.project.CreditCard;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.Product;

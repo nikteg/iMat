@@ -18,7 +18,6 @@ import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 import com.alee.laf.spinner.WebSpinner;
-import com.alee.laf.tabbedpane.WebTabbedPane;
 
 @SuppressWarnings("serial")
 public class ItemGrid extends Item implements ChangeListener{

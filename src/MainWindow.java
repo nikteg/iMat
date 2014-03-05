@@ -4,21 +4,17 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -27,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -46,9 +41,6 @@ import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.tabbedpane.WebTabbedPane;
-import com.alee.laf.text.WebTextField;
-
-import java.awt.BorderLayout;
 
 public class MainWindow implements ActionListener, PropertyChangeListener, ChangeListener {
 
@@ -111,12 +103,14 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 	 */
 	public static void main(String[] args) {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-		    public void run() {
+		    @Override
+			public void run() {
 				System.out.println("SHUTDOWN IMMINENT");
 				IMatModel.getInstance().shutDown();
 		    }
 		}));
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
@@ -366,7 +360,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		for (Constants.Category c : Constants.Category.values()) {
 			CategoryToggleButton button = new CategoryToggleButton(c.getName(), 0);
 			button.setCategory(c);
-			button.setHorizontalAlignment(JButton.LEFT);
+			button.setHorizontalAlignment(SwingConstants.LEFT);
 			button.addActionListener(this);
 			button.setActionCommand("category_change");
 			categorybuttons.add(button);

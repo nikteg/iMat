@@ -34,7 +34,7 @@ public class AddressSettingsPanel extends JPanel {
 	}
 	private void initialize() {
 		setBorder(new TitledBorder(null, "Adressuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setLayout(new MigLayout("insets 4px", "[92][52][grow]", "[32][32][][32][32][][32px][32]"));
+		setLayout(new MigLayout("insets 4px", "[92][72][grow]", "[32][32][][32][32][][32px][32]"));
 		
 		firstNameLabel = new JLabel("Förnamn");
 		add(firstNameLabel, "cell 0 0,alignx left");

@@ -4,12 +4,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import com.alee.extended.image.WebImage;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -69,6 +74,8 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		
 		logInSettingsPanel.setEmail(model.getAccount().getEmail());
 		
+		model.addPropertyChangeListener(this);
+		
 		
 		
 	}
@@ -79,26 +86,89 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSave){
 			
-			model.getAccount().setFirstName(addressSettingsPanel.getFirstName());
-			model.getAccount().setLastName(addressSettingsPanel.getLastName());
-			model.getAccount().setPhoneNumber(addressSettingsPanel.getPhoneNumber());
-			model.getAccount().setMobilePhoneNumber(addressSettingsPanel.getMobilePhoneNumber());
-			model.getAccount().setAddress(addressSettingsPanel.getAddress());
-			model.getAccount().setPostAddress(addressSettingsPanel.getPostAddress());
-			model.getAccount().setPostCode(addressSettingsPanel.getPostCode());
+			model.setCredentials(model.getAccount().getUserName(),
+									logInSettingsPanel.getPassword(),
+									logInSettingsPanel.getEmail(),
+									addressSettingsPanel.getFirstName(),
+									addressSettingsPanel.getLastName(),
+									addressSettingsPanel.getAddress(),
+									addressSettingsPanel.getMobilePhoneNumber(),
+									addressSettingsPanel.getPhoneNumber(), 
+									addressSettingsPanel.getPostAddress(), 
+									addressSettingsPanel.getPostCode());
 			
-			model.getAccount().setEmail(logInSettingsPanel.getEmail());
 			
-			
-			
-			dispose();
 		}
 		
 		
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
+		if (!isVisible()) return; // TODO
+		if (evt.getPropertyName() == "account_save") {
+			List<String> errors = (ArrayList<String>)evt.getNewValue();
+			if (!errors.isEmpty()) {
+				String msg = "";
+				
+				if (errors.contains("email_invalid")) {
+					logInSettingsPanel.setEmailErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på Email\n";
+				}
+				
+				if (!(logInSettingsPanel.getPassword()).equals(logInSettingsPanel.getPasswordRepeat())) {
+					logInSettingsPanel.setPasswordErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					logInSettingsPanel.setPasswordRepeatErrors(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Lösenorden stämmer inte överens\n";
+				}
+				
+				if (errors.contains("firstname_invalid")) {
+					addressSettingsPanel.setFirstNameErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Förnamn saknas\n";
+				}
+				
+				if (errors.contains("lastname_invalid")) {
+					addressSettingsPanel.setLastNameErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Efternamn saknas\n";
+				}
+				
+				if (errors.contains("address_invalid")) {
+					addressSettingsPanel.setAddressErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Address saknas\n";
+				}
+				
+				if (errors.contains("mobilephone_invalid")) {
+					addressSettingsPanel.setMobilePhoneErrors(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på mobilnummer\n";
+				}
+				
+				if (errors.contains("phone_invalid")) {
+					addressSettingsPanel.setPhoneErrors(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på telefonnummer\n";
+				}
+				
+				if (errors.contains("postaddress_invalid")) {
+					addressSettingsPanel.setPostAddressErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Postadress saknas\n";
+				}
+				
+				if (errors.contains("postcode_invalid")) {
+					addressSettingsPanel.setPostCodeErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på postnummer\n";
+				}
+				
+				JOptionPane.showMessageDialog(this, msg, "Fel vid sparning av uppgifter", JOptionPane.WARNING_MESSAGE);
+			}
+			
+		}
+		
+		if (evt.getPropertyName() == "account_saved") {
+			JOptionPane.showMessageDialog(this, "Uppgifter sparade", "Intällningar", JOptionPane.INFORMATION_MESSAGE);
+			dispose();
+		}
+		
+
+	
+
 		
 	}
 

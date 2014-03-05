@@ -91,16 +91,55 @@ public class IMatModel {
 	}
 	
 	public void setCredentials(String userName, String password, String email, String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
-		account.setUserName(userName);
-		account.setPassword(password);
-		account.setEmail(email);
-		account.setFirstName(firstName);
-		account.setLastName(lastName);
-		account.setAddress(postAddress);
-		account.setMobilePhoneNumber(mobilePhoneNumber);
-		account.setPhoneNumber(phoneNumber);
-		account.setPostAddress(postAddress);
-		account.setPostCode(postCode);
+		List<String> errors = new ArrayList<String>();
+		
+		Pattern emailPattern = Pattern.compile("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$");
+		Matcher m = emailPattern.matcher(email);
+		
+		if (!m.matches()) errors.add("email_invalid");
+		
+		if (firstName.length() < 1) errors.add("firstname_invalid");
+		
+		if (lastName.length() < 1) errors.add("lastname_invalid");
+		
+		if (address.length() < 1) errors.add("address_invalid");
+		
+		Pattern numberPattern = Pattern.compile("^[0-9\\+ ]+$");
+		Matcher mpm = numberPattern.matcher(mobilePhoneNumber);
+		
+		if (!mpm.matches() && mobilePhoneNumber.length() != 0) errors.add("mobilephone_invalid");
+		
+		Matcher pm = numberPattern.matcher(phoneNumber);
+		
+		if (!pm.matches() && phoneNumber.length() != 0) errors.add("phone_invalid");
+		
+		if (postAddress.length() < 1) errors.add("postaddress_invalid");
+		
+		Pattern postCodePattern = Pattern.compile("^[0-9 ]{5,6}$");
+		Matcher pcm = postCodePattern.matcher(postCode);
+		
+		if (!pcm.matches()) errors.add("postcode_invalid");
+		
+		pcs.firePropertyChange("account_save", null, errors);
+		
+		if (errors.isEmpty()) {
+			account.setUserName(userName);
+			account.setPassword(password);
+			account.setEmail(email);
+			account.setFirstName(firstName);
+			account.setLastName(lastName);
+			account.setAddress(postAddress);
+			account.setMobilePhoneNumber(mobilePhoneNumber);
+			account.setPhoneNumber(phoneNumber);
+			account.setPostAddress(postAddress);
+			account.setPostCode(postCode);
+			
+			pcs.firePropertyChange("account_saved", null, account);
+			
+		}
+		
+
+
 	}
 	
 	

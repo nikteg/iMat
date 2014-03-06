@@ -147,27 +147,35 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 			
 			String[] cardsfield = new String[cardList.size()];
 			for (CCard cc : cardList) {
-				cardsfield[cardList.indexOf(cc)] = cc.getCardNumber();
-			}
-			savedCardsWebComboBox.setModel(new DefaultComboBoxModel(cardsfield));
-			panel.add(savedCardsWebComboBox, "cell 1 0,growx");
-			savedCardsWebComboBox.revalidate();
-			savedCardsWebComboBox.repaint();
-			if (cardList.size() > 0) {
-				String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
+				String visa = "XXXX-XXXX-XXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-4, cc.getCardNumber().length());
+				String mastercard = "XXXX-XXXX-XXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-4, cc.getCardNumber().length());
+				String amex = "XXXX-XXXXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-5, cc.getCardNumber().length());
+				
+				String cardType = cc.getCardType();
 				if (cardType.equalsIgnoreCase("Mastercard")) {
-					System.out.println("mastercard");
+					cardsfield[cardList.indexOf(cc)] = mastercard;
 					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
 				}
 				if (cardType.equalsIgnoreCase("Visa")) {
+					cardsfield[cardList.indexOf(cc)] = visa;
 					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
-					System.out.println("visa");
 				}
 				if (cardType.equalsIgnoreCase("American_Express")) {
+					cardsfield[cardList.indexOf(cc)] = amex;
 					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
-					System.out.println("amex");
 				}
 			}
+			if (cardsfield.length == 0) {
+				savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"Inga sparade kort"}));
+				iconLabel.setIcon(null);
+			} else {
+				savedCardsWebComboBox.setModel(new DefaultComboBoxModel(cardsfield));
+			}
+			
+			panel.add(savedCardsWebComboBox, "cell 1 0,growx");
+			savedCardsWebComboBox.revalidate();
+			savedCardsWebComboBox.repaint();
+			
 			savedCardsWebComboBox.setSelectedIndex(savedCardsWebComboBox.getItemCount()-1);
 			iconLabel.repaint();
 			panel.repaint();
@@ -205,24 +213,25 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 		}
 		
 		if (e.getSource() == savedCardsWebComboBox) {
-			String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
-			System.out.println(cardType);
-			if (cardType.equalsIgnoreCase("Mastercard")) {
-				System.out.println("mastercard");
-				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+			if (cardList.size() != 0) {
+				String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
+				System.out.println(cardType);
+				if (cardType.equalsIgnoreCase("Mastercard")) {
+					System.out.println("mastercard");
+					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+				}
+				if (cardType.equalsIgnoreCase("Visa")) {
+					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
+					System.out.println("visa");
+				}
+				if (cardType.equalsIgnoreCase("American_Express")) {
+					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
+					System.out.println("amex");
+				}
+				iconLabel.repaint();
+				panel.repaint();
+				repaint();	
 			}
-			if (cardType.equalsIgnoreCase("Visa")) {
-				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
-				System.out.println("visa");
-			}
-			if (cardType.equalsIgnoreCase("American_Express")) {
-				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
-				System.out.println("amex");
-			}
-			iconLabel.repaint();
-			panel.repaint();
-			repaint();
-			
 		}
 	}
 

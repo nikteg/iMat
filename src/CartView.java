@@ -45,6 +45,8 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		listNameTextField.setEnabled(!model.getAccount().isAnonymous());
 		btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
 		this.model.addPropertyChangeListener(this);
+		checkoutButton.setEnabled(!model.getShoppingCart().getItems().isEmpty());
+		btnClearCart.setEnabled(!model.getShoppingCart().getItems().isEmpty());
 		
 		updateCartView();
 	}
@@ -95,17 +97,27 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		checkoutButton.addActionListener(this);
 		checkoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		add(checkoutButton, "cell 1 3,growx,aligny center");
+		
+
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+	
 		
 		if (evt.getPropertyName() == "account_signedin") {
 			listNameTextField.setEnabled(!model.getAccount().isAnonymous());
 			btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
 		}
 		
+		if (evt.getPropertyName() == "account_signout") {
+			listNameTextField.setEnabled(!model.getAccount().isAnonymous());
+			btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
+		}
+		
 		if (evt.getPropertyName() == "cart_additem") {
+			checkoutButton.setEnabled(true);
+			btnClearCart.setEnabled(true);
 			itemPanel.add(new CartItem((ShoppingItem)evt.getNewValue(), model), "wrap,growx");
 			totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
 			updateColors();
@@ -114,6 +126,9 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		}
 		
 		if (evt.getPropertyName() == "cart_removeitem") {
+			
+			checkoutButton.setEnabled(!model.getShoppingCart().getItems().isEmpty());
+			btnClearCart.setEnabled(!model.getShoppingCart().getItems().isEmpty());
 			
 			for (int i = 0; i < itemPanel.getComponentCount(); i++) {
 				if (((CartItem)itemPanel.getComponent(i)).getShoppingItem() == (ShoppingItem)evt.getNewValue()) {
@@ -184,9 +199,12 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 		}
 		
 		if (event.getSource() == checkoutButton) {
-			checkoutWindow = new CheckOutWindow(frame, model);
-			checkoutWindow.setLocationRelativeTo(frame);
-			checkoutWindow.setVisible(true);
+			if (model.getShoppingCart().getItems().size() != 0) {
+				checkoutWindow = new CheckOutWindow(frame, model);
+				checkoutWindow.setLocationRelativeTo(frame);
+				checkoutWindow.setVisible(true);
+			}
+			
 			
 		}
 		

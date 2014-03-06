@@ -96,9 +96,9 @@ public class CCardHandler {
 					String cardNumber = card.getCardNumber();
 					String cardType = card.getCardType();
 					String holdersName = card.getHoldersName();
-					int validMonth = card.getValidMonth();
-					int validYear = card.getValidYear();
-					int cvc = card.getCvc();
+					String validMonth = card.getValidMonth();
+					String validYear = card.getValidYear();
+					String cvc = card.getCvc();
 					writer.write("ccard;" + cardNumber + ";" + cardType + ";" + holdersName + ";" + 
 					validMonth + ";" + validYear + ";" + cvc + ";");
 				}
@@ -121,9 +121,9 @@ public class CCardHandler {
 			String cardNumber = "";
 			String cardType = "";
 			String holdersName = "";
-			int validMonth;
-			int validYear;
-			int cvc;
+			String validMonth;
+			String validYear;
+			String cvc;
 			
 			List<CCard> cards = new ArrayList<CCard>();
 			
@@ -139,9 +139,9 @@ public class CCardHandler {
 						cardNumber = sc.next();
 						cardType = sc.next();
 						holdersName = sc.next();
-						validMonth = Integer.parseInt(sc.next());
-						validYear = Integer.parseInt(sc.next());
-						cvc = Integer.parseInt(sc.next());
+						validMonth = sc.next();
+						validYear = sc.next();
+						cvc = sc.next();
 						cards.add(new CCard(cardNumber, cardType, holdersName, validMonth, validYear, cvc));
 					}
 					if(sc.hasNext("enduser")){

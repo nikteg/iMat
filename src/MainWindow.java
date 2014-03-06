@@ -97,6 +97,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 	private boolean logoChanged = true;
 	private JPanel listPanel;
 	private ListView listView;
+	
+	private int lolWidth = 1110;
+	private int lolHeight = 762;
 
 	/**
 	 * Launch the application.
@@ -152,6 +155,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			lblImat.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
 			this.frame.setCursor(Cursor.DEFAULT_CURSOR);
 		}
+		
+		frame.setBounds(frame.getX(), frame.getY(), frame.getWidth()-(int)(Math.random() * 100), frame.getHeight()-(int)(Math.random() * 100));
 		
 		logoChanged = !logoChanged;
 	}
@@ -527,7 +532,11 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			CardLayout cl = (CardLayout) (userPanel.getLayout());
 			cl.show(userPanel, "signedOutPanel");
 			sidebarTabbedPane.setEnabledAt(1, false);
+			sidebarTabbedPane.setToolTipTextAt(1, "Logga in för att se dina favoriter");
 			sidebarTabbedPane.setEnabledAt(2, false);
+			sidebarTabbedPane.setToolTipTextAt(2,  "Logga in för att se dina listor");
+			sidebarTabbedPane.setEnabledAt(3, false);
+			sidebarTabbedPane.setToolTipTextAt(3,  "Logga in för att se din orderhistorik");
 			sidebarTabbedPane.setSelectedIndex(0);
 		}
 		

@@ -94,14 +94,16 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 		
 		addressSettingsPanel = new AddressSettingsPanel();
 		settingsPanel.add(addressSettingsPanel, "cell 1 0,grow");
+		if (!model.getAccount().isAnonymous()) {
+			addressSettingsPanel.setFirstName(model.getAccount().getFirstName());
+			addressSettingsPanel.setLastName(model.getAccount().getLastName());
+			addressSettingsPanel.setPhoneNumber(model.getAccount().getPhoneNumber());
+			addressSettingsPanel.setMobilePhoneNumber(model.getAccount().getMobilePhoneNumber());
+			addressSettingsPanel.setAddress(model.getAccount().getAddress());
+			addressSettingsPanel.setPostAddress(model.getAccount().getPostAddress());
+			addressSettingsPanel.setPostCode(model.getAccount().getPostCode());
+		}
 		
-		addressSettingsPanel.setFirstName(model.getAccount().getFirstName());
-		addressSettingsPanel.setLastName(model.getAccount().getLastName());
-		addressSettingsPanel.setPhoneNumber(model.getAccount().getPhoneNumber());
-		addressSettingsPanel.setMobilePhoneNumber(model.getAccount().getMobilePhoneNumber());
-		addressSettingsPanel.setAddress(model.getAccount().getAddress());
-		addressSettingsPanel.setPostAddress(model.getAccount().getPostAddress());
-		addressSettingsPanel.setPostCode(model.getAccount().getPostCode());
 		
 		btnConfirm = new JButton("Bekräfta");
 		btnConfirm.addActionListener(this);
@@ -141,15 +143,33 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 			addressSettingsPanel.setPostCodeErros(Color.WHITE, null);
 
 			
-			
-			model.orderPlace(addressSettingsPanel.getFirstName(),
+			if (cardSettingsPanel.getComboboxindex() == 0) {
+				model.orderPlace(addressSettingsPanel.getFirstName(),
 								addressSettingsPanel.getLastName(), 
 								addressSettingsPanel.getAddress(), 
 								addressSettingsPanel.getMobilePhoneNumber(), 
 								addressSettingsPanel.getPhoneNumber(),
 								addressSettingsPanel.getPostAddress(), 
-								addressSettingsPanel.getPostCode());
-			
+								addressSettingsPanel.getPostCode(),
+								cardSettingsPanel.getCardNumber(),
+								cardSettingsPanel.getValidMonth(),
+								cardSettingsPanel.getValidYear(),
+								cardSettingsPanel.getCVC());
+			} else {
+				CCard card = cardSettingsPanel.getSelectedCard();
+				System.out.println(card.getValidMonth() + " " + card.getValidYear() + " " + card.getCvc());
+				model.orderPlace(addressSettingsPanel.getFirstName(),
+						addressSettingsPanel.getLastName(), 
+						addressSettingsPanel.getAddress(), 
+						addressSettingsPanel.getMobilePhoneNumber(), 
+						addressSettingsPanel.getPhoneNumber(),
+						addressSettingsPanel.getPostAddress(), 
+						addressSettingsPanel.getPostCode(),
+						card.getCardNumber(),
+						card.getValidMonth(),
+						card.getValidYear(),
+						card.getCvc());
+			}
 		}
 		
 		
@@ -210,6 +230,26 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 					addressSettingsPanel.setPostCodeErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
 					msg += "Postadress saknas\n";
 				}
+				
+			
+				if (errors.contains("cardnumber_invalid")) {
+					cardSettingsPanel.setCardNumberErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på kortnummer\n";
+				}
+				
+				if (errors.contains("cvc_invalid")) {
+					cardSettingsPanel.setCvcErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på cvc\n";
+				}
+				
+				if (errors.contains("month_invalid")) {
+					msg += "Utgångsmånad saknas\n";
+				}
+				
+				if (errors.contains("year_invalid")) {
+					msg += "Utgångsår saknas\n";
+				}
+				
 				
 				
 				

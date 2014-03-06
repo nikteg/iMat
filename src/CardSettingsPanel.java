@@ -138,52 +138,83 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 		return cvcTextField.getText();
 	}
 	
+	public int getComboboxindex() {
+		return savedCardsWebComboBox.getSelectedIndex();
+	}
+	
 	public void updateCards(){
 		
-		if (cardList != null) {
+		if (model.getAccount().isAnonymous()) {
 			panel.remove(savedCardsWebComboBox);
 			savedCardsWebComboBox = new WebComboBox();
-			savedCardsWebComboBox.addActionListener(this);
-			
-			String[] cardsfield = new String[cardList.size()];
-			for (CCard cc : cardList) {
-				String visa = "XXXX-XXXX-XXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-4, cc.getCardNumber().length());
-				String mastercard = "XXXX-XXXX-XXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-4, cc.getCardNumber().length());
-				String amex = "XXXX-XXXXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-5, cc.getCardNumber().length());
-				
-				String cardType = cc.getCardType();
-				if (cardType.equalsIgnoreCase("Mastercard")) {
-					cardsfield[cardList.indexOf(cc)] = mastercard;
-					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
-				}
-				if (cardType.equalsIgnoreCase("Visa")) {
-					cardsfield[cardList.indexOf(cc)] = visa;
-					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
-				}
-				if (cardType.equalsIgnoreCase("American_Express")) {
-					cardsfield[cardList.indexOf(cc)] = amex;
-					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
-				}
-			}
-			if (cardsfield.length == 0) {
-				savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"Inga sparade kort"}));
-				iconLabel.setIcon(null);
-			} else {
-				savedCardsWebComboBox.setModel(new DefaultComboBoxModel(cardsfield));
-			}
-			
+			savedCardsWebComboBox.setEnabled(false);
+			savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"Inga sparade kort"}));
+			iconLabel.setIcon(null);
 			panel.add(savedCardsWebComboBox, "cell 1 0,growx");
 			savedCardsWebComboBox.revalidate();
 			savedCardsWebComboBox.repaint();
-			
-			savedCardsWebComboBox.setSelectedIndex(savedCardsWebComboBox.getItemCount()-1);
+			removeButton.setEnabled(false);
+			saveCardButton.setEnabled(false);
+
 			iconLabel.repaint();
 			panel.repaint();
 			repaint();
 
-		
+		} else {
+			if (cardList != null) {
+				panel.remove(savedCardsWebComboBox);
+				savedCardsWebComboBox = new WebComboBox();
+				savedCardsWebComboBox.addActionListener(this);
+				removeButton.setEnabled(true);
+				saveCardButton.setEnabled(true);
+				
+				String[] cardsfield = new String[cardList.size() + 1];
+				cardsfield[0] = "Välj kort";
+				for (CCard cc : cardList) {
+					String visa = "XXXX-XXXX-XXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-4, cc.getCardNumber().length());
+					String mastercard = "XXXX-XXXX-XXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-4, cc.getCardNumber().length());
+					String amex = "XXXX-XXXXXX-" + cc.getCardNumber().substring(cc.getCardNumber().length()-5, cc.getCardNumber().length());
+					
+					String cardType = cc.getCardType();
+					if (cardType.equalsIgnoreCase("Mastercard")) {
+						cardsfield[cardList.indexOf(cc) + 1] = mastercard;
+						iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+					}
+					if (cardType.equalsIgnoreCase("Visa")) {
+						cardsfield[cardList.indexOf(cc) + 1] = visa;
+						iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
+					}
+					if (cardType.equalsIgnoreCase("American_Express")) {
+						cardsfield[cardList.indexOf(cc) + 1] = amex;
+						iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
+					}
+				}
+				if (cardsfield.length == 0) {
+					savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"Inga sparade kort"}));
+					iconLabel.setIcon(null);
+				} else {
+					savedCardsWebComboBox.setModel(new DefaultComboBoxModel(cardsfield));
+				}
+				
+				if (savedCardsWebComboBox.getSelectedIndex() == 0) {
+					iconLabel.setIcon(null);
+				}
+				
+				panel.add(savedCardsWebComboBox, "cell 1 0,growx");
+				savedCardsWebComboBox.revalidate();
+				savedCardsWebComboBox.repaint();
+				
+				
+				
+				iconLabel.repaint();
+				panel.repaint();
+				repaint();
+
+			
+			}
+
 		}
-	}
+			}
 
 	
 	public void setCardNumberErros(Color bg, WebImage wi) {
@@ -208,29 +239,33 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 		}
 		
 		if (e.getSource() == removeButton) {
-			model.removeCard(cardList.get(savedCardsWebComboBox.getSelectedIndex()));
+			model.removeCard(cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1));
 			updateCards();
 		}
 		
 		if (e.getSource() == savedCardsWebComboBox) {
+			iconLabel.setIcon(null);
 			if (cardList.size() != 0) {
-				String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
-				System.out.println(cardType);
-				if (cardType.equalsIgnoreCase("Mastercard")) {
-					System.out.println("mastercard");
-					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+				if(savedCardsWebComboBox.getSelectedIndex() != 0){
+					String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1).getCardType();
+					if (cardType.equalsIgnoreCase("Mastercard")) {
+						System.out.println("mastercard");
+						iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+					}
+					if (cardType.equalsIgnoreCase("Visa")) {
+						iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
+						System.out.println("visa");
+					}
+					if (cardType.equalsIgnoreCase("American_Express")) {
+						iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
+						System.out.println("amex");
+					}
+					iconLabel.repaint();
+					panel.repaint();
+					repaint();
 				}
-				if (cardType.equalsIgnoreCase("Visa")) {
-					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
-					System.out.println("visa");
-				}
-				if (cardType.equalsIgnoreCase("American_Express")) {
-					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
-					System.out.println("amex");
-				}
-				iconLabel.repaint();
-				panel.repaint();
-				repaint();	
+				
+					
 			}
 		}
 	}
@@ -260,7 +295,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 				if (errors.contains("year_invalid")) {
 					msg += "Utgångsår saknas\n";
 				}
-				JOptionPane.showMessageDialog(this, msg, "Fel vid sparning av uppgifter", JOptionPane.WARNING_MESSAGE);
+
 			}
 			
 		}
@@ -269,5 +304,9 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 			updateCards();
 		}
 		
+	}
+
+	public CCard getSelectedCard() {
+		return cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1);
 	}
 }

@@ -147,7 +147,7 @@ public class IMatModel {
 			if (amexdn.matches() || amexn.matches()) {
 				cardType = "American_Express";
 			}
-			CCard card = new CCard(cardNumber, cardType, account.getFirstName() + " " + account.getLastName(), Integer.parseInt(validMonth), Integer.parseInt(validYear), Integer.parseInt(cvc));
+			CCard card = new CCard(cardNumber, cardType, account.getFirstName() + " " + account.getLastName(), validMonth, validYear, cvc);
 			
 			cardHandler.saveCard(card, account.getUserName());
 			
@@ -635,9 +635,13 @@ public class IMatModel {
 								String mobilePhoneNumber, 
 								String phoneNumber, 
 								String postAddress, 
-								String postCode) {
+								String postCode,
+								String cardNumber,
+								String validMonth,
+								String validYear,
+								String cvc) {
 		
-		return orderPlace(true, firstName, lastName, address, mobilePhoneNumber, phoneNumber, postAddress, postCode);
+		return orderPlace(true, firstName, lastName, address, mobilePhoneNumber, phoneNumber, postAddress, postCode, cardNumber, validMonth, validYear, cvc);
 	}
 
 	/**
@@ -648,10 +652,36 @@ public class IMatModel {
 	 *            - indicates whether the shopping cart is cleared or not.
 	 * @return An Order object containing information about the order.
 	 */
-	public Order orderPlace(boolean clearShoppingCart,String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
+	public Order orderPlace(boolean clearShoppingCart,String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode, String cardNumber, String validMonth, String validYear, String cvc) {
 		List<String> errors = new ArrayList<String>();
 		
+		Pattern masterCardNumberDashesPattern = Pattern.compile("^5[1-5]{3}[\\- ][0-9]{4}[\\- ][0-9]{4}[\\- ][0-9]{4}$");
+		Pattern masterCardNubersPattern = Pattern.compile("^5[1-5][0-9]{14}$");
+		Pattern visaCardNumberDashesPattern = Pattern.compile("^4[0-9]{3}[\\- ][0-9]{4}[\\- ][0-9]{4}[\\- ][0-9]{4}$");
+		Pattern visaCardNumbersPattern = Pattern.compile("^4[0-9]{15}$");
+		Pattern amexCardNumberDashesPattern = Pattern.compile("^3[47][0-9]{2}[\\- ][0-9]{6}[\\- ][0-9]{5}$");
+		Pattern amexCardNumberPattern = Pattern.compile("^3[47][0-9]{13}$");
+		Pattern monthYearPattern = Pattern.compile("^[0-9]{2}$");
+		Pattern cvcPattern = Pattern.compile("^[0-9]{3}$");
 		
+		Matcher mcdn = masterCardNumberDashesPattern.matcher(cardNumber);
+		Matcher mcn  = masterCardNubersPattern.matcher(cardNumber);
+		Matcher vcdn = visaCardNumberDashesPattern.matcher(cardNumber);
+		Matcher vcn  = visaCardNumbersPattern.matcher(cardNumber);
+		Matcher amexdn = amexCardNumberDashesPattern.matcher(cardNumber);
+		Matcher amexn  = amexCardNumberPattern.matcher(cardNumber);
+		Matcher m    = monthYearPattern.matcher(validMonth);
+		Matcher y    = monthYearPattern.matcher(validYear);
+		Matcher cvcm  = cvcPattern.matcher(cvc); 
+
+		if (!mcdn.matches() && !mcn.matches() && !vcdn.matches() && !vcn.matches() && !amexdn.matches() && !amexn.matches()) errors.add("cardnumber_invalid");
+		
+		if (!m.matches()) errors.add("month_invalid");
+		
+		if (!y.matches()) errors.add("year_invalid");
+		
+		if (!cvcm.matches()) errors.add("cvc_invalid");
+				
 		if (firstName.length() < 1) errors.add("firstname_invalid");
 		
 		if (lastName.length() < 1) errors.add("lastname_invalid");
@@ -674,11 +704,13 @@ public class IMatModel {
 		
 		if (!pcm.matches()) errors.add("postcode_invalid");
 			
+		pcs.firePropertyChange("card_save", null, errors);
 		pcs.firePropertyChange("order_place", null, errors);
 		LOGGER.log(Level.INFO, "order_place");
 		
 		if (errors.isEmpty()) {
 			Order order = backend.placeOrder(clearShoppingCart);
+			cartClear();
 			pcs.firePropertyChange("order_placed", null, order);
 			LOGGER.log(Level.INFO, "order_placed");
 			return order;

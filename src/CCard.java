@@ -6,16 +6,17 @@ public class CCard {
 	private String cardNumber;
 	private String cardType;
 	private String holdersName;
-	private int validMonth;
-	private int validYear;
-	private int cvc;
+	private String validMonth;
+	private String validYear;
+	private String cvc;
 	
-	public CCard (String cardNumber, String cardType, String holdersName, int validMonth, int validYear, int cvc) {
+	public CCard (String cardNumber, String cardType, String holdersName, String validMonth, String validYear, String cvc) {
 		this.cardNumber = cardNumber;
 		this.cardType = cardType;
 		this.holdersName = holdersName;
 		this.validMonth = validMonth;
 		this.validYear = validYear;
+		this.cvc = cvc;
 	}
 	
 	public String getCardNumber() {
@@ -30,15 +31,15 @@ public class CCard {
 		return holdersName;
 	}
 	
-	public int getValidMonth() {
+	public String getValidMonth() {
 		return validMonth;
 	}
 	
-	public int getValidYear() {
+	public String getValidYear() {
 		return validYear;
 	}
 	
-	public int getCvc() {
+	public String getCvc() {
 		return cvc;
 	}
 }

@@ -52,12 +52,15 @@ public class CCardHandler {
 	public void removeCard(CCard card, String userName) {
 		if (cardMap.containsKey(userName)) {
 			List<CCard> cards = cardMap.get(userName);
+			CCard deleteCard = null;
 			for (CCard cc : cards) {
 				if (cc.getCardNumber().equals(card.getCardNumber())) {
-					cards.remove(cc);
+					deleteCard = cc;
 				}
 			}
+			cards.remove(deleteCard);
 		}
+		this.saveState();
 	}
 	
 	/**

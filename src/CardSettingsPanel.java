@@ -73,7 +73,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 		panel.add(iconLabel, "cell 0 0,grow");
 		
 		savedCardsWebComboBox = new WebComboBox();
-		savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"5545-1234-1234-1234"}));
+		savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"Inga sparade kort"}));
 		savedCardsWebComboBox.addActionListener(this);
 		panel.add(savedCardsWebComboBox, "cell 1 0,growx");
 
@@ -166,6 +166,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
 				System.out.println("amex");
 			}
+			savedCardsWebComboBox.setSelectedIndex(savedCardsWebComboBox.getItemCount()-1);
 			iconLabel.repaint();
 			panel.repaint();
 			repaint();

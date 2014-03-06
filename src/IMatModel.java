@@ -93,6 +93,71 @@ public class IMatModel {
 		return false;
 	}
 	
+	public void removeCard(CCard cCard) {
+		cardHandler.removeCard(cCard, account.getUserName());
+	}
+
+	
+	public void cardSave(String cardNumber, String validMonth, String validYear, String cvc) {
+		List<String> errors = new ArrayList<String>();
+		
+		Pattern masterCardNumberDashesPattern = Pattern.compile("^5[1-5]{3}[\\- ][0-9]{4}[\\- ][0-9]{4}[\\- ][0-9]{4}$");
+		Pattern masterCardNubersPattern = Pattern.compile("^5[1-5][0-9]{14}$");
+		Pattern visaCardNumberDashesPattern = Pattern.compile("^4[0-9]{3}[\\- ][0-9]{4}[\\- ][0-9]{4}[\\- ][0-9]{4}$");
+		Pattern visaCardNumbersPattern = Pattern.compile("^4[0-9]{15}$");
+		Pattern amexCardNumberDashesPattern = Pattern.compile("^3[47][0-9]{2}[\\- ][0-9]{6}[\\- ][0-9]{5}$");
+		Pattern amexCardNumberPattern = Pattern.compile("^3[47][0-9]{13}$");
+		Pattern monthYearPattern = Pattern.compile("^[0-9]{2}$");
+		Pattern cvcPattern = Pattern.compile("^[0-9]{3}$");
+		
+		Matcher mcdn = masterCardNumberDashesPattern.matcher(cardNumber);
+		Matcher mcn  = masterCardNubersPattern.matcher(cardNumber);
+		Matcher vcdn = visaCardNumberDashesPattern.matcher(cardNumber);
+		Matcher vcn  = visaCardNumbersPattern.matcher(cardNumber);
+		Matcher amexdn = amexCardNumberDashesPattern.matcher(cardNumber);
+		Matcher amexn  = amexCardNumberPattern.matcher(cardNumber);
+		Matcher m    = monthYearPattern.matcher(validMonth);
+		Matcher y    = monthYearPattern.matcher(validYear);
+		Matcher cvcm  = cvcPattern.matcher(cvc); 
+		
+		if (!mcdn.matches() && !mcn.matches() && !vcdn.matches() && !vcn.matches() && !amexdn.matches() && !amexn.matches()) errors.add("cardnumber_invalid");
+		
+		if (!m.matches()) errors.add("month_invalid");
+		
+		if (!y.matches()) errors.add("year_invalid");
+		
+		if (!cvcm.matches()) errors.add("cvc_invalid");
+		
+		for (String s : errors) {
+			System.out.println(s);
+		}
+		System.out.println(cardNumber);
+		
+		pcs.firePropertyChange("card_save", null, errors);
+		LOGGER.log(Level.INFO, "card_save");
+		
+		if (errors.isEmpty()) {
+			String cardType = "";
+			if (mcdn.matches() || mcn.matches()) {
+				cardType = "MasterCard";
+			}
+			if (vcdn.matches() || vcn.matches()) {
+				cardType = "Visa";
+			}
+			if (amexdn.matches() || amexn.matches()) {
+				cardType = "American_Express";
+			}
+			CCard card = new CCard(cardNumber, cardType, account.getFirstName() + " " + account.getLastName(), Integer.parseInt(validMonth), Integer.parseInt(validYear), Integer.parseInt(cvc));
+			
+			cardHandler.saveCard(card, account.getUserName());
+			
+			pcs.firePropertyChange("card_saved", null, card);
+			LOGGER.log(Level.INFO, "card_saved");
+		}
+		
+	}
+
+	
 	public void setCredentials(String userName, String password, String passwordRepeat, String email, String firstName, String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
 		List<String> errors = new ArrayList<String>();
 		
@@ -688,9 +753,10 @@ public class IMatModel {
 	}
 	
 	public void shutDown() {
-		System.out.println(listHandler.getLists(account.getUserName()));
 		backend.shutDown();
 	}
+
+
 
 
 	

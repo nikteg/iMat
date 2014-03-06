@@ -82,7 +82,6 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 	}
 	
 	public void addFavorite(Product product) {
-		System.out.println(favItemList.size());
 		if (!favItemList.contains(product)) {
 			FavoriteItem fi = new FavoriteItem(product,model);
 			favoritePanel.add(fi, "wrap,growx");

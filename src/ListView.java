@@ -151,7 +151,6 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 		
 		allListsItem.removeAll();
 		Map<String, List<ShoppingItem>> listMap = model.getListHandler().getLists(model.getAccount().getUserName());
-		System.out.println("hej");
 		
 		if (listMap != null) {
 			for (String s : listMap.keySet()) {

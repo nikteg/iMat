@@ -1,69 +1,103 @@
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+import com.alee.extended.image.WebImage;
 import com.alee.laf.combobox.WebComboBox;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.DefaultComboBoxModel;
+import com.alee.laf.text.WebTextField;
+import java.awt.Dimension;
 
 
-public class CardSettingsPanel extends JPanel implements ActionListener {
+public class CardSettingsPanel extends JPanel implements ActionListener, PropertyChangeListener {
 	private JPanel panel;
 	private JPanel panel_1;
-	private WebComboBox savedCardsWebComboBox;
 	private JButton removeButton;
 	private JLabel expireDateLabel;
 	private WebComboBox monthWebComboBox;
 	private JLabel slashLabel;
 	private WebComboBox yearWebComboBox;
 	private JLabel cvcLabel;
-	private JTextField cvcTextField;
-	private JTextField cardNumberTextField;
+	private WebTextField cvcTextField;
+	private WebTextField cardNumberTextField;
 	private JLabel cardNumberLabel;
 	private JButton saveCardButton;
 	private CCardHandler cardHandler;
 	private List<CCard> cardList;
 	private IMatModel model;
+	private JLabel iconLabel;
+	private WebComboBox savedCardsWebComboBox;
+	
+	public CardSettingsPanel() {
+		super();
+		initialize();
+	}
 
 	public CardSettingsPanel(IMatModel model) {
+		this();
 		this.model = model;
 		cardHandler = model.getCCardHandler();
 		cardList = cardHandler.getCCards(model.getAccount().getUserName());
-		initialize();
-		this.addCards();
+		model.addPropertyChangeListener(this);
+		
+		updateCards();
+		String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
+		if (cardType.equalsIgnoreCase("Mastercard")) {
+			System.out.println("mastercard");
+			iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+		}
+		if (cardType.equalsIgnoreCase("Visa")) {
+			iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
+			System.out.println("visa");
+		}
+		if (cardType.equalsIgnoreCase("American_Express")) {
+			iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
+			System.out.println("amex");
+		}
+		iconLabel.repaint();
+		panel.repaint();
+		repaint();
 	}
 	
-	private void addCards(){
-		savedCardsWebComboBox.removeAll();
-		if (cardList != null) {
-			for (CCard cc : cardList) {
-				savedCardsWebComboBox.addItem(cc.getCardNumber());
-			}
-		}
-	}
+
 	
 	private void initialize() {
 		setBorder(new TitledBorder(null, "Betalningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setLayout(new MigLayout("", "[grow]", "[83][][112.00]"));
+		setLayout(new MigLayout("", "[grow]", "[72px:n][][112.00]"));
 		
 		panel = new JPanel();
+		panel.setPreferredSize(new Dimension(64, 40));
 		panel.setBorder(new TitledBorder(null, "Sparade kort", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		add(panel, "cell 0 0,grow");
-		panel.setLayout(new MigLayout("", "[grow][]", "[]"));
-
+		panel.setLayout(new MigLayout("", "[64px][140px,grow][grow]", "[40px,grow]"));
+		
+		iconLabel = new JLabel("");
+		panel.add(iconLabel, "cell 0 0,grow");
+		
 		savedCardsWebComboBox = new WebComboBox();
-		panel.add(savedCardsWebComboBox, "cell 0 0,growx");
+		savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"Inga sparade kort"}));
+		savedCardsWebComboBox.addActionListener(this);
+		panel.add(savedCardsWebComboBox, "cell 1 0");
+
+
 		
 		removeButton = new JButton("Ta bort");
-		panel.add(removeButton, "cell 1 0");
+		removeButton.addActionListener(this);
+		panel.add(removeButton, "cell 2 0");
 		
 		panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "L\u00E4gg till kort", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -73,7 +107,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener {
 		cardNumberLabel = new JLabel("Kortnr");
 		panel_1.add(cardNumberLabel, "cell 0 0,alignx trailing");
 		
-		cardNumberTextField = new JTextField();
+		cardNumberTextField = new WebTextField();
 		cardNumberTextField.setColumns(10);
 		panel_1.add(cardNumberTextField, "cell 1 0 5 1,growx");
 		
@@ -94,7 +128,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener {
 		cvcLabel = new JLabel("CVC");
 		panel_1.add(cvcLabel, "cell 4 1,alignx trailing");
 		
-		cvcTextField = new JTextField();
+		cvcTextField = new WebTextField();
 		cvcTextField.setColumns(10);
 		panel_1.add(cvcTextField, "cell 5 1,growx");
 		
@@ -104,18 +138,120 @@ public class CardSettingsPanel extends JPanel implements ActionListener {
 		saveCardButton.setActionCommand("card_save");
 	}
 
+	public String getCardNumber() {
+		return cardNumberTextField.getText();
+	}
+	
+	public String getValidMonth() {
+		return (String)monthWebComboBox.getSelectedItem();
+	}
+	
+	public String getValidYear() {
+		return (String)yearWebComboBox.getSelectedItem();
+	}
+	
+	public String getCVC(){
+		return cvcTextField.getText();
+	}
+	
+	public void updateCards(){
+		
+		if (cardList != null) {
+			savedCardsWebComboBox.removeAll();
+			String[] cardsfield = new String[cardList.size()];
+			for (CCard cc : cardList) {
+				cardsfield[cardList.indexOf(cc)] = cc.getCardNumber();
+			}
+			savedCardsWebComboBox.setModel(new DefaultComboBoxModel(cardsfield));
+			savedCardsWebComboBox.revalidate();
+			savedCardsWebComboBox.repaint();
+			panel.repaint();
+			repaint();
+		}
+	}
+
+	
+	public void setCardNumberErros(Color bg, WebImage wi) {
+		cardNumberTextField.setBackground(bg);
+		cardNumberTextField.setTrailingComponent(wi);
+	}
+	
+	public void setCvcErros(Color bg, WebImage wi) {
+		cvcTextField.setBackground(bg);
+		cvcTextField.setTrailingComponent(wi);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == "card_save") {
-			System.out.println(cardHandler);
-			String cardNumber = cardNumberTextField.getText();
-			String cardType = "Visa";
-			String holdersName = "Korvblock";
-			int validMonth = Integer.parseInt((String)monthWebComboBox.getSelectedItem());
-			int validYear = Integer.parseInt((String)yearWebComboBox.getSelectedItem());
-			int cvc = Integer.parseInt(cvcTextField.getText());
-			CCard card = new CCard(cardNumber, cardType, holdersName, validMonth, validYear, cvc);
-			cardHandler.saveCard(card, model.getAccount().getUserName());
+			
+			setCardNumberErros(Color.WHITE, null);
+			setCvcErros(Color.WHITE, null);
+			
+			model.cardSave(getCardNumber(),getValidMonth(),getValidYear(),getCVC());
+
 		}
+		
+		if (e.getSource() == removeButton) {
+			model.removeCard(cardList.get(savedCardsWebComboBox.getSelectedIndex()));
+			updateCards();
+		}
+		
+		if (e.getSource() == savedCardsWebComboBox) {
+			String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
+			System.out.println(cardType);
+			if (cardType.equalsIgnoreCase("Mastercard")) {
+				System.out.println("mastercard");
+				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+			}
+			if (cardType.equalsIgnoreCase("Visa")) {
+				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
+				System.out.println("visa");
+			}
+			if (cardType.equalsIgnoreCase("American_Express")) {
+				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
+				System.out.println("amex");
+			}
+			iconLabel.repaint();
+			panel.repaint();
+			repaint();
+			
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (!isVisible()) return; // TODO
+		if (evt.getPropertyName() == "card_save") {
+			List<String> errors = (ArrayList<String>)evt.getNewValue();
+			if (!errors.isEmpty()) {
+				String msg = "";
+				
+				if (errors.contains("cardnumber_invalid")) {
+					setCardNumberErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på kortnummer\n";
+				}
+				
+				if (errors.contains("cvc_invalid")) {
+					setCvcErros(Constants.ERROR_COLOR, new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					msg += "Fel format på cvc\n";
+				}
+				
+				if (errors.contains("month_invalid")) {
+					msg += "Utgångsmånad saknas\n";
+				}
+				
+				if (errors.contains("year_invalid")) {
+					msg += "Utgångsår saknas\n";
+				}
+				JOptionPane.showMessageDialog(this, msg, "Fel vid sparning av uppgifter", JOptionPane.WARNING_MESSAGE);
+			}
+			
+		}
+		
+		if (evt.getPropertyName() == "card_saved") {
+			updateCards();
+		}
+		
 	}
 }

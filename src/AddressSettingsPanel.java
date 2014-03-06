@@ -132,10 +132,6 @@ public class AddressSettingsPanel extends JPanel {
 		this.postAddressTextField.setText(city);
 	}
 	
-	public void setErrors(WebTextField wt) {
-		wt.setBackground(Constants.ERROR_COLOR);
-		wt.setTrailingComponent(new WebImage (AddressSettingsPanel.class.getResource("/resources/icons/warning.png")));
-	}
 	
 	public void setFirstNameErros(Color bg, WebImage wi) {
 		firstNameTextField.setBackground(bg);

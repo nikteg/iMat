@@ -78,7 +78,7 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 		
 		settingsPanel = new JPanel();
 		getContentPane().add(settingsPanel, BorderLayout.CENTER);
-		settingsPanel.setLayout(new MigLayout("", "[320px,grow][grow]", "[195.00,grow][][grow][28]"));
+		settingsPanel.setLayout(new MigLayout("", "[320px,grow][330px]", "[195.00,grow][][grow][28]"));
 		
 		panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Varukorg", TitledBorder.LEADING, TitledBorder.TOP, null, null));

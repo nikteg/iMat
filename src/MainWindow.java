@@ -409,6 +409,8 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 		}
 
 		if (action.getActionCommand() == "category_change") {
+			contentScrollPane.getVerticalScrollBar().setValue(contentScrollPane.getVerticalScrollBar().getMinimum());
+			
 			currentCategory = ((CategoryToggleButton)action.getSource()).getCategory();
 			List<Product> results = new ArrayList<Product>();
 			
@@ -535,6 +537,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			buttonAllCategories.setSelected(true);
 			searchResults = (ArrayList<Product>)evt.getNewValue();
 			populateResults((ArrayList<Product>)evt.getNewValue());
+			contentScrollPane.getVerticalScrollBar().setValue(contentScrollPane.getVerticalScrollBar().getMinimum());
 		}
 		
 

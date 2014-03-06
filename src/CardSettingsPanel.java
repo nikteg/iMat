@@ -55,23 +55,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 		model.addPropertyChangeListener(this);
 		
 		updateCards();
-		String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
-		if (cardType.equalsIgnoreCase("Mastercard")) {
-			System.out.println("mastercard");
-			iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
 		}
-		if (cardType.equalsIgnoreCase("Visa")) {
-			iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
-			System.out.println("visa");
-		}
-		if (cardType.equalsIgnoreCase("American_Express")) {
-			iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
-			System.out.println("amex");
-		}
-		iconLabel.repaint();
-		panel.repaint();
-		repaint();
-	}
 	
 
 	
@@ -89,9 +73,9 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 		panel.add(iconLabel, "cell 0 0,grow");
 		
 		savedCardsWebComboBox = new WebComboBox();
-		savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"Inga sparade kort"}));
+		savedCardsWebComboBox.setModel(new DefaultComboBoxModel(new String[] {"5545-1234-1234-1234"}));
 		savedCardsWebComboBox.addActionListener(this);
-		panel.add(savedCardsWebComboBox, "cell 1 0");
+		panel.add(savedCardsWebComboBox, "cell 1 0,growx");
 
 
 		
@@ -157,16 +141,36 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 	public void updateCards(){
 		
 		if (cardList != null) {
-			savedCardsWebComboBox.removeAll();
+			panel.remove(savedCardsWebComboBox);
+			savedCardsWebComboBox = new WebComboBox();
+			savedCardsWebComboBox.addActionListener(this);
+			
 			String[] cardsfield = new String[cardList.size()];
 			for (CCard cc : cardList) {
 				cardsfield[cardList.indexOf(cc)] = cc.getCardNumber();
 			}
 			savedCardsWebComboBox.setModel(new DefaultComboBoxModel(cardsfield));
+			panel.add(savedCardsWebComboBox, "cell 1 0,growx");
 			savedCardsWebComboBox.revalidate();
 			savedCardsWebComboBox.repaint();
+			String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
+			if (cardType.equalsIgnoreCase("Mastercard")) {
+				System.out.println("mastercard");
+				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+			}
+			if (cardType.equalsIgnoreCase("Visa")) {
+				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
+				System.out.println("visa");
+			}
+			if (cardType.equalsIgnoreCase("American_Express")) {
+				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
+				System.out.println("amex");
+			}
+			iconLabel.repaint();
 			panel.repaint();
 			repaint();
+
+		
 		}
 	}
 

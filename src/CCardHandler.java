@@ -52,12 +52,15 @@ public class CCardHandler {
 	public void removeCard(CCard card, String userName) {
 		if (cardMap.containsKey(userName)) {
 			List<CCard> cards = cardMap.get(userName);
+			CCard deleteCard = null;
 			for (CCard cc : cards) {
 				if (cc.getCardNumber().equals(card.getCardNumber())) {
-					cards.remove(cc);
+					deleteCard = cc;
 				}
 			}
+			cards.remove(deleteCard);
 		}
+		this.saveState();
 	}
 	
 	/**
@@ -69,7 +72,12 @@ public class CCardHandler {
 		if (cardMap.containsKey(userName)){
 			List<CCard> cards = cardMap.get(userName);
 			cards.add(card);
+		} else {
+			List<CCard> cards = new ArrayList<CCard>();
+			cards.add(card);
+			cardMap.put(userName, cards);
 		}
+			this.saveState();
 	}
 	
 	/**
@@ -138,7 +146,10 @@ public class CCardHandler {
 					}
 					if(sc.hasNext("enduser")){
 						sc.next();
-						dbmap.put(userName, cards);
+						List<CCard> cardsClone = new ArrayList<CCard>();
+						cardsClone.addAll(cards);
+						dbmap.put(userName, cardsClone);
+						cards.clear();
 					}
 				}
 				sc.close();

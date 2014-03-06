@@ -1,7 +1,4 @@
 import java.awt.Cursor;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import com.alee.laf.button.WebToggleButton;
 
 
@@ -29,6 +26,7 @@ public class CategoryToggleButton extends WebToggleButton{
 		setText(name, number);
 	}
 	
+	@Override
 	public void setName(String name) {
 		this.name = name;
 		setText(name, number);

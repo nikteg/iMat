@@ -1,8 +1,6 @@
 
 
 import java.awt.Color;
-import java.awt.Component;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -11,7 +9,6 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 
 import com.alee.extended.image.WebImage;
-import com.alee.extended.panel.WebComponentPanel;
 import com.alee.laf.text.WebTextField;
 
 public class AddressSettingsPanel extends JPanel {
@@ -135,10 +132,6 @@ public class AddressSettingsPanel extends JPanel {
 		this.postAddressTextField.setText(city);
 	}
 	
-	public void setErrors(WebTextField wt) {
-		wt.setBackground(Constants.ERROR_COLOR);
-		wt.setTrailingComponent(new WebImage (AddressSettingsPanel.class.getResource("/resources/icons/warning.png")));
-	}
 	
 	public void setFirstNameErros(Color bg, WebImage wi) {
 		firstNameTextField.setBackground(bg);

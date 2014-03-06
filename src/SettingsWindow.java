@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -44,7 +45,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		
 		settingsPanel = new JPanel();
 		getContentPane().add(settingsPanel, BorderLayout.CENTER);
-		settingsPanel.setLayout(new MigLayout("", "[grow][grow]", "[64][195.00,grow][][28]"));
+		settingsPanel.setLayout(new MigLayout("", "[grow][330px]", "[64][195.00,grow][][28]"));
 		
 		lblSettings = new JLabel("Profilinställningar");
 		lblSettings.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -53,7 +54,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		logInSettingsPanel = new LogInSettingsPanel();
 		settingsPanel.add(logInSettingsPanel, "cell 0 1,grow");
 		
-		cardSettingsPanel = new CardSettingsPanel();
+		cardSettingsPanel = new CardSettingsPanel(model);
 		settingsPanel.add(cardSettingsPanel, "cell 1 1,grow");
 		
 		addressSettingsPanel = new AddressSettingsPanel();
@@ -82,11 +83,23 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		
 	}
 	
+	
 
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSave){
+			
+			logInSettingsPanel.setPasswordErros(Color.WHITE, null);
+			logInSettingsPanel.setPasswordRepeatErrors(Color.WHITE, null);
+			
+			addressSettingsPanel.setFirstNameErros(Color.WHITE, null);
+			addressSettingsPanel.setLastNameErros(Color.WHITE, null);
+			addressSettingsPanel.setAddressErros(Color.WHITE, null);
+			addressSettingsPanel.setMobilePhoneErrors(Color.WHITE, null);
+			addressSettingsPanel.setPhoneErrors(Color.WHITE, null);
+			addressSettingsPanel.setPostAddressErros(Color.WHITE, null);
+			addressSettingsPanel.setPostCodeErros(Color.WHITE, null);
 			
 			model.setCredentials(model.getAccount().getUserName(),
 									logInSettingsPanel.getPassword(),

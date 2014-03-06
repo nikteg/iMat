@@ -4,15 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Timer;
 
 import com.alee.laf.text.WebTextField;
@@ -85,6 +82,7 @@ public class SearchField extends WebTextField implements ActionListener {
 			if (((Integer)keyEvent.getKeyCode()).equals(konami.get(konamiProgress))) {
 				if (++konamiProgress == konami.size()) {
 					new Thread(new Runnable() {
+						@Override
 						public void run() {
 							clip.setFramePosition(0);
 							clip.start();

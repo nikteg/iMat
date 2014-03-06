@@ -153,18 +153,20 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 			panel.add(savedCardsWebComboBox, "cell 1 0,growx");
 			savedCardsWebComboBox.revalidate();
 			savedCardsWebComboBox.repaint();
-			String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
-			if (cardType.equalsIgnoreCase("Mastercard")) {
-				System.out.println("mastercard");
-				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
-			}
-			if (cardType.equalsIgnoreCase("Visa")) {
-				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
-				System.out.println("visa");
-			}
-			if (cardType.equalsIgnoreCase("American_Express")) {
-				iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
-				System.out.println("amex");
+			if (cardList.size() > 0) {
+				String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex()).getCardType();
+				if (cardType.equalsIgnoreCase("Mastercard")) {
+					System.out.println("mastercard");
+					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/mastercard.png")));
+				}
+				if (cardType.equalsIgnoreCase("Visa")) {
+					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/visa.png")));
+					System.out.println("visa");
+				}
+				if (cardType.equalsIgnoreCase("American_Express")) {
+					iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class.getResource("/resources/icons/amex.png")));
+					System.out.println("amex");
+				}
 			}
 			savedCardsWebComboBox.setSelectedIndex(savedCardsWebComboBox.getItemCount()-1);
 			iconLabel.repaint();

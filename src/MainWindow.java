@@ -372,7 +372,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 	private void calculateResults(int width, int height) {
 		int num = 0;
 		for (Product product : searchResults) {
-			if (product.getCategory().equals(currentCategory)) {
+			if (model.getCategory(product).equals(currentCategory)) {
 				num++;
 			}
 		}
@@ -408,9 +408,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			calculateResults(contentScrollPane.getWidth(), contentScrollPane.getHeight());
 		}
 
-		if (action.getActionCommand() == "category_change") {
-			contentScrollPane.getVerticalScrollBar().setValue(contentScrollPane.getVerticalScrollBar().getMinimum());
-			
+		if (action.getActionCommand() == "category_change") {			
 			currentCategory = ((CategoryToggleButton)action.getSource()).getCategory();
 			List<Product> results = new ArrayList<Product>();
 			
@@ -424,8 +422,9 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 					results.add(product);
 				}
 			}
-			
 			populateResults(results);
+			contentScrollPane.getVerticalScrollBar().setMaximum(contentPanel.getHeight());
+			contentScrollPane.getVerticalScrollBar().setValue(contentScrollPane.getVerticalScrollBar().getMinimum());
 		}
 		
 		
@@ -537,6 +536,7 @@ public class MainWindow implements ActionListener, PropertyChangeListener, Chang
 			buttonAllCategories.setSelected(true);
 			searchResults = (ArrayList<Product>)evt.getNewValue();
 			populateResults((ArrayList<Product>)evt.getNewValue());
+			contentScrollPane.getVerticalScrollBar().setMaximum(contentPanel.getHeight());
 			contentScrollPane.getVerticalScrollBar().setValue(contentScrollPane.getVerticalScrollBar().getMinimum());
 		}
 		

@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="src/resources/miglayout15-swing.jar"/>
-	<classpathentry kind="lib" path="src/resources/projectbackend.jar"/>
-	<classpathentry kind="lib" path="src/resources/weblaf-1.26.jar"/>
+	<classpathentry kind="lib" path="src/se/chalmers/dat215/grupp14/lib/miglayout15-swing.jar"/>
+	<classpathentry kind="lib" path="src/se/chalmers/dat215/grupp14/lib/projectbackend.jar"/>
+	<classpathentry kind="lib" path="src/se/chalmers/dat215/grupp14/lib/weblaf-1.26.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

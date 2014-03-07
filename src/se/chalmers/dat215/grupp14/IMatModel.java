@@ -28,37 +28,17 @@ import se.chalmers.ait.dat215.project.User;
  */
 
 public class IMatModel {
-	private static IMatModel instance = null;
-	
-	private IMatDataHandler backend = IMatDataHandler.getInstance();
+	private static final IMatDataHandler backend = IMatDataHandler.getInstance();
 	private List<Product> categoryList = new ArrayList<Product>();
-	
 	private Account account = new Account(backend.getUser(), backend.getCustomer());
-	
 	private CCardHandler cardHandler;
 	private ListHandler listHandler;
-	
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-	
 	private final static Logger LOGGER = Logger.getLogger(IMatModel.class.getName());
 
-	private IMatModel() {
+	IMatModel() {
 		cardHandler = new CCardHandler(this);
 		listHandler = new ListHandler(this);
-	}
-	
-	/**
-	 * Get a shared instance of the IMatModel
-	 * 
-	 * @return An instance of IMatModel.
-	 */
-	public static synchronized IMatModel getInstance() {
-		if (instance == null) {
-			return new IMatModel();
-		}
-		
-		return instance;
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pcl) {
@@ -94,6 +74,9 @@ public class IMatModel {
 		return false;
 	}
 	
+	public static IMatDataHandler getBackend() {
+	    return backend;
+	}
 
 	public void removeCard(CCard cCard) {
 		cardHandler.removeCard(cCard, account.getUserName());

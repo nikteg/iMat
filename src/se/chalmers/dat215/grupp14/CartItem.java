@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,13 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
-
 import com.alee.laf.spinner.WebSpinner;
 
-
+@SuppressWarnings("serial")
 public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener{
 	private JLabel lblNameLabel;
 	private WebSpinner spinner;
@@ -30,8 +27,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	private JLabel lblSuffix;
 
 	public CartItem() {
-		super();
-		initialize();
+
 	}
 	
 	/**
@@ -39,10 +35,13 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 	 * @param shoppingItem - The item to track
 	 */
 	public CartItem(ShoppingItem shoppingItem, IMatModel model){
-		this();
-		this.shoppingItem = shoppingItem;
-		this.model = model;
-		this.model.addPropertyChangeListener(this);
+        super();
+        this.shoppingItem = shoppingItem;
+        this.model = model;
+        this.model.addPropertyChangeListener(this);
+        
+        initialize();
+        
 		lblNameLabel.setText(shoppingItem.getProduct().getName());
 		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
 		lblSuffix.setText(shoppingItem.getProduct().getUnitSuffix());
@@ -72,7 +71,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
 		btnX.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		btnX.setContentAreaFilled(false);
 		btnX.setBorderPainted(false);
-		btnX.setIcon(new ImageIcon(CartItem.class.getResource("/resources/icons/delete.png")));
+		btnX.setIcon(new ImageIcon(CartItem.class.getResource("/resources/images/icons/delete.png")));
 		btnX.addActionListener(this);
 		btnX.setActionCommand("remove_from_cart");
 		btnX.setMinimumSize(new Dimension(0, 0));

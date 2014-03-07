@@ -1,14 +1,7 @@
 package se.chalmers.dat215.grupp14;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import se.chalmers.ait.dat215.project.CreditCard;
 import se.chalmers.ait.dat215.project.Customer;
-import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.User;
-
 
 public class Account {
 	private User user;

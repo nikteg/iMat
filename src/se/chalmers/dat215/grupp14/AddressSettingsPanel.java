@@ -5,33 +5,31 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
-
 import net.miginfocom.swing.MigLayout;
-
 import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebTextField;
 
+@SuppressWarnings("serial")
 public class AddressSettingsPanel extends JPanel implements PropertyChangeListener {
-    private JLabel firstNameLabel;
     private WebTextField firstNameTextField;
-    private JLabel lastNameLabel;
-    private JLabel addressLabel;
-    private JLabel postCodePostAddressLabel;
-    private JLabel phoneNumberLabel;
-    private JLabel mobilePhoneNumberLabel;
     private WebTextField lastNameTextField;
     private WebTextField addressTextField;
     private WebTextField postCodeTextField;
     private WebTextField phoneNumberTextField;
     private WebTextField mobilePhoneNumberTextField;
+    private WebTextField postAddressTextField;
     private JSeparator separator;
     private JSeparator separator_1;
-    private WebTextField postAddressTextField;
+    private JLabel firstNameLabel;
+    private JLabel lastNameLabel;
+    private JLabel addressLabel;
+    private JLabel postCodePostAddressLabel;
+    private JLabel phoneNumberLabel;
+    private JLabel mobilePhoneNumberLabel;
 
     public AddressSettingsPanel(IMatModel model) {
         super();
@@ -99,7 +97,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     public String getFirstName() {
         return firstNameTextField.getText();
     }
-    
+
     public void setFirstName(String text) {
         firstNameTextField.setText(text);
     }
@@ -107,7 +105,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     public String getLastName() {
         return lastNameTextField.getText();
     }
-    
+
     public void setLastName(String text) {
         lastNameTextField.setText(text);
     }
@@ -115,7 +113,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     public String getAddress() {
         return addressTextField.getText();
     }
-    
+
     public void setAddress(String text) {
         addressTextField.setText(text);
     }
@@ -123,15 +121,15 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     public String getPostCode() {
         return postCodeTextField.getText();
     }
-    
+
     public void setPostCode(String text) {
         postCodeTextField.setText(text);
     }
-    
+
     public String getPhoneNumber() {
         return phoneNumberTextField.getText();
     }
-    
+
     public void setPhoneNumber(String text) {
         phoneNumberTextField.setText(text);
     }
@@ -139,7 +137,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     public String getMobilePhoneNumber() {
         return mobilePhoneNumberTextField.getText();
     }
-    
+
     public void setMobilePhoneNumber(String text) {
         mobilePhoneNumberTextField.setText(text);
     }
@@ -147,11 +145,11 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     public String getPostAddress() {
         return postAddressTextField.getText();
     }
-    
+
     public void setPostAddress(String text) {
         mobilePhoneNumberTextField.setText(text);
     }
-    
+
     public void resetError(WebTextField wt) {
         wt.setBackground(Color.WHITE);
     }
@@ -164,8 +162,9 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == "account_update") {
-            List<String> errors = (ArrayList)evt.getNewValue();
-            
+            @SuppressWarnings("unchecked")
+            List<String> errors = (ArrayList<String>) evt.getNewValue();
+
             resetError(firstNameTextField);
             resetError(lastNameTextField);
             resetError(addressTextField);
@@ -174,14 +173,21 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
             resetError(postAddressTextField);
             resetError(postCodeTextField);
 
-            if (errors.contains("account_update")) {
-                if (errors.contains("firstname_tooshort"))  setError(firstNameTextField);
-                if (errors.contains("lastname_tooshort"))   setError(lastNameTextField);
-                if (errors.contains("address_invalid"))     setError(addressTextField);
-                if (errors.contains("mobilephone_invalid")) setError(mobilePhoneNumberTextField);
-                if (errors.contains("phone_invalid"))       setError(phoneNumberTextField);
-                if (errors.contains("postaddress_invalid")) setError(postAddressTextField);
-                if (errors.contains("postcode_invalid"))    setError(postCodeTextField);
+            if (!errors.isEmpty()) {
+                if (errors.contains("firstname_tooshort"))
+                    setError(firstNameTextField);
+                if (errors.contains("lastname_tooshort"))
+                    setError(lastNameTextField);
+                if (errors.contains("address_invalid"))
+                    setError(addressTextField);
+                if (errors.contains("mobilephone_invalid"))
+                    setError(mobilePhoneNumberTextField);
+                if (errors.contains("phone_invalid"))
+                    setError(phoneNumberTextField);
+                if (errors.contains("postaddress_invalid"))
+                    setError(postAddressTextField);
+                if (errors.contains("postcode_invalid"))
+                    setError(postCodeTextField);
             }
         }
     }

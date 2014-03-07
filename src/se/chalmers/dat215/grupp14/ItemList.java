@@ -33,15 +33,15 @@ public class ItemList extends Item implements ChangeListener {
 	private JLabel lblUnitsuffix;
 	public ItemList() {
 		super();
-		initialize();
+		initializeGUI();
 	}
 	
 	public ItemList(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
 		super(shoppingItem, favoriteView, model);
-		initialize();
+		initializeGUI();
 	}
 	
-	private void initialize() {
+	private void initializeGUI() {
 		setPreferredSize(new Dimension(512, 64));
 		//setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new MigLayout("insets 0px 0px 0px 8px", "[64px:64.00][5px:5px][92px:92px,grow][64px][][48px:48px][48][]", "[64px]"));

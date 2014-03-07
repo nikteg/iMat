@@ -34,7 +34,7 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 
     public ListView() {
         super();
-        initialize();
+        initializeGUI();
     }
 
     public ListView(IMatModel model) {
@@ -44,7 +44,7 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         updateListView();
     }
 
-    private void initialize() {
+    private void initializeGUI() {
         setLayout(new CardLayout(0, 0));
 
         allListPanel = new JPanel();

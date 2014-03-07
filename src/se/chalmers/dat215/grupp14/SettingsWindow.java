@@ -32,10 +32,10 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 	public SettingsWindow(JFrame frame, IMatModel model) {
 		super(frame, true);
 		this.model = model;
-		initialize();
+		initializeGUI();
 	}
 	
-	private void initialize() {
+	private void initializeGUI() {
 		setSize(660, 600);
 		setResizable(false);
 		

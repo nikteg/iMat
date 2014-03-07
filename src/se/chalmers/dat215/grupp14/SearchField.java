@@ -32,7 +32,7 @@ public class SearchField extends WebTextField implements ActionListener {
 		this.model = model;
 		this.parent = parent;
 		
-		initialize();
+		initializeGUI();
 		
 		/* KONAMI STUFF */
 		try {
@@ -54,7 +54,7 @@ public class SearchField extends WebTextField implements ActionListener {
 		/* END KONAMI STUFF */
 	}
 	
-	public void initialize() {
+	public void initializeGUI() {
 		timer.setRepeats(false);
 		
 		setFont(new Font("Lucida Grande", Font.PLAIN, 24));

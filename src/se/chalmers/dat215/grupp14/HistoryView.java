@@ -39,7 +39,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 
     public HistoryView() {
         super();
-        initialize();
+        initializeGUI();
     }
 
     public HistoryView(IMatModel model, JFrame frame) {
@@ -49,7 +49,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         updateHistoryView();
     }
 
-    private void initialize() {
+    private void initializeGUI() {
         setLayout(new CardLayout(0, 0));
 
         allOrdersPanel = new JPanel();

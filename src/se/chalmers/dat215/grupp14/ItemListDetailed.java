@@ -27,7 +27,7 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
 
 	public ItemListDetailed() {
 		super();
-		initialize();
+		initializeGUI();
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
 
 	}
 	
-	private void initialize() {
+	private void initializeGUI() {
 		setLayout(new MigLayout("insets 4px", "[75.00,grow][][][pref:18.00px:pref]", "[60px]"));
 		
 		lblNameLabel = new JLabel("nameLabel");

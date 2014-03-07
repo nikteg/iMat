@@ -34,7 +34,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 
     public CartView() {
         super();
-        initialize();
+        initializeGUI();
     }
     
     public CartView(IMatModel model, JFrame frame) {
@@ -57,7 +57,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
         updateColors();
     }
 
-    private void initialize() {
+    private void initializeGUI() {
         setLayout(new MigLayout("insets 2px", "[grow][grow]", "[][grow][20.00][24.00]"));
 
         panel = new JPanel();
@@ -161,6 +161,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
         if (evt.getPropertyName() == "cart_clear") {
             itemPanel.removeAll();
             itemPanel.revalidate();
+            repaint();
             totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
         }
     }

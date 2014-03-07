@@ -9,36 +9,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.text.DefaultEditorKit;
-
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
-
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
@@ -118,7 +110,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         WebLookAndFeel.install();
 
         model.addPropertyChangeListener(this);
-        initialize();
+        initializeGUI();
     }
 
     public IMatModel getModel() {
@@ -145,7 +137,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     /**
      * Initialize the contents of the frame.
      */
-    private void initialize() {
+    private void initializeGUI() {
         setBounds(100, 100, 1120, 772);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));

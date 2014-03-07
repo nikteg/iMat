@@ -32,15 +32,15 @@ public class ItemGrid extends Item implements ChangeListener{
 
 	public ItemGrid() {
 		super();
-		initialize();
+		initializeGUI();
 	}
 	
 	public ItemGrid(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
 		super(shoppingItem, favoriteView, model);
-		initialize();
+		initializeGUI();
 	}
 
-	private void initialize() {
+	private void initializeGUI() {
 		setBackground(new Color(248, 248, 248));
 		setPreferredSize(new Dimension(180, 240));
 		setLayout(new MigLayout("insets 8px", "[48][48,grow][grow][]", "[164px:164px][26px:26px][26px:26px][]"));

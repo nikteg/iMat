@@ -23,10 +23,10 @@ public class LogInSettingsPanel extends JPanel implements PropertyChangeListener
     public LogInSettingsPanel(IMatModel model) {
         super();
         model.addPropertyChangeListener(this);
-        initialize();
+        initializeGUI();
     }
 
-    private void initialize() {
+    private void initializeGUI() {
         setBorder(new TitledBorder(null, "Inloggningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         setLayout(new MigLayout("", "[96][grow]", "[32][32][32]"));
 

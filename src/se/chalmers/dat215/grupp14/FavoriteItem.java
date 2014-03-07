@@ -30,7 +30,7 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
 
     public FavoriteItem() {
         super();
-        initialize();
+        initializeGUI();
     }
 
     /**
@@ -48,7 +48,7 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
         lblPriceLabel.setText(product.getPrice() + product.getUnit());
     }
 
-    private void initialize() {
+    private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[grow][64px][][pref:18.00px:pref]", "[60px]"));
 
         lblNameLabel = new JLabel("nameLabel");

@@ -31,7 +31,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
      * Constructor
      */
     public CartItem() {
-        initialize();
+        initializeGUI();
     }
 
     /**
@@ -54,7 +54,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
     /**
      * Initialize GUI
      */
-    private void initialize() {
+    private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[grow][52][28][48px][pref:18.00px:pref]", "[60px]"));
 
         lblName = new JLabel("nameLabel");

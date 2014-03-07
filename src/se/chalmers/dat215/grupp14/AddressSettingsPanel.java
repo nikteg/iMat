@@ -35,20 +35,27 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     private JLabel phoneNumberLabel;
     private JLabel mobilePhoneNumberLabel;
 
-    /**
-     * Constructor
-     * @param model
-     */
-    public AddressSettingsPanel(IMatModel model) {
+    public AddressSettingsPanel() {
         super();
+        initializeGUI();
+    }
+
+    public AddressSettingsPanel(IMatModel model) {
+        this();
         model.addPropertyChangeListener(this);
-        initialize();
+        setFirstName(model.getAccountHandler().getCurrentAccount().getFirstName());
+        setLastName(model.getAccountHandler().getCurrentAccount().getLastName());
+        setAddress(model.getAccountHandler().getCurrentAccount().getAddress());
+        setMobilePhoneNumber(model.getAccountHandler().getCurrentAccount().getMobilePhoneNumber());
+        setPhoneNumber(model.getAccountHandler().getCurrentAccount().getPhoneNumber());
+        setPostAddress(model.getAccountHandler().getCurrentAccount().getPostAddress());
+        setPostCode(model.getAccountHandler().getCurrentAccount().getPostCode());
     }
 
     /**
      * Initialize GUI
      */
-    private void initialize() {
+    private void initializeGUI() {
         setBorder(new TitledBorder(null, "Adressuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         setLayout(new MigLayout("insets 4px", "[92][72][grow]", "[32][32][][32][32][][32px][32]"));
 

@@ -51,10 +51,10 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		super(frame, true);
 		this.model = model;
 		this.model.addPropertyChangeListener(this);
-		initialize();
+		initializeGUI();
 	}
 
-	private void initialize() {
+	private void initializeGUI() {
 		setSize(360, 250);
 		setResizable(false);
 

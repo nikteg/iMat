@@ -28,26 +28,26 @@ public class AccountHandler {
         if (accounts.contains(account)) {
             accounts.remove(account);
         }
-        
+
         saveState();
     }
-    
+
     public void addAccount(Account account, boolean signIn) {
         accounts.add(account);
-        
+
         if (signIn)
             setCurrentAccount(account);
-        
+
         saveState();
     }
-    
+
     public Account findAccount(String userName) {
         for (Account account : getAccounts()) {
             if (account.getUserName().equalsIgnoreCase((userName))) {
                 return account;
             }
         }
-        
+
         return null;
     }
 
@@ -63,16 +63,16 @@ public class AccountHandler {
                 if (account.isAnonymous())
                     continue;
                 System.out.println(account.getUserName());
-                File writeFile = new File(model.getDataDirectory() + "/accounts/" + account.getUserName());
+                File writeFile = new File(model.getDataDirectory() + "/accounts/" + account.getUserName() + ".txt");
 
                 if (!writeFile.exists())
                     writeFile.createNewFile();
 
                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(writeFile), "UTF-8"));
-                writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s", account.getUserName(), account.getPassword(),
-                        account.getEmail(), account.getFirstName(), account.getLastName(), account.getAddress(),
-                        account.getMobilePhoneNumber(), account.getPhoneNumber(), account.getPostAddress(),
-                        account.getPostCode()));
+                writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", account.getUserName(),
+                        account.getPassword(), account.getEmail(), account.getFirstName(), account.getLastName(),
+                        account.getAddress(), account.getMobilePhoneNumber(), account.getPhoneNumber(),
+                        account.getPostAddress(), account.getPostCode()));
             }
 
             writer.close();
@@ -84,18 +84,32 @@ public class AccountHandler {
     private Account readAccount(File file) {
         Account account = null;
         Scanner sc = null;
-        
+
         try {
             sc = new Scanner(new FileReader(file));
             sc.useDelimiter(";");
+
+            String userName = sc.next();
+            String password = sc.next();
+            String email = sc.next();
+            String firstName = sc.next();
+            String lastName = sc.next();
+            String address = sc.next();
+            String mobilePhoneNumber = sc.next();
+            String phoneNumber = sc.next();
+            String postAddress = sc.next();
+            String postCode = sc.next();
             
-            account = new Account(sc.next(), sc.next(), sc.next(), sc.next(), sc.next(), sc.next(), sc.next(),
-                    sc.next(), sc.next(), sc.next());
+            System.out.println(String.format("OST: %s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", userName, password, email, firstName, lastName, address, mobilePhoneNumber,
+                    phoneNumber, postAddress, postCode));
+
+            account = new Account(userName, password, email, firstName, lastName, address, mobilePhoneNumber,
+                    phoneNumber, postAddress, postCode);
             account.setAnonymous(false);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("I/O error. Could not read from file.", e);
         }
-        
+
         return account;
     }
 
@@ -106,11 +120,12 @@ public class AccountHandler {
             folder.mkdir();
 
         for (File file : folder.listFiles()) {
-            if (file.getName().startsWith(".")) continue;
-            accounts.add(readAccount(file));
+            if (file.getName().endsWith(".txt")) {
+                accounts.add(readAccount(file));
+            }
         }
     }
-    
+
     public Account getCurrentAccount() {
         if (currentAccount == null) {
             return anonymousAccount;

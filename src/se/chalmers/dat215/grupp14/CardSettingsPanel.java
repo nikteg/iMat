@@ -48,7 +48,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
      */
     public CardSettingsPanel() {
         super();
-        initialize();
+        initializeGUI();
     }
     
     /**
@@ -67,7 +67,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     /**
      * Initialize GUI
      */
-    private void initialize() {
+    private void initializeGUI() {
         setBorder(new TitledBorder(null, "Betalningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         setLayout(new MigLayout("", "[grow]", "[72px:n][][112.00]"));
 

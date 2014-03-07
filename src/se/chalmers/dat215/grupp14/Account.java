@@ -24,7 +24,7 @@ public class Account {
     }
 
     public Account(String userName, String password, String email) {
-        this(userName, password, email, null, null, null, null, null, null, null);
+        this(userName, password, email, "", "", "", "", "", "", "");
     }
 
     public Account(String userName, String password, String email, String firstName, String lastName, String address,

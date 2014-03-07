@@ -29,7 +29,7 @@ public class ListItem extends JPanel implements ActionListener, PropertyChangeLi
 
     public ListItem() {
         super();
-        initialize();
+        initializeGUI();
     }
 
     /**
@@ -50,7 +50,7 @@ public class ListItem extends JPanel implements ActionListener, PropertyChangeLi
 
     }
 
-    private void initialize() {
+    private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[grow][][][]", "[60px]"));
 
         lblDatum = new JLabel("");

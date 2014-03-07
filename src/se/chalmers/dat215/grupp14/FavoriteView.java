@@ -27,17 +27,17 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 	
 	public FavoriteView() {
 		super();
-		initialize();
+		initializeGUI();
 	}
 	
 	public FavoriteView(IMatModel model) {
 		this.model = model;
 		this.model.addPropertyChangeListener(this);
-		initialize();
+		initializeGUI();
 		updateFavoriteView();
 	}
 	
-	private void initialize() {
+	private void initializeGUI() {
 		setLayout(new MigLayout("insets 2px", "[grow]", "[grow][20][24]"));
 		
 		scrollPane = new JScrollPane();

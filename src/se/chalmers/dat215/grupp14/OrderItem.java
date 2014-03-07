@@ -25,7 +25,7 @@ public class OrderItem extends JPanel implements ActionListener, PropertyChangeL
 
     public OrderItem() {
         super();
-        initialize();
+        initializeGUI();
     }
 
     /**
@@ -46,7 +46,7 @@ public class OrderItem extends JPanel implements ActionListener, PropertyChangeL
 
     }
 
-    private void initialize() {
+    private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[grow][][]", "[60px]"));
 
         lblDatum = new JLabel("");

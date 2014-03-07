@@ -29,7 +29,6 @@ public class ItemGrid extends Item implements ChangeListener{
 	private WebSpinner spinner;
 	public JToggleButton tglFavorite;
 	private JLabel lblSuffix;
-	private FavoriteView favoriteView;
 
 	public ItemGrid() {
 		super();
@@ -72,16 +71,16 @@ public class ItemGrid extends Item implements ChangeListener{
 		add(spinner, "cell 0 2,grow");
 		
 		tglFavorite = new JToggleButton("");
-		tglFavorite.setPressedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star2.png")));
+		tglFavorite.setPressedIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star2.png")));
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		tglFavorite.setContentAreaFilled(false);
 		tglFavorite.setBorderPainted(false);
-		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-inactive.png")));
+		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star.png")));
+		tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star-inactive.png")));
 		tglFavorite.setRolloverEnabled(true);
 		tglFavorite.setBorder(null);
-		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
+		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star.png")));
+		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star-outline.png")));
 		tglFavorite.setVisible(!model.getAccount().isAnonymous());
 		tglFavorite.addActionListener(this);
 		tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

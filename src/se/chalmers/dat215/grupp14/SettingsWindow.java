@@ -1,6 +1,6 @@
 package se.chalmers.dat215.grupp14;
+
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -19,9 +19,7 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.alee.extended.image.WebImage;
-
-
+@SuppressWarnings("serial")
 public class SettingsWindow extends JDialog implements ActionListener, PropertyChangeListener {
 	private IMatModel model;
 	private JPanel settingsPanel;
@@ -90,7 +88,8 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 		}
 	}
 	
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (!isVisible()) return; // TODO
 		
@@ -104,7 +103,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 					msg += "Fel format på epostadress\n";
 				}
 				
-				if (errors.contains("password_nomatch")) {
+				if (errors.contains("password_mismatch")) {
 					msg += "Lösenorden stämmer inte överens\n";
 				}
 				
@@ -141,7 +140,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 			
 		}
 		
-		if (evt.getPropertyName() == "account_saved") {
+		if (evt.getPropertyName() == "account_updated") {
 			JOptionPane.showMessageDialog(this, "Dina uppgifter sparades", "Uppgifter sparade", JOptionPane.INFORMATION_MESSAGE);
 			dispose();
 		}

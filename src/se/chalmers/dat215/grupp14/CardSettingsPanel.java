@@ -19,6 +19,10 @@ import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.text.WebTextField;
 import java.awt.Dimension;
 
+/**
+ * Credit card panel responsible for showing the credit card information
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class CardSettingsPanel extends JPanel implements ActionListener, PropertyChangeListener {
     private WebTextField cardNumberTextField;
@@ -39,16 +43,30 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     private CCardHandler cardHandler;
     private List<CCard> cardList;
     
-    public CardSettingsPanel(IMatModel model) {
+    /**
+     * Constructor
+     */
+    public CardSettingsPanel() {
         super();
+        initialize();
+    }
+    
+    /**
+     * Constructor with a given model
+     * @param model
+     */
+    public CardSettingsPanel(IMatModel model) {
+        this();
         this.model = model;
         cardHandler = model.getCCardHandler();
-        cardList = cardHandler.getCCards(model.getAccount().getUserName());
+        cardList = cardHandler.getCCards(model.getAccountHandler().getCurrentAccount());
         model.addPropertyChangeListener(this);
-        initialize();
         updateCards();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initialize() {
         setBorder(new TitledBorder(null, "Betalningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         setLayout(new MigLayout("", "[grow]", "[72px:n][][112.00]"));
@@ -173,20 +191,20 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
                                     .substring(cc.getCardNumber().length() - 5, cc.getCardNumber().length());
 
                     String cardType = cc.getCardType();
-                    if (cardType.equalsIgnoreCase("Mastercard")) {
+                    if (cardType.equals("mastercard")) {
                         cardsfield[cardList.indexOf(cc) + 1] = mastercard;
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("/resources/icons/mastercard.png")));
+                                .getResource("resources/images/icons/mastercard.png")));
                     }
-                    if (cardType.equalsIgnoreCase("Visa")) {
+                    if (cardType.equals("visa")) {
                         cardsfield[cardList.indexOf(cc) + 1] = visa;
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("/resources/icons/visa.png")));
+                                .getResource("resources/images/icons/visa.png")));
                     }
-                    if (cardType.equalsIgnoreCase("American_Express")) {
+                    if (cardType.equals("amex")) {
                         cardsfield[cardList.indexOf(cc) + 1] = amex;
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("/resources/icons/amex.png")));
+                                .getResource("resources/images/icons/amex.png")));
                     }
                 }
                 if (cardsfield.length == 0) {
@@ -219,13 +237,13 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 
     public void setError(WebTextField wt) {
         wt.setBackground(Constants.ERROR_COLOR);
-        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class.getResource("/resources/images/warning.png")));
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class.getResource("resources/images/warning.png")));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "card_save") {
-            model.cardSave(getCardNumber(), getValidMonth(), getValidYear(), getCVC());
+            model.cardAdd(new CCard(getCardNumber(), getValidMonth(), getValidYear(), getCVC(), model.getAccountHandler().getCurrentAccount()));
         }
 
         if (e.getSource() == removeButton) {
@@ -238,20 +256,17 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
             if (cardList.size() != 0) {
                 if (savedCardsWebComboBox.getSelectedIndex() != 0) {
                     String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1).getCardType();
-                    if (cardType.equalsIgnoreCase("Mastercard")) {
-                        System.out.println("mastercard");
+                    if (cardType.equalsIgnoreCase("mastercard")) {
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("/resources/icons/mastercard.png")));
+                                .getResource("resources/images/icons/mastercard.png")));
                     }
-                    if (cardType.equalsIgnoreCase("Visa")) {
+                    if (cardType.equalsIgnoreCase("visa")) {
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("/resources/icons/visa.png")));
-                        System.out.println("visa");
+                                .getResource("resources/images/icons/visa.png")));
                     }
-                    if (cardType.equalsIgnoreCase("American_Express")) {
+                    if (cardType.equalsIgnoreCase("amex")) {
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("/resources/icons/amex.png")));
-                        System.out.println("amex");
+                                .getResource("resources/images/icons/amex.png")));
                     }
                     iconLabel.repaint();
                     panel.repaint();

@@ -1,120 +1,131 @@
 package se.chalmers.dat215.grupp14;
 
-import se.chalmers.ait.dat215.project.Customer;
-import se.chalmers.ait.dat215.project.User;
-
+/**
+ * Class responsible for combining the backend classes User and Customer
+ * 
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 public class Account {
-	private User user;
-	private Customer customer;
-	
-	private boolean anonymous = true;
-	
-	public Account(User user, Customer customer) {
-		setUser(user);
-		setCustomer(customer);
-	}
-	
-	public String getUserName() {
-		return user.getUserName();
-	}
+    private String userName;
+    private String password;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String mobilePhoneNumber;
+    private String phoneNumber;
+    private String postAddress;
+    private String postCode;
+    private boolean anonymous = true;
 
-	public void setUserName(String userName) {
-		user.setUserName(userName);
-	}
+    public String toString() {
+        return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s", getUserName(), getPassword(), getEmail(), getFirstName(),
+                getLastName(), getAddress(), getMobilePhoneNumber(), getPhoneNumber(), getPostAddress(), getPostCode());
+    }
 
-	public String getPassword() {
-		return user.getPassword();
-	}
+    public Account(String userName, String password, String email) {
+        this(userName, password, email, null, null, null, null, null, null, null);
+    }
 
-	public void setPassword(String password) {
-		user.setPassword(password);
-	}
+    public Account(String userName, String password, String email, String firstName, String lastName, String address,
+            String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.mobilePhoneNumber = mobilePhoneNumber;
+        this.phoneNumber = phoneNumber;
+        this.postAddress = postAddress;
+        this.postCode = postCode;
+    }
 
-	public String getEmail() {
-		return customer.getEmail();
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public void setEmail(String email) {
-		customer.setEmail(email);
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public String getFirstName() {
-		return customer.getFirstName();
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setFirstName(String firstName) {
-		customer.setFirstName(firstName);
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public String getLastName() {
-		return customer.getLastName();
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setLastName(String lastName) {
-		customer.setLastName(lastName);
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getAddress() {
-		return customer.getAddress();
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setAddress(String address) {
-		customer.setAddress(address);
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getMobilePhoneNumber() {
-		return customer.getMobilePhoneNumber();
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setMobilePhoneNumber(String mobilePhoneNumber) {
-		customer.setMobilePhoneNumber(mobilePhoneNumber);
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public String getPhoneNumber() {
-		return customer.getPhoneNumber();
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setPhoneNumber(String phoneNumber) {
-		customer.setPhoneNumber(phoneNumber);
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public String getPostAddress() {
-		return customer.getPostAddress();
-	}
+    public String getMobilePhoneNumber() {
+        return mobilePhoneNumber;
+    }
 
-	public void setPostAddress(String postAddress) {
-		customer.setPostAddress(postAddress);
-	}
+    public void setMobilePhoneNumber(String mobilePhoneNumber) {
+        this.mobilePhoneNumber = mobilePhoneNumber;
+    }
 
-	public String getPostCode() {
-		return customer.getPostCode();
-	}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-	public void setPostCode(String postCode) {
-		customer.setPostCode(postCode);
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public String getPostAddress() {
+        return postAddress;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setPostAddress(String postAddress) {
+        this.postAddress = postAddress;
+    }
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    public String getPostCode() {
+        return postCode;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
 
-	public boolean isAnonymous() {
-		return anonymous;
-	}
+    public boolean isAnonymous() {
+        return anonymous;
+    }
 
-	public void setAnonymous(boolean anonymous) {
-		this.anonymous = anonymous;
-	}
+    public void setAnonymous(boolean anonymous) {
+        this.anonymous = anonymous;
+    }
 }

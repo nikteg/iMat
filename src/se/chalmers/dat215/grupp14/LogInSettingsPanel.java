@@ -3,24 +3,22 @@ package se.chalmers.dat215.grupp14;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
-
 import net.miginfocom.swing.MigLayout;
-
 import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebPasswordField;
 import com.alee.laf.text.WebTextField;
 
+@SuppressWarnings("serial")
 public class LogInSettingsPanel extends JPanel implements PropertyChangeListener {
     private JLabel lblEmail;
     private JLabel lblLsenord;
     private JLabel lbligen;
-    private WebTextField emailTextField;
     private WebPasswordField passwordField;
     private WebPasswordField passwordFieldRepeat;
+    private WebTextField emailTextField;
 
     public LogInSettingsPanel(IMatModel model) {
         super();

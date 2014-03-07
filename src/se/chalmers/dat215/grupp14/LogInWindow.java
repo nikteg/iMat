@@ -25,6 +25,7 @@ import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebPasswordField;
 import com.alee.laf.text.WebTextField;
 
+@SuppressWarnings("serial")
 public class LogInWindow extends JDialog implements ActionListener, PropertyChangeListener {
 	private JTabbedPane signInTabbedPane;
 	private JPanel newCustomerPanel;
@@ -44,12 +45,10 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 	private WebPasswordField newUserPassword;
 	private WebPasswordField newUserPasswordRepeat;
 	private JButton btnRegister;
-	private JFrame frame;
 	private IMatModel model;
 
 	public LogInWindow(JFrame frame, IMatModel model) {
 		super(frame, true);
-		this.frame = frame;
 		this.model = model;
 		this.model.addPropertyChangeListener(this);
 		initialize();
@@ -155,12 +154,13 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (!isVisible()) return; // TODO
 		if (evt.getPropertyName() == "account_signin") {
-			List<String> errors = (ArrayList<String>)evt.getNewValue();
+			@SuppressWarnings("unchecked")
+            List<String> errors = (ArrayList<String>)evt.getNewValue();
 			if (!errors.isEmpty()) {
 				userNameTextField.setBackground(Constants.ERROR_COLOR);
-				userNameTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+				userNameTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 				passwordField.setBackground(Constants.ERROR_COLOR);
-				passwordField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+				passwordField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 				JOptionPane.showMessageDialog(this, "Felaktigt användarnamn eller lösenord", "Fel vid inloggning", JOptionPane.WARNING_MESSAGE);
 			}
 		}
@@ -170,35 +170,36 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		}
 		
 		if (evt.getPropertyName() == "account_signup") {
-			List<String> errors = (ArrayList<String>)evt.getNewValue();
+			@SuppressWarnings("unchecked")
+            List<String> errors = (ArrayList<String>)evt.getNewValue();
 			if (!errors.isEmpty()) {
 				String msg = "";
 				
 				if (errors.contains("username_too_short")) {
 					newUserNameTextField.setBackground(Constants.ERROR_COLOR);
-					newUserNameTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					newUserNameTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 					msg += "För kort användarnamn\n";
 				}
 				
 				if (errors.contains("password_too_short")) {
 					newUserPassword.setBackground(Constants.ERROR_COLOR);
-					newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 					newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
-					newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 					msg += "För kort lösenord\n";
 				}
 				
 				if (errors.contains("email_invalid")) {
 					newUserEmailTextField.setBackground(Constants.ERROR_COLOR);
-					newUserEmailTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					newUserEmailTextField.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 					msg += "Felaktig epostadress\n";
 				}
 				
 				if (!new String(newUserPassword.getPassword()).equals(new String(newUserPasswordRepeat.getPassword()))) {
 					newUserPassword.setBackground(Constants.ERROR_COLOR);
-					newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 					newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
-					newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class.getResource("/resources/icons/warning.png")));
+					newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class.getResource("resources/images/icons/warning.png")));
 					msg += "Lösenorden stämmer inte överens\n";
 				}
 				
@@ -208,7 +209,6 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
 		
 		if (evt.getPropertyName() == "account_signedup") {
 			Account account = (Account)evt.getNewValue();
-			System.out.println("DET GICK! Du har ett konto, din jävel...");
 			model.accountSignIn(account.getUserName(), account.getPassword());
 		}
 	}

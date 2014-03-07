@@ -1,4 +1,5 @@
 package se.chalmers.dat215.grupp14;
+
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -17,108 +18,103 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 import com.alee.laf.spinner.WebSpinner;
 
 @SuppressWarnings("serial")
-public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener{
-	private JLabel lblNameLabel;
-	private WebSpinner spinner;
-	private ShoppingItem shoppingItem;
-	private IMatModel model;
-	private JLabel lblTotalPriceLabel;
-	private JButton btnX;
-	private JLabel lblSuffix;
+public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener {
+    private JLabel lblName;
+    private WebSpinner spinnerAmount;
+    private ShoppingItem shoppingItem;
+    private IMatModel model;
+    private JLabel lblTotalPrice;
+    private JButton btnRemove;
+    private JLabel lblUnitSuffix;
 
-	public CartItem() {
+    /**
+     * Constructor
+     */
+    public CartItem() {
+        initialize();
+    }
 
-	}
-	
-	/**
-	 * Creates a CartItem instance from the given ShoppingItem.
-	 * @param shoppingItem - The item to track
-	 */
-	public CartItem(ShoppingItem shoppingItem, IMatModel model){
-        super();
+    /**
+     * Constructor with shoppingItem to track
+     * 
+     * @param shoppingItem
+     */
+    public CartItem(ShoppingItem shoppingItem, IMatModel model) {
+        this();
         this.shoppingItem = shoppingItem;
         this.model = model;
         this.model.addPropertyChangeListener(this);
-        
-        initialize();
-        
-		lblNameLabel.setText(shoppingItem.getProduct().getName());
-		lblTotalPriceLabel.setText(shoppingItem.getTotal() + ":-");
-		lblSuffix.setText(shoppingItem.getProduct().getUnitSuffix());
-		spinner.setValue(((Double)(shoppingItem.getAmount())).intValue());
-	}
-	
-	private void initialize() {
-		setLayout(new MigLayout("insets 4px", "[grow][52][28][48px][pref:18.00px:pref]", "[60px]"));
-		
-		lblNameLabel = new JLabel("nameLabel");
-		add(lblNameLabel, "cell 0 0,alignx left,aligny center");
-		
-		spinner = new WebSpinner();
-		spinner.addChangeListener(this);
-		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
-		spinner.setPreferredSize(new Dimension(48, 10));
-		add(spinner, "cell 1 0,alignx right,aligny baseline");
-		
-		lblSuffix = new JLabel("unit");
-		add(lblSuffix, "cell 2 0,alignx left,aligny center");
-		
-		lblTotalPriceLabel = new JLabel("20:-");
-		add(lblTotalPriceLabel, "cell 3 0,alignx right,aligny center");
-		
-		btnX = new JButton("");
-		btnX.setToolTipText("Ta bort artikel från varukorg");
-		btnX.setUI(new javax.swing.plaf.basic.BasicButtonUI());
-		btnX.setContentAreaFilled(false);
-		btnX.setBorderPainted(false);
-		btnX.setIcon(new ImageIcon(CartItem.class.getResource("/resources/images/icons/delete.png")));
-		btnX.addActionListener(this);
-		btnX.setActionCommand("remove_from_cart");
-		btnX.setMinimumSize(new Dimension(0, 0));
-		btnX.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		add(btnX, "cell 4 0");
-	}
-	
-	public ShoppingItem getShoppingItem() {
-		return shoppingItem;
-	}
-	
-	@Override
-	public void stateChanged(ChangeEvent event) {
-		if (event.getSource() == spinner) {
-			model.cartUpdateItem(shoppingItem.getProduct(), ((Integer)spinner.getValue()).doubleValue());
-		}
-	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnX) {
-			model.cartRemoveItem(shoppingItem.getProduct());
-		}
-	}
+        lblName.setText(shoppingItem.getProduct().getName());
+        lblTotalPrice.setText(shoppingItem.getTotal() + Constants.currencySuffix);
+        lblUnitSuffix.setText(shoppingItem.getProduct().getUnitSuffix());
+        spinnerAmount.setValue(((Double) (shoppingItem.getAmount())).intValue());
+    }
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName() == "cart_updateitem") {
-			if (shoppingItem.getProduct().equals(((ShoppingItem)evt.getNewValue()).getProduct())) {
-				ShoppingItem item = (ShoppingItem)evt.getNewValue();
-				//if (shoppingItem.getAmount() == item.getAmount()) return;
-				
-				spinner.setValue(((Double)item.getAmount()).intValue());
-				lblTotalPriceLabel.setText(Constants.currencyFormat.format(item.getTotal()) + ":-");
-				shoppingItem = item;
-				repaint();
-			}
-		}
-	}
+    /**
+     * Initialize GUI
+     */
+    private void initialize() {
+        setLayout(new MigLayout("insets 4px", "[grow][52][28][48px][pref:18.00px:pref]", "[60px]"));
 
+        lblName = new JLabel("nameLabel");
+        add(lblName, "cell 0 0,alignx left,aligny center");
 
-	
+        spinnerAmount = new WebSpinner();
+        spinnerAmount.addChangeListener(this);
+        spinnerAmount.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+        spinnerAmount.setPreferredSize(new Dimension(48, 10));
+        add(spinnerAmount, "cell 1 0,alignx right,aligny baseline");
 
-	
+        lblUnitSuffix = new JLabel("<unit>");
+        add(lblUnitSuffix, "cell 2 0,alignx left,aligny center");
 
+        lblTotalPrice = new JLabel("<price>");
+        add(lblTotalPrice, "cell 3 0,alignx right,aligny center");
 
+        btnRemove = new JButton();
+        btnRemove.setToolTipText("Ta bort artikel från varukorg");
+        btnRemove.setUI(new javax.swing.plaf.basic.BasicButtonUI());
+        btnRemove.setContentAreaFilled(false);
+        btnRemove.setBorderPainted(false);
+        btnRemove.setIcon(new ImageIcon(CartItem.class.getResource("resources/images/icons/delete.png")));
+        btnRemove.addActionListener(this);
+        btnRemove.setMinimumSize(new Dimension(0, 0));
+        btnRemove.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        add(btnRemove, "cell 4 0");
+    }
 
-	
+    public ShoppingItem getShoppingItem() {
+        return shoppingItem;
+    }
 
+    @Override
+    public void stateChanged(ChangeEvent event) {
+        if (event.getSource() == spinnerAmount) {
+            model.cartUpdateItem(shoppingItem.getProduct(), ((Integer) spinnerAmount.getValue()).doubleValue());
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        // When remove button is clicked
+        if (event.getSource() == btnRemove) {
+            model.cartRemoveItem(shoppingItem.getProduct());
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName() == "cart_updateitem") {
+            if (shoppingItem.getProduct().equals(((ShoppingItem) evt.getNewValue()).getProduct())) {
+                ShoppingItem item = (ShoppingItem) evt.getNewValue();
+                // if (shoppingItem.getAmount() == item.getAmount()) return;
+
+                spinnerAmount.setValue(((Double) item.getAmount()).intValue());
+                lblTotalPrice.setText(Constants.currencyFormat.format(item.getTotal()) + Constants.currencySuffix);
+                shoppingItem = item;
+                repaint();
+            }
+        }
+    }
 }

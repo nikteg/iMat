@@ -16,6 +16,7 @@ import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 
+@SuppressWarnings("serial")
 public class ItemListDetailed extends JPanel implements ActionListener, ChangeListener{
 	private JLabel lblNameLabel;
 	private ShoppingItem shoppingItem;
@@ -57,7 +58,7 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
 		btnAddToCart.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		btnAddToCart.setContentAreaFilled(false);
 		btnAddToCart.setBorderPainted(false);
-		btnAddToCart.setIcon(new ImageIcon(CartItem.class.getResource("/resources/icons/cart.png")));
+		btnAddToCart.setIcon(new ImageIcon(CartItem.class.getResource("resources/icons/cart.png")));
 		btnAddToCart.addActionListener(this);
 		btnAddToCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnAddToCart.setMinimumSize(new Dimension(0, 0));
@@ -68,12 +69,12 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		tglFavorite.setContentAreaFilled(false);
 		tglFavorite.setBorderPainted(false);
-		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-inactive.png")));
+		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star.png")));
+		tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star-inactive.png")));
 		tglFavorite.setRolloverEnabled(true);
 		tglFavorite.setBorder(null);
-		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("/resources/icons/star-outline.png")));
+		tglFavorite.setSelectedIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star.png")));
+		tglFavorite.setIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tglFavorite.setActionCommand("favorite");

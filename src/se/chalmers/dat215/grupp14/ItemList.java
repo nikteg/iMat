@@ -30,7 +30,6 @@ public class ItemList extends Item implements ChangeListener {
 	private WebSpinner spinner;
 	private JLabel lblPricelabel;
 	public JToggleButton tglFavorite;
-	private FavoriteView favoriteView;
 	private JLabel lblUnitsuffix;
 	public ItemList() {
 		super();
@@ -69,16 +68,16 @@ public class ItemList extends Item implements ChangeListener {
 		add(spinner, "cell 5 0,growx");
 		
 		tglFavorite = new JToggleButton("");
-		tglFavorite.setPressedIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star2.png")));
+		tglFavorite.setPressedIcon(new ImageIcon(ItemList.class.getResource("resources/images/icons/star2.png")));
 		tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 		tglFavorite.setContentAreaFilled(false);
 		tglFavorite.setBorderPainted(false);
-		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setRolloverIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star-inactive.png")));
+		tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemList.class.getResource("resources/images/icons/star.png")));
+		tglFavorite.setRolloverIcon(new ImageIcon(ItemList.class.getResource("resources/images/icons/star-inactive.png")));
 		tglFavorite.setRolloverEnabled(true);
 		tglFavorite.setBorder(null);
-		tglFavorite.setSelectedIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star.png")));
-		tglFavorite.setIcon(new ImageIcon(ItemList.class.getResource("/resources/icons/star-outline.png")));
+		tglFavorite.setSelectedIcon(new ImageIcon(ItemList.class.getResource("resources/images/icons/star.png")));
+		tglFavorite.setIcon(new ImageIcon(ItemList.class.getResource("resources/images/icons/star-outline.png")));
 		tglFavorite.addActionListener(this);
 		tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tglFavorite.setActionCommand("favorite");
@@ -105,7 +104,7 @@ public class ItemList extends Item implements ChangeListener {
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == spinner) {
 			shoppingItem.setAmount(((Integer)spinner.getValue()).doubleValue());
-			lblPricelabel.setText(shoppingItem.getProduct().getPrice() * ((Integer)spinner.getValue()).doubleValue() + ":-");
+			lblPricelabel.setText(shoppingItem.getProduct().getPrice() * ((Integer)spinner.getValue()).doubleValue() + Constants.currencySuffix);
 		}
 	}
 	

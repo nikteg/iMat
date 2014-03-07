@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 
+@SuppressWarnings("serial")
 public abstract class Item extends JPanel implements ActionListener, PropertyChangeListener {
 	public ShoppingItem shoppingItem;
 	public IMatModel model;
@@ -18,7 +19,7 @@ public abstract class Item extends JPanel implements ActionListener, PropertyCha
 	}
 	
 	public Item(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
-		this();
+		super();
 		this.favoriteView = favoriteView;
 		this.shoppingItem = shoppingItem;
 		this.model = model;

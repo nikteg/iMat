@@ -24,4 +24,5 @@ public class Constants {
 	public static final Color ALT_COLOR = new Color(248, 248, 248);
 	
 	public static final DecimalFormat currencyFormat = new DecimalFormat("#.##");
+	public static final String currencySuffix = ":-";
 }

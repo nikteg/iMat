@@ -17,8 +17,8 @@ import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
 
 
+@SuppressWarnings("serial")
 public class FavoriteView extends JPanel implements ActionListener, PropertyChangeListener {
-
 	private IMatModel model;
 	private JButton clearFavoritesButton;
 	private JPanel favoritePanel;

@@ -13,6 +13,10 @@ import net.miginfocom.swing.MigLayout;
 import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebTextField;
 
+/**
+ * Address settings panel responsible for showing the customer information
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class AddressSettingsPanel extends JPanel implements PropertyChangeListener {
     private WebTextField firstNameTextField;
@@ -31,12 +35,19 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
     private JLabel phoneNumberLabel;
     private JLabel mobilePhoneNumberLabel;
 
+    /**
+     * Constructor
+     * @param model
+     */
     public AddressSettingsPanel(IMatModel model) {
         super();
         model.addPropertyChangeListener(this);
         initialize();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initialize() {
         setBorder(new TitledBorder(null, "Adressuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         setLayout(new MigLayout("insets 4px", "[92][72][grow]", "[32][32][][32][32][][32px][32]"));
@@ -94,77 +105,143 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
         add(mobilePhoneNumberTextField, "cell 1 7 2 1,growx");
     }
 
+    /**
+     * Get first name
+     * @return
+     */
     public String getFirstName() {
         return firstNameTextField.getText();
     }
 
+    /**
+     * Set first name
+     * @param text
+     */
     public void setFirstName(String text) {
         firstNameTextField.setText(text);
     }
 
+    /**
+     * Get last name
+     * @return
+     */
     public String getLastName() {
         return lastNameTextField.getText();
     }
 
+    /**
+     * Set last name
+     * @param text
+     */
     public void setLastName(String text) {
         lastNameTextField.setText(text);
     }
 
+    /**
+     * Get address
+     * @return
+     */
     public String getAddress() {
         return addressTextField.getText();
     }
 
+    /**
+     * Set address
+     * @param text
+     */
     public void setAddress(String text) {
         addressTextField.setText(text);
     }
 
+    /**
+     * Get post code
+     * @return
+     */
     public String getPostCode() {
         return postCodeTextField.getText();
     }
 
+    /**
+     * Set post code
+     * @param text
+     */
     public void setPostCode(String text) {
         postCodeTextField.setText(text);
     }
 
+    /**
+     * Get phone number
+     * @return
+     */
     public String getPhoneNumber() {
         return phoneNumberTextField.getText();
     }
 
+    /**
+     * Set phone number
+     * @param text
+     */
     public void setPhoneNumber(String text) {
         phoneNumberTextField.setText(text);
     }
 
+    /**
+     * Get mobile phone number
+     * @return
+     */
     public String getMobilePhoneNumber() {
         return mobilePhoneNumberTextField.getText();
     }
 
+    /**
+     * Set mobile phone number
+     * @param text
+     */
     public void setMobilePhoneNumber(String text) {
         mobilePhoneNumberTextField.setText(text);
     }
 
+    /**
+     * Get post address
+     * @return
+     */
     public String getPostAddress() {
         return postAddressTextField.getText();
     }
 
+    /**
+     * Set post address
+     * @param text
+     */
     public void setPostAddress(String text) {
-        mobilePhoneNumberTextField.setText(text);
+        postAddressTextField.setText(text);
     }
 
+    /**
+     * Reset text field icon and background
+     * @param wt text field
+     */
     public void resetError(WebTextField wt) {
         wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
     }
 
+    /**
+     * Add error icon and background to text field
+     * @param wt text field
+     */
     public void setError(WebTextField wt) {
         wt.setBackground(Constants.ERROR_COLOR);
-        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class.getResource("/resources/images/warning.png")));
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class.getResource("resources/images/icons/warning.png")));
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName() == "account_update") {
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getPropertyName() == "account_update") {
             @SuppressWarnings("unchecked")
-            List<String> errors = (ArrayList<String>) evt.getNewValue();
+            List<String> errors = (ArrayList<String>) event.getNewValue();
 
+            // Reset fields
             resetError(firstNameTextField);
             resetError(lastNameTextField);
             resetError(addressTextField);

@@ -20,8 +20,8 @@ public class CCardHandler {
 	 * Creates an instance of the CCardHandler working with the given model.
 	 * @param model
 	 */
-	public CCardHandler (IMatModel model) {
-		this.model = model;
+	public CCardHandler(IMatModel model) {
+	    this.model = model;
 		this.cardMap = null;
 		try {
 			this.cardMap = this.getCardMap();
@@ -36,9 +36,9 @@ public class CCardHandler {
 	 * @return a List<CCard> belonging to the given userName.
 	 * 		    returns null if user has no CCards.
 	 */
-	public List<CCard> getCCards(String userName){
-		if (cardMap.containsKey(userName)){
-			return cardMap.get(userName);
+	public List<CCard> getCCards(Account account){
+		if (cardMap.containsKey(account.getUserName())){
+			return cardMap.get(account.getUserName());
 		} else {
 			return null;
 		}
@@ -50,9 +50,9 @@ public class CCardHandler {
 	 * @param card CCard to remove
 	 * @param userName Owner of the card.
 	 */
-	public void removeCard(CCard card, String userName) {
-		if (cardMap.containsKey(userName)) {
-			List<CCard> cards = cardMap.get(userName);
+	public void removeCard(CCard card, Account account) {
+		if (cardMap.containsKey(account.getUserName())) {
+			List<CCard> cards = cardMap.get(account.getUserName());
 			CCard deleteCard = null;
 			for (CCard cc : cards) {
 				if (cc.getCardNumber().equals(card.getCardNumber())) {
@@ -69,14 +69,14 @@ public class CCardHandler {
 	 * @param card
 	 * @param userName
 	 */
-	public void saveCard(CCard card, String userName){
-		if (cardMap.containsKey(userName)){
-			List<CCard> cards = cardMap.get(userName);
+	public void saveCard(CCard card, Account account){
+		if (cardMap.containsKey(account.getUserName())){
+			List<CCard> cards = cardMap.get(account.getUserName());
 			cards.add(card);
 		} else {
 			List<CCard> cards = new ArrayList<CCard>();
 			cards.add(card);
-			cardMap.put(userName, cards);
+			cardMap.put(account.getUserName(), cards);
 		}
 			this.saveState();
 	}
@@ -95,12 +95,11 @@ public class CCardHandler {
 				List<CCard> cards = cardMap.get(userName);
 				for (CCard card : cards){
 					String cardNumber = card.getCardNumber();
-					String cardType = card.getCardType();
-					String holdersName = card.getHoldersName();
+					String holdersName = card.getHolder().getUserName();
 					String validMonth = card.getValidMonth();
 					String validYear = card.getValidYear();
-					String cvc = card.getCvc();
-					writer.write("ccard;" + cardNumber + ";" + cardType + ";" + holdersName + ";" + 
+					String cvc = card.getCVC();
+					writer.write("ccard;" + cardNumber + ";" + holdersName + ";" + 
 					validMonth + ";" + validYear + ";" + cvc + ";");
 				}
 				writer.write("enduser;");
@@ -120,8 +119,7 @@ public class CCardHandler {
 			
 			String userName = "";
 			String cardNumber = "";
-			String cardType = "";
-			String holdersName = "";
+			String holder = "";
 			String validMonth;
 			String validYear;
 			String cvc;
@@ -138,12 +136,11 @@ public class CCardHandler {
 					if (sc.hasNext("ccard")) {
 						sc.next();
 						cardNumber = sc.next();
-						cardType = sc.next();
-						holdersName = sc.next();
+						holder = sc.next();
 						validMonth = sc.next();
 						validYear = sc.next();
 						cvc = sc.next();
-						cards.add(new CCard(cardNumber, cardType, holdersName, validMonth, validYear, cvc));
+						cards.add(new CCard(cardNumber, validMonth, validYear, cvc, model.getAccountHandler().findAccount(holder)));
 					}
 					if(sc.hasNext("enduser")){
 						sc.next();

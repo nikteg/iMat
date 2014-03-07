@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,41 +13,48 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
-
 import com.alee.laf.text.WebTextField;
 
 @SuppressWarnings("serial")
 public class CartView extends JPanel implements ActionListener, PropertyChangeListener {
-
-    private IMatModel model;
-    private JPanel itemPanel;
-    private JLabel totalPriceLabel;
-    private JButton btnClearCart;
-    private JScrollPane scrollPane;
-    private JLabel totalPriceDescriptionLabel;
-    private JButton checkoutButton;
     private CheckOutWindow checkoutWindow;
-    private JFrame frame;
-    private JPanel panel;
     private WebTextField listNameTextField;
+    private JScrollPane scrollPane;
+    private JButton btnClearCart;
+    private JButton checkoutButton;
     private JButton btnSparaLista;
+    private JPanel itemPanel;
+    private JPanel panel;
+    private JLabel totalPriceLabel;
+    private JLabel totalPriceDescriptionLabel;
+    private JFrame frame;
+    private IMatModel model;
 
-    public CartView(IMatModel model, JFrame frame) {
+    public CartView() {
         super();
+        initialize();
+    }
+    
+    public CartView(IMatModel model, JFrame frame) {
+        this();
         this.model = model;
         this.frame = frame;
         this.model.addPropertyChangeListener(this);
-        initialize();
 
         listNameTextField.setEnabled(!model.getAccount().isAnonymous());
         btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
         checkoutButton.setEnabled(!model.getShoppingCart().getItems().isEmpty());
         btnClearCart.setEnabled(!model.getShoppingCart().getItems().isEmpty());
 
-        updateCartView();
+        for (int i = 0; i < model.getShoppingCart().getItems().size(); i++) {
+            CartItem ci = new CartItem(model.getShoppingCart().getItems().get(i), model);
+            itemPanel.add(ci, "wrap,growx");
+        }
+
+        totalPriceLabel.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
+        updateColors();
     }
 
     private void initialize() {
@@ -101,25 +107,29 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        // Enable list saving
         if (evt.getPropertyName() == "account_signedin") {
             listNameTextField.setEnabled(!model.getAccount().isAnonymous());
             btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
         }
 
+        // Disable list saving
         if (evt.getPropertyName() == "account_signout") {
             listNameTextField.setEnabled(!model.getAccount().isAnonymous());
             btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
         }
 
+        // Add item to cart
         if (evt.getPropertyName() == "cart_additem") {
             checkoutButton.setEnabled(true);
             btnClearCart.setEnabled(true);
             itemPanel.add(new CartItem((ShoppingItem) evt.getNewValue(), model), "wrap,growx");
             
-            totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+            totalPriceLabel.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
             updateColors();
         }
 
+        // Remove item from cart
         if (evt.getPropertyName() == "cart_removeitem") {
             checkoutButton.setEnabled(!model.getShoppingCart().getItems().isEmpty());
             btnClearCart.setEnabled(!model.getShoppingCart().getItems().isEmpty());
@@ -131,10 +141,11 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
                 }
             }
 
-            totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
+            totalPriceLabel.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
             updateColors();
         }
 
+        // Update cart
         if (evt.getPropertyName() == "cart_updateitem") {
             for (Component component : itemPanel.getComponents()) {
                 if (((CartItem) component).getShoppingItem() == (ShoppingItem) evt.getNewValue()) {
@@ -143,35 +154,23 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
                 }
             }
 
-            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + ":-");
+            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
         }
 
+        // Clear cart
         if (evt.getPropertyName() == "cart_clear") {
             itemPanel.removeAll();
-            totalPriceLabel.setText("0:-");
+            itemPanel.revalidate();
+            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
         }
     }
 
     private void updateColors() {
         for (int i = 0; i < itemPanel.getComponentCount(); i++) {
-            if (i % 2 == 0) {
-                itemPanel.getComponents()[i].setBackground(Constants.ALT_COLOR);
-            } else {
-                itemPanel.getComponents()[i].setBackground(null);
-            }
+            itemPanel.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
         }
 
         repaint();
-    }
-
-    private void updateCartView() {
-        for (int i = 0; i < model.getShoppingCart().getItems().size(); i++) {
-            CartItem ci = new CartItem(model.getShoppingCart().getItems().get(i), model);
-            itemPanel.add(ci, "wrap,growx");
-        }
-
-        totalPriceLabel.setText(model.getShoppingCart().getTotal() + ":-");
-        updateColors();
     }
 
     @Override

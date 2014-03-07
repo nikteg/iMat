@@ -43,9 +43,9 @@ public class ListHandler {
 	 * 			Returns null if user has no lists.
 	 * 
 	 */
-	public Map<String, List<ShoppingItem>> getLists(String userName) {		
-		if (listMap.containsKey(userName)){
-			return listMap.get(userName);
+	public Map<String, List<ShoppingItem>> getLists(Account account) {		
+		if (listMap.containsKey(account.getUserName())){
+			return listMap.get(account.getUserName());
 		} else {
 			return null;
 		}
@@ -56,9 +56,9 @@ public class ListHandler {
 	 * @param listName
 	 * @param userName
 	 */
-	public void removeList(String listName, String userName) {
-		if (hasList(listName, userName)) {
-			Map<String, List<ShoppingItem>> lists = listMap.get(userName);
+	public void removeList(String listName, Account account) {
+		if (hasList(listName, account.getUserName())) {
+			Map<String, List<ShoppingItem>> lists = listMap.get(account.getUserName());
 			lists.remove(listName);
 		}
 		this.saveState();
@@ -71,22 +71,22 @@ public class ListHandler {
 	 * @param listName - Name of the list.
 	 * @param userName - The user name that the list belongs to.
 	 */
-	public void saveFavoriteList(List<ShoppingItem> list, String listName, String userName) {
+	public void saveFavoriteList(List<ShoppingItem> list, String listName, Account account) {
 		List<ShoppingItem> favList = new ArrayList<ShoppingItem>();
 		
 		for (ShoppingItem si : list) {
 			favList.add(si);
 		}
 		
-		if (this.hasList(listName, userName)){
-			listMap.get(userName).remove(listName);
-			listMap.get(userName).put(listName, favList);
-		} else if (this.hasUser(userName)){
-			listMap.get(userName).put(listName, favList);
+		if (this.hasList(listName, account.getUserName())){
+			listMap.get(account.getUserName()).remove(listName);
+			listMap.get(account.getUserName()).put(listName, favList);
+		} else if (this.hasUser(account.getUserName())){
+			listMap.get(account.getUserName()).put(listName, favList);
 		} else {
 			Map<String, List<ShoppingItem>> userMap = new HashMap<String, List<ShoppingItem>>();
 			userMap.put(listName, favList);
-			listMap.put(userName, userMap);
+			listMap.put(account.getUserName(), userMap);
 		}
 		this.saveState();
 	}

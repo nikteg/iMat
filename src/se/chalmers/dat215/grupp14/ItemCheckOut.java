@@ -10,7 +10,6 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 @SuppressWarnings("serial")
 public class ItemCheckOut extends JPanel {
 	private ShoppingItem shoppingItem;
-	private IMatModel model;
 	private JLabel lblNamelabel;
 	private JLabel lblPricelabel;
 	private JLabel lblAmountLabel;
@@ -21,8 +20,7 @@ public class ItemCheckOut extends JPanel {
 	}
 	
 	public ItemCheckOut(ShoppingItem shoppingItem , IMatModel model) {
-		super();
-		this.model = model;
+		this();
 		this.shoppingItem = shoppingItem;
 		initialize();
 	}
@@ -37,7 +35,7 @@ public class ItemCheckOut extends JPanel {
 		lblAmountLabel = new JLabel(((Double)shoppingItem.getAmount()).intValue() + " " + shoppingItem.getProduct().getUnitSuffix());
 		add(lblAmountLabel, "cell 1 0,alignx left");
 		
-		lblPricelabel = new JLabel(shoppingItem.getTotal() + ":-");
+		lblPricelabel = new JLabel(shoppingItem.getTotal() + Constants.currencySuffix);
 		lblPricelabel.setBackground(Color.RED);
 		add(lblPricelabel, "cell 2 0,alignx right");
 		

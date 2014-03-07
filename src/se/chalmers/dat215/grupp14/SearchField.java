@@ -7,15 +7,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.Timer;
-
 import com.alee.laf.text.WebTextField;
 
-
+@SuppressWarnings("serial")
 public class SearchField extends WebTextField implements ActionListener {
 	private IMatModel model;
 	private MainWindow parent;
@@ -38,7 +36,7 @@ public class SearchField extends WebTextField implements ActionListener {
 		
 		/* KONAMI STUFF */
 		try {
-			inputStream = AudioSystem.getAudioInputStream(SearchField.class.getResourceAsStream("/resources/powerup.wav"));
+			inputStream = AudioSystem.getAudioInputStream(SearchField.class.getResourceAsStream("resources/powerup.wav"));
 			clip = AudioSystem.getClip();
 			clip.open(inputStream);
 		} catch (Exception e) {}
@@ -71,7 +69,7 @@ public class SearchField extends WebTextField implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == timer) {
 			if (getText().length() == 0 || getText().length() > 1) {
-				model.getSearchResults(getText());
+				model.search(getText());
 			}
 		}
 	}

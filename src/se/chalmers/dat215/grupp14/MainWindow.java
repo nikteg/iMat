@@ -4,34 +4,36 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.DefaultEditorKit;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
@@ -64,7 +66,6 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private JPanel cardPanelGrid;
 
     private Timer searchTimer;
-    private JPanel varukorgPanel;
 
     private JPanel confirmPurchasePanel;
     private AddressSettingsPanel addressSettingsPanel_1;
@@ -76,8 +77,8 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private JButton signInButton;
     private List<Product> searchResults = new ArrayList<Product>();
     private ButtonGroup groupCategories = new ButtonGroup();
-    private List<CategoryToggleButton> categorybuttons = new ArrayList<CategoryToggleButton>();
-    private CategoryToggleButton tglBtnAllCategories;
+    private List<CategoryButton> categorybuttons = new ArrayList<CategoryButton>();
+    private CategoryButton tglBtnAllCategories;
 
     private JPanel panelCheckout;
     private JButton confirmPurchaseButton;
@@ -99,24 +100,8 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
      * Launch the application.
      */
     public static void main(String[] args) {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("SHUTDOWN IMMINENT");
-                IMatModel.getBackend().shutDown();
-            }
-        }));
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MainWindow window = new MainWindow(new IMatModel());
-                    window.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        MainWindow window = new MainWindow(new IMatModel());
+        window.setVisible(true);
     }
 
     /**
@@ -143,10 +128,10 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     /* KONAMI STUFF */
     public void changeLogo() {
         if (logoChanged) {
-            lblLogo.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/images/logo2.png")));
+            lblLogo.setIcon(new ImageIcon(MainWindow.class.getResource("resources/images/logo2.png")));
             setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         } else {
-            lblLogo.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/images/logo.png")));
+            lblLogo.setIcon(new ImageIcon(MainWindow.class.getResource("resources/images/logo.png")));
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
 
@@ -173,7 +158,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         // Logotype
         lblLogo = new JLabel();
         lblLogo.setToolTipText("KONAMI?");
-        lblLogo.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logo.png")));
+        lblLogo.setIcon(new ImageIcon(MainWindow.class.getResource("resources/images/logo.png")));
         lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
         getContentPane().add(lblLogo, "cell 0 0 1 2,growx,aligny center");
 
@@ -183,10 +168,10 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
 
         // Change display mode buttons
         tglBtnGrid = new WebToggleButton(new ImageIcon(
-                MainWindow.class.getResource("/resources/icons/application_view_tile.png")));
+                MainWindow.class.getResource("resources/images/icons/application_view_tile.png")));
         tglBtnGrid.setToolTipText("Visa produkter i standardvy");
         tglBtnList = new WebToggleButton(new ImageIcon(
-                MainWindow.class.getResource("/resources/icons/application_view_list.png")));
+                MainWindow.class.getResource("resources/images/icons/application_view_list.png")));
         tglBtnList.setToolTipText("Visa produkter i listvy");
         groupGridList = new WebButtonGroup(true, tglBtnGrid, tglBtnList);
         groupGridList.setButtonsMargin(10);
@@ -316,7 +301,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         tabbedPaneSidebar.addTab("Listor", null, listPanel, null);
         listPanel.setLayout(new MigLayout("insets 6px", "[grow]", "[grow]"));
 
-        listView = new ListView(model, this);
+        listView = new ListView(model);
         listPanel.add(listView, "cell 0 0,grow");
 
         historyPanel = new JPanel();
@@ -329,7 +314,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         historyView.setFocusable(false);
         historyPanel.add(historyView, "cell 0 0,grow");
 
-        tglBtnAllCategories = new CategoryToggleButton("Alla kategorier", numResults);
+        tglBtnAllCategories = new CategoryButton("Alla kategorier", numResults);
         tglBtnAllCategories.setSelected(true);
         tglBtnAllCategories.addActionListener(this);
         tglBtnAllCategories.setActionCommand("category_change");
@@ -346,7 +331,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         }
 
         for (Constants.Category c : Constants.Category.values()) {
-            CategoryToggleButton button = new CategoryToggleButton(c.getName(), 0);
+            CategoryButton button = new CategoryButton(c.getName(), 0);
             button.setCategory(c);
             button.setHorizontalAlignment(SwingConstants.LEFT);
             button.addActionListener(this);
@@ -397,7 +382,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         }
 
         if (action.getActionCommand() == "category_change") {
-            currentCategory = ((CategoryToggleButton) action.getSource()).getCategory();
+            currentCategory = ((CategoryButton) action.getSource()).getCategory();
             List<Product> results = new ArrayList<Product>();
 
             if (searchResults.size() == 0 && searchField.getText().length() == 0) {
@@ -406,7 +391,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
 
             for (Product product : searchResults) {
                 if (tglBtnAllCategories.isSelected()
-                        || ((CategoryToggleButton) action.getSource()).getCategory().equals(model.getCategory(product))) {
+                        || ((CategoryButton) action.getSource()).getCategory().equals(model.getCategory(product))) {
 
                     results.add(product);
                 }
@@ -464,7 +449,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
             Product product = results.get(i);
 
             boolean skipstep = true;
-            for (CategoryToggleButton ctb : categorybuttons) {
+            for (CategoryButton ctb : categorybuttons) {
                 if (ctb.isSelected()) {
                     if (model.getCategory(product).equals(ctb.getCategory())) {
                         skipstep = false;

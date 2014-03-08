@@ -61,7 +61,7 @@ public class ItemGrid extends Item implements ChangeListener {
         lblName = new JLabel(shoppingItem.getProduct().getName());
         add(lblName, "flowx,cell 0 1 3 1,alignx left,aligny center");
 
-        lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
+        lblPrice = new JLabel(shoppingItem.getProduct().getPrice() + Constants.currencySuffix + "/" + shoppingItem.getProduct().getUnitSuffix());
         add(lblPrice, "cell 2 1 2 1,alignx right,aligny center");
 
         spinner = new WebSpinner();

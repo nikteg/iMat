@@ -118,11 +118,13 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnConfirm) {
-            CCard card = cardSettingsPanel.getSelectedCard();
+            CCard card = null;
 
             if (cardSettingsPanel.getComboboxindex() == 0) {
                 card = new CCard(cardSettingsPanel.getCardNumber(), cardSettingsPanel.getValidMonth(),
                         cardSettingsPanel.getValidYear(), cardSettingsPanel.getCVC(), model.getAccount());
+            } else {
+                card = cardSettingsPanel.getSelectedCard();
             }
 
             if (model.accountVerify(model.getAccount().getUserName(), model.getAccount().getPassword(),

@@ -60,7 +60,7 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
         btnAddToCart.setUI(new javax.swing.plaf.basic.BasicButtonUI());
         btnAddToCart.setContentAreaFilled(false);
         btnAddToCart.setBorderPainted(false);
-        btnAddToCart.setIcon(new ImageIcon(CartItem.class.getResource("resources/icons/cart.png")));
+        btnAddToCart.setIcon(new ImageIcon(CartItem.class.getResource("resources/images/icons/cart.png")));
         btnAddToCart.addActionListener(this);
         btnAddToCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAddToCart.setMinimumSize(new Dimension(0, 0));

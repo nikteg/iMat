@@ -8,13 +8,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+
 import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
@@ -96,10 +99,8 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
     @Override
     public void propertyChange(PropertyChangeEvent event) {
 
-        if (event.getPropertyName() == "list_saved") {
-            updateListView();
-        }
-        if (event.getPropertyName() == "list_removed") {
+        if (event.getPropertyName() == "list_saved" || event.getPropertyName() == "list_removed"
+                || event.getPropertyName() == "account_signedin") {
             updateListView();
         }
     }
@@ -130,16 +131,13 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 
     private void updateColors(JPanel panel) {
         for (int i = 0; i < panel.getComponentCount(); i++) {
-            if (i % 2 == 0) {
-                panel.getComponents()[i].setBackground(Constants.ALT_COLOR);
-            } else {
-                panel.getComponents()[i].setBackground(null);
-            }
+            panel.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
         }
+
+        repaint();
     }
 
     private void updateListView() {
-
         allListsItem.removeAll();
         Map<String, List<ShoppingItem>> listMap = model.getListHandler().getLists(model.getAccount());
 

@@ -60,7 +60,7 @@ public class ItemList extends Item implements ChangeListener {
         lblNamelabel = new JLabel(shoppingItem.getProduct().getName());
         add(lblNamelabel, "cell 2 0,alignx left");
 
-        lblPricelabel = new JLabel(shoppingItem.getProduct().getPrice() + shoppingItem.getProduct().getUnit());
+        lblPricelabel = new JLabel(shoppingItem.getProduct().getPrice() + Constants.currencySuffix + "/" + shoppingItem.getProduct().getUnitSuffix());
         lblPricelabel.setBackground(Color.RED);
         add(lblPricelabel, "cell 3 0");
 
@@ -107,8 +107,6 @@ public class ItemList extends Item implements ChangeListener {
     public void stateChanged(ChangeEvent event) {
         if (event.getSource() == spinner) {
             shoppingItem.setAmount(((Integer) spinner.getValue()).doubleValue());
-            lblPricelabel.setText(shoppingItem.getProduct().getPrice() * ((Integer) spinner.getValue()).doubleValue()
-                    + Constants.currencySuffix);
         }
     }
 

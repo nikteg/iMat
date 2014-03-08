@@ -308,6 +308,6 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     }
 
     public CCard getSelectedCard() {
-        return cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1);
+        return cardList.get(Math.max(savedCardsWebComboBox.getSelectedIndex() - 1, 0));
     }
 }

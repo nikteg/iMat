@@ -21,6 +21,7 @@ import java.awt.Dimension;
 
 /**
  * Credit card panel responsible for showing the credit card information
+ * 
  * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
  */
 @SuppressWarnings("serial")
@@ -42,7 +43,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     private IMatModel model;
     private CCardHandler cardHandler;
     private List<CCard> cardList;
-    
+
     /**
      * Constructor
      */
@@ -50,9 +51,10 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
         super();
         initializeGUI();
     }
-    
+
     /**
      * Constructor with a given model
+     * 
      * @param model
      */
     public CardSettingsPanel(IMatModel model) {
@@ -128,7 +130,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
         saveCardButton = new JButton("Spara kort");
         panel_1.add(saveCardButton, "cell 5 2");
         saveCardButton.addActionListener(this);
-        saveCardButton.setActionCommand("card_save");
+        saveCardButton.setActionCommand("card_add");
     }
 
     public String getCardNumber() {
@@ -194,17 +196,17 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
                     if (cardType.equals("mastercard")) {
                         cardsfield[cardList.indexOf(cc) + 1] = mastercard;
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/icons/mastercard.png")));
+                                .getResource("resources/images/mastercard.png")));
                     }
                     if (cardType.equals("visa")) {
                         cardsfield[cardList.indexOf(cc) + 1] = visa;
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/icons/visa.png")));
+                                .getResource("resources/images/visa.png")));
                     }
                     if (cardType.equals("amex")) {
                         cardsfield[cardList.indexOf(cc) + 1] = amex;
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/icons/amex.png")));
+                                .getResource("resources/images/amex.png")));
                     }
                 }
                 if (cardsfield.length == 0) {
@@ -237,37 +239,42 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 
     public void setError(WebTextField wt) {
         wt.setBackground(Constants.ERROR_COLOR);
-        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class.getResource("resources/images/warning.png")));
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand() == "card_save") {
-            model.cardAdd(new CCard(getCardNumber(), getValidMonth(), getValidYear(), getCVC(), model.getAccountHandler().getCurrentAccount()));
+    public void actionPerformed(ActionEvent event) {
+        if (event.getActionCommand() == "card_add") {
+            model.cardAdd(new CCard(getCardNumber(), getValidMonth(), getValidYear(), getCVC(), model
+                    .getAccountHandler().getCurrentAccount()));
         }
 
-        if (e.getSource() == removeButton) {
+        if (event.getSource() == removeButton) {
+            if (cardList.isEmpty())
+                return;
+
             model.removeCard(cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1));
             updateCards();
         }
 
-        if (e.getSource() == savedCardsWebComboBox) {
+        if (event.getSource() == savedCardsWebComboBox) {
             iconLabel.setIcon(null);
+
             if (cardList.size() != 0) {
                 if (savedCardsWebComboBox.getSelectedIndex() != 0) {
                     String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1).getCardType();
-                    if (cardType.equalsIgnoreCase("mastercard")) {
+
+                    if (cardType.equals("mastercard"))
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/icons/mastercard.png")));
-                    }
-                    if (cardType.equalsIgnoreCase("visa")) {
+                                .getResource("resources/images/mastercard.png")));
+                    if (cardType.equals("visa"))
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/icons/visa.png")));
-                    }
-                    if (cardType.equalsIgnoreCase("amex")) {
+                                .getResource("resources/images/visa.png")));
+                    if (cardType.equals("amex"))
                         iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/icons/amex.png")));
-                    }
+                                .getResource("resources/images/amex.png")));
+
                     iconLabel.repaint();
                     panel.repaint();
                     repaint();
@@ -282,7 +289,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
         if (!isVisible())
             return; // TODO
 
-        if (evt.getPropertyName() == "card_save") {
+        if (evt.getPropertyName() == "card_add") {
             @SuppressWarnings("unchecked")
             List<String> errors = (ArrayList<String>) evt.getNewValue();
 
@@ -290,7 +297,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
                 if (errors.contains("cardnumber_invalid"))
                     setError(cardNumberTextField);
                 if (errors.contains("cvc_invalid"))
-                    setError(cardNumberTextField);
+                    setError(cvcTextField);
             }
         }
 

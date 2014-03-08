@@ -15,6 +15,7 @@ import com.alee.laf.text.WebTextField;
 
 /**
  * Address settings panel responsible for showing the customer information
+ * 
  * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
  */
 @SuppressWarnings("serial")
@@ -114,6 +115,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Get first name
+     * 
      * @return
      */
     public String getFirstName() {
@@ -122,6 +124,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Set first name
+     * 
      * @param text
      */
     public void setFirstName(String text) {
@@ -130,6 +133,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Get last name
+     * 
      * @return
      */
     public String getLastName() {
@@ -138,6 +142,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Set last name
+     * 
      * @param text
      */
     public void setLastName(String text) {
@@ -146,6 +151,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Get address
+     * 
      * @return
      */
     public String getAddress() {
@@ -154,6 +160,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Set address
+     * 
      * @param text
      */
     public void setAddress(String text) {
@@ -162,6 +169,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Get post code
+     * 
      * @return
      */
     public String getPostCode() {
@@ -170,6 +178,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Set post code
+     * 
      * @param text
      */
     public void setPostCode(String text) {
@@ -178,6 +187,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Get phone number
+     * 
      * @return
      */
     public String getPhoneNumber() {
@@ -186,6 +196,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Set phone number
+     * 
      * @param text
      */
     public void setPhoneNumber(String text) {
@@ -194,6 +205,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Get mobile phone number
+     * 
      * @return
      */
     public String getMobilePhoneNumber() {
@@ -202,6 +214,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Set mobile phone number
+     * 
      * @param text
      */
     public void setMobilePhoneNumber(String text) {
@@ -210,6 +223,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Get post address
+     * 
      * @return
      */
     public String getPostAddress() {
@@ -218,6 +232,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Set post address
+     * 
      * @param text
      */
     public void setPostAddress(String text) {
@@ -226,7 +241,9 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Reset text field icon and background
-     * @param wt text field
+     * 
+     * @param wt
+     *            text field
      */
     public void resetError(WebTextField wt) {
         wt.setBackground(Color.WHITE);
@@ -235,11 +252,14 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     /**
      * Add error icon and background to text field
-     * @param wt text field
+     * 
+     * @param wt
+     *            text field
      */
     public void setError(WebTextField wt) {
         wt.setBackground(Constants.ERROR_COLOR);
-        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class.getResource("resources/images/icons/warning.png")));
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
         super();
         initializeGUI();
     }
-    
+
     public CartView(IMatModel model, JFrame frame) {
         this();
         this.model = model;
@@ -124,7 +124,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
             checkoutButton.setEnabled(true);
             btnClearCart.setEnabled(true);
             itemPanel.add(new CartItem((ShoppingItem) evt.getNewValue(), model), "wrap,growx");
-            
+
             totalPriceLabel.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
             updateColors();
         }
@@ -154,7 +154,8 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
                 }
             }
 
-            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
+            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal())
+                    + Constants.currencySuffix);
         }
 
         // Clear cart
@@ -162,7 +163,8 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
             itemPanel.removeAll();
             itemPanel.revalidate();
             repaint();
-            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
+            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal())
+                    + Constants.currencySuffix);
         }
     }
 

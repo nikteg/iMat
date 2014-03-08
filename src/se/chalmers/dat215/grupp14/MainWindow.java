@@ -140,8 +140,9 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private void initializeGUI() {
         setBounds(100, 100, 1120, 772);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));
-        
+        getContentPane().setLayout(
+                new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));
+
         // Set search timer to half a second
         searchTimer = new Timer(500, this);
         searchTimer.setRepeats(false);
@@ -207,7 +208,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         panelCategories = new JPanel();
         panelCategories.setLayout(new MigLayout("flowy,insets 0", "[grow]", "[28px]"));
         panelCategories.setBorder(null);
-        
+
         scrollPaneCategories = new JScrollPane();
         scrollPaneCategories.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPaneCategories.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -223,7 +224,8 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         scrollPaneContent.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent event) {
-                calculateResults(((JScrollPane) event.getSource()).getWidth(), ((JScrollPane) event.getSource()).getHeight());
+                calculateResults(((JScrollPane) event.getSource()).getWidth(),
+                        ((JScrollPane) event.getSource()).getHeight());
             }
         });
         scrollPaneContent.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -255,7 +257,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         CartView cartView = new CartView(model, this);
         cartView.setFocusable(false);
         panelCheckout.add(cartView, "cell 0 0,grow");
-        
+
         getContentPane().add(tabbedPaneSidebar, "cell 3 2,grow");
 
         // TODO Should this even be here?
@@ -470,16 +472,16 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         cardPanelList.repaint();
     }
 
-    
     @Override
     @SuppressWarnings("unchecked")
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == "account_signedin") {
             Account account = (Account) evt.getNewValue();
-            userComboBox.setModel(new DefaultComboBoxModel(new String[] { account.getUserName(), "Kontoinst\u00E4llningar", "Logga ut" }));
+            userComboBox.setModel(new DefaultComboBoxModel(new String[] { account.getUserName(),
+                    "Kontoinst\u00E4llningar", "Logga ut" }));
             CardLayout cl = (CardLayout) (userPanel.getLayout());
             cl.show(userPanel, "signedInPanel");
-            
+
             tabbedPaneSidebar.setEnabledAt(1, true);
             tabbedPaneSidebar.setToolTipTextAt(1, "Favoritmärkta varor");
             tabbedPaneSidebar.setEnabledAt(2, true);
@@ -491,7 +493,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         if (evt.getPropertyName() == "account_signout") {
             CardLayout cl = (CardLayout) (userPanel.getLayout());
             cl.show(userPanel, "signedOutPanel");
-            
+
             tabbedPaneSidebar.setEnabledAt(1, false);
             tabbedPaneSidebar.setToolTipTextAt(1, "Logga in för att se dina favoriter");
             tabbedPaneSidebar.setEnabledAt(2, false);

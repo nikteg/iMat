@@ -41,7 +41,7 @@ public class IMatModel {
         accountHandler = new AccountHandler(this);
         cardHandler = new CCardHandler(this);
         listHandler = new ListHandler(this);
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
@@ -61,9 +61,9 @@ public class IMatModel {
 
     public boolean accountSignIn(String userName, String password) {
         List<String> errors = new ArrayList<String>();
-        
+
         Account account = accountHandler.findAccount(userName);
-        
+
         if (account == null) {
             errors.add("username_wrong");
         } else {
@@ -103,6 +103,8 @@ public class IMatModel {
         Matcher m = monthYearPattern.matcher(creditCard.getValidMonth());
         Matcher y = monthYearPattern.matcher(creditCard.getValidYear());
         Matcher cvcm = cvcPattern.matcher(creditCard.getCVC());
+
+        System.out.println(creditCard.getCardType());
 
         if (creditCard.getCardType() == "")
             errors.add("cardnumber_invalid");
@@ -252,7 +254,7 @@ public class IMatModel {
         if (errors.isEmpty()) {
             Account account = new Account(userName, password, email);
             account.setAnonymous(false);
-            
+
             accountHandler.addAccount(account, true);
 
             pcs.firePropertyChange("account_signedup", null, account);
@@ -274,7 +276,7 @@ public class IMatModel {
     public AccountHandler getAccountHandler() {
         return accountHandler;
     }
-    
+
     public Account getAccount() {
         return accountHandler.getCurrentAccount();
     }
@@ -650,7 +652,7 @@ public class IMatModel {
      */
     public void orderPlace(CCard creditCard, boolean clearShoppingCart) {
         List<String> errors = new ArrayList<String>();
-        
+
         Pattern monthYearPattern = Pattern.compile("^[0-9]{2}$");
         Pattern cvcPattern = Pattern.compile("^[0-9]{3}$");
 

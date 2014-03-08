@@ -70,8 +70,8 @@ public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeL
         tglFavorite.setUI(new javax.swing.plaf.basic.BasicButtonUI());
         tglFavorite.setContentAreaFilled(false);
         tglFavorite.setBorderPainted(false);
-        tglFavorite.setRolloverSelectedIcon(new ImageIcon(ItemGrid.class
-                .getResource("resources/images/icons/star.png")));
+        tglFavorite
+                .setRolloverSelectedIcon(new ImageIcon(ItemGrid.class.getResource("resources/images/icons/star.png")));
         tglFavorite.setRolloverIcon(new ImageIcon(ItemGrid.class
                 .getResource("resources/images/icons/star-inactive.png")));
         tglFavorite.setRolloverEnabled(true);

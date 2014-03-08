@@ -99,9 +99,9 @@ public class AccountHandler {
             String phoneNumber = sc.next();
             String postAddress = sc.next();
             String postCode = sc.next();
-            
-            System.out.println(String.format("OST: %s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", userName, password, email, firstName, lastName, address, mobilePhoneNumber,
-                    phoneNumber, postAddress, postCode));
+
+            System.out.println(String.format("OST: %s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", userName, password, email,
+                    firstName, lastName, address, mobilePhoneNumber, phoneNumber, postAddress, postCode));
 
             account = new Account(userName, password, email, firstName, lastName, address, mobilePhoneNumber,
                     phoneNumber, postAddress, postCode);

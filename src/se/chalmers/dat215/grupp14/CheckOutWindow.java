@@ -125,7 +125,6 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
                         cardSettingsPanel.getValidYear(), cardSettingsPanel.getCVC(), model.getAccount());
             }
 
-
             if (model.accountVerify(model.getAccount().getUserName(), model.getAccount().getPassword(),
                     model.getAccount().getEmail(), addressSettingsPanel.getFirstName(),
                     addressSettingsPanel.getLastName(), addressSettingsPanel.getAddress(),
@@ -133,7 +132,7 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
                     addressSettingsPanel.getPostAddress(), addressSettingsPanel.getPostCode()).isEmpty()) {
                 model.orderPlace(card);
             }
-                
+
         }
 
     }
@@ -159,7 +158,7 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
         if (evt.getPropertyName() == "order_place") {
             @SuppressWarnings("unchecked")
             List<String> errors = (ArrayList<String>) evt.getNewValue();
-            
+
             if (!errors.isEmpty()) {
                 String msg = "";
 

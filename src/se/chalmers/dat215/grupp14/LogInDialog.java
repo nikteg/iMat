@@ -29,7 +29,7 @@ import com.alee.laf.text.WebPasswordField;
 import com.alee.laf.text.WebTextField;
 
 @SuppressWarnings("serial")
-public class LogInWindow extends JDialog implements ActionListener, PropertyChangeListener {
+public class LogInDialog extends JDialog implements ActionListener, PropertyChangeListener {
     private JTabbedPane signInTabbedPane;
     private JPanel newCustomerPanel;
     private JPanel signInPanel;
@@ -50,7 +50,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
     private JButton btnRegister;
     private IMatModel model;
 
-    public LogInWindow(JFrame frame, IMatModel model) {
+    public LogInDialog(JFrame frame, IMatModel model) {
         super(frame, true);
         this.model = model;
         this.model.addPropertyChangeListener(this);

@@ -18,13 +18,6 @@ public class Account {
     private String postCode;
     private boolean anonymous = true;
 
-    @Override
-    public String toString() {
-        return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", getUserName(), getPassword(), getEmail(),
-                getFirstName(), getLastName(), getAddress(), getMobilePhoneNumber(), getPhoneNumber(),
-                getPostAddress(), getPostCode());
-    }
-
     public Account(String userName, String password, String email) {
         this(userName, password, email, "", "", "", "", "", "", "");
     }
@@ -143,5 +136,12 @@ public class Account {
         }
 
         return false;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", getUserName(), getPassword(), getEmail(),
+                getFirstName(), getLastName(), getAddress(), getMobilePhoneNumber(), getPhoneNumber(),
+                getPostAddress(), getPostCode());
     }
 }

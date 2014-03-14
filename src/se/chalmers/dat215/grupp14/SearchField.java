@@ -77,7 +77,7 @@ public class SearchField extends WebTextField implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == timer) {
             if (getText().length() == 0 || getText().length() > 1) {
-                model.search(getText());
+                model.search(getText().trim());
             }
         }
     }

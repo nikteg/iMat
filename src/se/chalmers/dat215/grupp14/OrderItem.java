@@ -5,18 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.SimpleDateFormat;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 import se.chalmers.dat215.grupp14.backend.Constants;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
-
 import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
@@ -44,9 +40,8 @@ public class OrderItem extends JPanel implements ActionListener, PropertyChangeL
         this.order = order;
         this.model = model;
         this.historyView = historyView;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
-        lblDatum.setText(sdf.format(order.getDate()));
-        label.setText((totalPrice(order)) + Constants.currencySuffix);
+        lblDatum.setText(Constants.dateFormat.format(order.getDate()));
+        label.setText(Constants.currencyFormat.format(totalPrice(order)) + Constants.currencySuffix);
         this.model.addPropertyChangeListener(this);
 
     }

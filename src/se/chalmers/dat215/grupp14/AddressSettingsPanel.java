@@ -267,7 +267,7 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-        if (event.getPropertyName() == "account_update") {
+        if (event.getPropertyName() == "account_verify") {
             @SuppressWarnings("unchecked")
             List<String> errors = (ArrayList<String>) event.getNewValue();
 

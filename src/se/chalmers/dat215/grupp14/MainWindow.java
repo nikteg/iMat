@@ -67,8 +67,8 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private CategoryButton tglBtnAllCategories;
 
     private JPanel panelCheckout;
-    private SettingsWindow settingsWindow;
-    private LogInWindow loginWindow;
+    private SettingsDialog settingsWindow;
+    private LogInDialog loginWindow;
     private Constants.Category currentCategory;
     private JPanel favoritePanel;
     private FavoriteView favoriteView;
@@ -104,6 +104,8 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
 
         model.addPropertyChangeListener(this);
         initializeGUI();
+        
+        model.search("");
     }
 
     public IMatModel getModel() {
@@ -132,10 +134,10 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
      */
     private void initializeGUI() {
         if (System.getProperty("os.name").contains("Windows")) {
-            setBounds(100, 100, 740, 772);
+            setBounds(100, 100, 1120, 772);
             setMinimumSize(new Dimension(740, 360));
         } else {
-            setBounds(100, 100, 720, 772);
+            setBounds(100, 100, 1110, 772);
             setMinimumSize(new Dimension(720, 360));
         }
 
@@ -276,7 +278,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         tabbedPaneSidebar.setToolTipTextAt(3, "Visa dina tidigare beställningar");
         historyPanel.setLayout(new MigLayout("insets 6px", "[296px]", "[646px]"));
 
-        historyView = new HistoryView(model, this);
+        historyView = new HistoryView(model);
         historyView.setFocusable(false);
         historyPanel.add(historyView, "cell 0 0,grow");
 
@@ -361,7 +363,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         }
 
         if (action.getSource() == signInButton) {
-            loginWindow = new LogInWindow(this, model);
+            loginWindow = new LogInDialog(this, model);
             loginWindow.setLocationRelativeTo(this);
             loginWindow.setVisible(true);
         }
@@ -370,7 +372,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
             userComboBox.hidePopup();
 
             if (userComboBox.getSelectedIndex() == 1) {
-                settingsWindow = new SettingsWindow(this, model);
+                settingsWindow = new SettingsDialog(this, model);
                 settingsWindow.setLocationRelativeTo(this);
                 settingsWindow.setVisible(true);
             } else if (userComboBox.getSelectedIndex() == 2) {

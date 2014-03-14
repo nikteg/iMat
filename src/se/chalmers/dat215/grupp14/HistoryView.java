@@ -6,28 +6,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 import se.chalmers.dat215.grupp14.backend.Constants;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
-
 import com.alee.laf.text.WebTextField;
-
 import javax.swing.ImageIcon;
+import java.awt.BorderLayout;
 
-//TODO LÄGG TILL EN SÅNDÄR RUBRIKJÄVEL
 @SuppressWarnings("serial")
 public class HistoryView extends JPanel implements ActionListener, PropertyChangeListener {
-
     private IMatModel model;
     private JPanel allOrdersItem;
     private JScrollPane scrollPaneAllOrders;
@@ -38,18 +32,20 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
     private JPanel panel_1;
     private JButton backButton;
     private JButton addAllToCartButton;
-    private Order order;
     private JLabel lblSumma;
     private JPanel panel_2;
     private WebTextField textField;
     private JButton btnSparaLista;
+    private JPanel panel_3;
+    private JLabel lblOrderName;
+    private Order order;
 
     public HistoryView() {
         super();
         initializeGUI();
     }
 
-    public HistoryView(IMatModel model, JFrame frame) {
+    public HistoryView(IMatModel model) {
         this();
         this.model = model;
         this.model.addPropertyChangeListener(this);
@@ -76,12 +72,19 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         oneOrderPanel = new JPanel();
         add(oneOrderPanel, "oneOrderPanel");
         oneOrderPanel.setLayout(new MigLayout("insets 0px", "[50%,grow,left][50%,grow]", "[][][2px,grow][]"));
+        
+        panel_3 = new JPanel();
+        oneOrderPanel.add(panel_3, "cell 0 0 2 1,grow");
+        panel_3.setLayout(new BorderLayout(0, 0));
 
         backButton = new JButton("Tillbaka");
+        panel_3.add(backButton, BorderLayout.WEST);
         backButton.setIcon(new ImageIcon(HistoryView.class.getResource("resources/images/icons/back.png")));
         backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        lblOrderName = new JLabel("<name>");
+        panel_3.add(lblOrderName, BorderLayout.EAST);
         backButton.addActionListener(this);
-        oneOrderPanel.add(backButton, "cell 0 0,alignx left,aligny center");
 
         panel_2 = new JPanel();
         oneOrderPanel.add(panel_2, "cell 0 1 2 1,grow");
@@ -135,6 +138,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
 
     public void addShoppingItems(Order order) {
         this.order = order;
+        lblOrderName.setText(Constants.dateFormat.format(order.getDate()));
         lblSumma.setText(getOrderTotal(order) + Constants.currencySuffix);
         oneOrderItem.removeAll();
         for (ShoppingItem si : order.getItems()) {

@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
+// TODO Reparera denna filen så att man kan ha ett listobjekt
 public class ListHandler {
 
     private IMatModel model;

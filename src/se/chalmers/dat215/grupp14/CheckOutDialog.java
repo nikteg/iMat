@@ -28,7 +28,7 @@ import se.chalmers.dat215.grupp14.backend.IMatModel;
 import com.alee.laf.rootpane.WebDialog;
 
 @SuppressWarnings("serial")
-public class CheckOutWindow extends WebDialog implements ActionListener, PropertyChangeListener {
+public class CheckOutDialog extends WebDialog implements ActionListener, PropertyChangeListener {
     private IMatModel model;
     private JPanel settingsPanel;
     private CardSettingsPanel cardSettingsPanel;
@@ -40,7 +40,7 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
     private JLabel lblAmountValue;
     private JPanel amountPanel;
 
-    public CheckOutWindow(JFrame frame, IMatModel model) {
+    public CheckOutDialog(JFrame frame, IMatModel model) {
         super(frame, "Checkout", true);
         this.model = model;
         this.model.addPropertyChangeListener(this);
@@ -91,7 +91,8 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
             addressSettingsPanel.setFirstName(model.getAccountHandler().getCurrentAccount().getFirstName());
             addressSettingsPanel.setLastName(model.getAccountHandler().getCurrentAccount().getLastName());
             addressSettingsPanel.setPhoneNumber(model.getAccountHandler().getCurrentAccount().getPhoneNumber());
-            addressSettingsPanel.setMobilePhoneNumber(model.getAccountHandler().getCurrentAccount().getMobilePhoneNumber());
+            addressSettingsPanel.setMobilePhoneNumber(model.getAccountHandler().getCurrentAccount()
+                    .getMobilePhoneNumber());
             addressSettingsPanel.setAddress(model.getAccountHandler().getCurrentAccount().getAddress());
             addressSettingsPanel.setPostAddress(model.getAccountHandler().getCurrentAccount().getPostAddress());
             addressSettingsPanel.setPostCode(model.getAccountHandler().getCurrentAccount().getPostCode());
@@ -126,17 +127,30 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 
             if (cardSettingsPanel.getComboboxindex() == 0) {
                 card = new CreditCard(cardSettingsPanel.getCardNumber(), cardSettingsPanel.getValidMonth(),
-                        cardSettingsPanel.getValidYear(), cardSettingsPanel.getCVC(), model.getAccountHandler().getCurrentAccount());
+                        cardSettingsPanel.getValidYear(), cardSettingsPanel.getCVC(), model.getAccountHandler()
+                                .getCurrentAccount());
             } else {
                 card = cardSettingsPanel.getSelectedCard();
             }
 
-            if (model.accountVerify(model.getAccountHandler().getCurrentAccount().getUserName(), model.getAccountHandler().getCurrentAccount().getPassword(),
-                    model.getAccountHandler().getCurrentAccount().getEmail(), addressSettingsPanel.getFirstName(),
-                    addressSettingsPanel.getLastName(), addressSettingsPanel.getAddress(),
-                    addressSettingsPanel.getMobilePhoneNumber(), addressSettingsPanel.getPhoneNumber(),
-                    addressSettingsPanel.getPostAddress(), addressSettingsPanel.getPostCode()).isEmpty()) {
-                model.orderPlace(card);
+            if (model.getAccountHandler().getCurrentAccount().isAnonymous()) {
+                System.out.println("Försöker handla ej inloggad");
+                if (model.accountVerify("Anonymous", "password", "anonymous@mail.com",
+                        addressSettingsPanel.getFirstName(), addressSettingsPanel.getLastName(),
+                        addressSettingsPanel.getAddress(), addressSettingsPanel.getMobilePhoneNumber(),
+                        addressSettingsPanel.getPhoneNumber(), addressSettingsPanel.getPostAddress(),
+                        addressSettingsPanel.getPostCode()).isEmpty()) {
+                    model.orderPlace(card);
+                }
+            } else {
+                if (model.accountVerify(model.getAccountHandler().getCurrentAccount().getUserName(),
+                        model.getAccountHandler().getCurrentAccount().getPassword(),
+                        model.getAccountHandler().getCurrentAccount().getEmail(), addressSettingsPanel.getFirstName(),
+                        addressSettingsPanel.getLastName(), addressSettingsPanel.getAddress(),
+                        addressSettingsPanel.getMobilePhoneNumber(), addressSettingsPanel.getPhoneNumber(),
+                        addressSettingsPanel.getPostAddress(), addressSettingsPanel.getPostCode()).isEmpty()) {
+                    model.orderPlace(card);
+                }
             }
 
         }
@@ -147,7 +161,7 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
     public void propertyChange(PropertyChangeEvent evt) {
         if (!isVisible())
             return; // Ugly fix
-        
+
         if (evt.getPropertyName() == "cart_removeitem") {
 
             for (int i = 0; i < cartPanel.getComponentCount(); i++) {
@@ -162,16 +176,16 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
             repaint();
         }
 
-        if (evt.getPropertyName() == "order_place") {
+        if (evt.getPropertyName() == "account_verify") {
             @SuppressWarnings("unchecked")
             List<String> errors = (ArrayList<String>) evt.getNewValue();
 
             if (!errors.isEmpty()) {
                 String msg = "";
-
-                if (errors.contains("firstname_invalid"))
+                
+                if (errors.contains("firstname_tooshort"))
                     msg += "Förnamn saknas\n";
-                if (errors.contains("lastname_invalid"))
+                if (errors.contains("lastname_tooshort"))
                     msg += "Efternamn saknas\n";
                 if (errors.contains("address_invalid"))
                     msg += "Address saknas\n";
@@ -182,7 +196,19 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
                 if (errors.contains("postaddress_invalid"))
                     msg += "Postadress saknas\n";
                 if (errors.contains("postcode_invalid"))
-                    msg += "Postadress saknas\n";
+                    msg += "Postnummer saknas\n";
+                
+                JOptionPane.showMessageDialog(this, msg, "Fel vid utcheckning", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
+        if (evt.getPropertyName() == "order_place") {
+            @SuppressWarnings("unchecked")
+            List<String> errors = (ArrayList<String>) evt.getNewValue();
+
+            if (!errors.isEmpty()) {
+                String msg = "";
+                
                 if (errors.contains("cardnumber_invalid"))
                     msg += "Fel format på kortnummer\n";
                 if (errors.contains("cvc_invalid"))
@@ -191,10 +217,9 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
                     msg += "Utgångsmånad saknas\n";
                 if (errors.contains("year_invalid"))
                     msg += "Utgångsår saknas\n";
-
+                
                 JOptionPane.showMessageDialog(this, msg, "Fel vid utcheckning", JOptionPane.WARNING_MESSAGE);
             }
-
         }
 
         if (evt.getPropertyName() == "order_placed") {

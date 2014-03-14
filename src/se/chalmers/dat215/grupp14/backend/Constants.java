@@ -2,6 +2,7 @@ package se.chalmers.dat215.grupp14.backend;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 public class Constants {
     public static enum Category {
@@ -23,6 +24,7 @@ public class Constants {
     public static final Color ERROR_COLOR = new Color(250, 150, 150);
     public static final Color ALT_COLOR = new Color(248, 248, 248);
 
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
     public static final DecimalFormat currencyFormat = new DecimalFormat("#.##");
     public static final String currencySuffix = "kr";
     

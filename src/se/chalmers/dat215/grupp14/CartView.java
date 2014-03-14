@@ -27,7 +27,7 @@ import com.alee.laf.text.WebTextField;
 
 @SuppressWarnings("serial")
 public class CartView extends JPanel implements ActionListener, PropertyChangeListener {
-    private CheckOutWindow checkoutWindow;
+    private CheckOutDialog checkoutWindow;
     private WebTextField listNameTextField;
     private JScrollPane scrollPane;
     private JButton btnClearCart;
@@ -232,7 +232,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 
         if (event.getSource() == checkoutButton) {
             if (model.getShoppingCart().getItems().size() != 0) {
-                checkoutWindow = new CheckOutWindow(frame, model);
+                checkoutWindow = new CheckOutDialog(frame, model);
                 checkoutWindow.setLocationRelativeTo(frame);
                 checkoutWindow.setVisible(true);
             }

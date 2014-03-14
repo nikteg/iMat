@@ -176,8 +176,6 @@ public class IMatModel {
         List<String> errors = accountVerify(userName, password, email, firstName, lastName, address, mobilePhoneNumber,
                 phoneNumber, postAddress, postCode);
 
-        pcs.firePropertyChange("account_update", null, errors);
-
         if (errors.isEmpty()) {
             accountHandler.getCurrentAccount().setUserName(userName);
             accountHandler.getCurrentAccount().setPassword(password);

@@ -21,7 +21,7 @@ import se.chalmers.dat215.grupp14.backend.IMatModel;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class SettingsWindow extends JDialog implements ActionListener, PropertyChangeListener {
+public class SettingsDialog extends JDialog implements ActionListener, PropertyChangeListener {
     private IMatModel model;
     private JPanel settingsPanel;
     private JLabel lblSettings;
@@ -31,7 +31,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
     private JButton btnSave;
     private JButton btnCancel;
 
-    public SettingsWindow(JFrame frame, IMatModel model) {
+    public SettingsDialog(JFrame frame, IMatModel model) {
         super(frame, true);
         this.model = model;
         this.model.addPropertyChangeListener(this);

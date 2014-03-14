@@ -59,12 +59,10 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 
     private void updateColors() {
         for (int i = 0; i < favoritePanel.getComponentCount(); i++) {
-            if (i % 2 == 0) {
-                favoritePanel.getComponents()[i].setBackground(Constants.ALT_COLOR);
-            } else {
-                favoritePanel.getComponents()[i].setBackground(null);
-            }
+            favoritePanel.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
         }
+
+        repaint();
     }
 
     public void updateFavoriteView() {
@@ -79,7 +77,6 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 
         updateColors();
         favoritePanel.revalidate();
-        repaint();
     }
 
     public void addFavorite(Product product) {
@@ -91,7 +88,6 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
             favoritePanel.revalidate();
             repaint();
         }
-
     }
 
     @Override
@@ -99,20 +95,16 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
         if (evt.getPropertyName() == "favorite_clear") {
             updateFavoriteView();
         }
-
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == clearFavoritesButton) {
-            if (JOptionPane.showConfirmDialog(this, "Är du säker", "Radera alla favoriter", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE) == 0) {
+            if (JOptionPane.showConfirmDialog(this, "Är du säker på att du vill radera alla favoriter?",
+                    "Radera alla favoriter", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
                 model.favoriteClear();
                 repaint();
             }
-
         }
-
     }
-
 }

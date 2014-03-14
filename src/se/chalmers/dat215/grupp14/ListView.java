@@ -21,6 +21,7 @@ import se.chalmers.dat215.grupp14.backend.Constants;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import javax.swing.ImageIcon;
+import java.awt.BorderLayout;
 
 // TODO LÄGG TILL EN SÅNDÄR RUBRIKJÄVEL
 @SuppressWarnings("serial")
@@ -37,6 +38,8 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
     private JButton addAllToCartButton;
     private JLabel lblSumma;
     private List<ShoppingItem> shoppingItems;
+    private JPanel panel_2;
+    private JLabel lblListName;
 
     public ListView() {
         super();
@@ -70,12 +73,19 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         oneListPanel = new JPanel();
         add(oneListPanel, "oneOrderPanel");
         oneListPanel.setLayout(new MigLayout("insets 0px", "[50%,grow,left][50%,grow]", "[][2px,grow][]"));
+        
+        panel_2 = new JPanel();
+        oneListPanel.add(panel_2, "cell 0 0 2 1,grow");
+        panel_2.setLayout(new BorderLayout(0, 0));
 
         backButton = new JButton("Tillbaka");
+        panel_2.add(backButton, BorderLayout.WEST);
         backButton.setIcon(new ImageIcon(ListView.class.getResource("resources/images/icons/back.png")));
         backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        lblListName = new JLabel("<name>");
+        panel_2.add(lblListName, BorderLayout.EAST);
         backButton.addActionListener(this);
-        oneListPanel.add(backButton, "cell 0 0,alignx left,aligny center");
 
         panel_1 = new JPanel();
         oneListPanel.add(panel_1, "cell 0 1 2 1,grow");

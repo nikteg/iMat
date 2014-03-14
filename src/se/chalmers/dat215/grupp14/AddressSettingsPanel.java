@@ -5,11 +5,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
+
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 import net.miginfocom.swing.MigLayout;
+
 import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebTextField;
 
@@ -243,7 +248,6 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
      * Reset text field icon and background
      * 
      * @param wt
-     *            text field
      */
     public void resetError(WebTextField wt) {
         wt.setBackground(Color.WHITE);
@@ -254,7 +258,6 @@ public class AddressSettingsPanel extends JPanel implements PropertyChangeListen
      * Add error icon and background to text field
      * 
      * @param wt
-     *            text field
      */
     public void setError(WebTextField wt) {
         wt.setBackground(Constants.ERROR_COLOR);

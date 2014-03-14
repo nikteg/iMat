@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
@@ -28,10 +29,12 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
     private AddressSettingsPanel addressSettingsPanel;
     private LogInSettingsPanel logInSettingsPanel;
     private JButton btnSave;
+    private JButton btnCancel;
 
     public SettingsWindow(JFrame frame, IMatModel model) {
         super(frame, true);
         this.model = model;
+        this.model.addPropertyChangeListener(this);
         initializeGUI();
     }
 
@@ -41,7 +44,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
 
         settingsPanel = new JPanel();
         getContentPane().add(settingsPanel, BorderLayout.CENTER);
-        settingsPanel.setLayout(new MigLayout("", "[grow][330px]", "[64][195.00,grow][][28]"));
+        settingsPanel.setLayout(new MigLayout("", "[grow][330px]", "[64][grow][][28]"));
 
         lblSettings = new JLabel("Profilinställningar");
         lblSettings.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -59,23 +62,29 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
         btnSave = new JButton("Spara");
         btnSave.addActionListener(this);
         btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        btnCancel = new JButton("Avbryt");
+        btnCancel.addActionListener(this);
+        btnCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        settingsPanel.add(btnCancel, "flowx,cell 1 3,alignx right");
 
         settingsPanel.add(btnSave, "cell 1 3,alignx right,growy");
-
-        logInSettingsPanel.setEmail(model.getAccount().getEmail());
-
-        model.addPropertyChangeListener(this);
+        pack();
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == btnSave) {
-            model.accountUpdate(model.getAccount().getUserName(), logInSettingsPanel.getPassword(),
-                    logInSettingsPanel.getPasswordRepeat(), logInSettingsPanel.getEmail(),
+            model.accountUpdate(model.getAccountHandler().getCurrentAccount().getUserName(), logInSettingsPanel.getPassword(),
+                    logInSettingsPanel.getEmail(),
                     addressSettingsPanel.getFirstName(), addressSettingsPanel.getLastName(),
                     addressSettingsPanel.getAddress(), addressSettingsPanel.getMobilePhoneNumber(),
                     addressSettingsPanel.getPhoneNumber(), addressSettingsPanel.getPostAddress(),
                     addressSettingsPanel.getPostCode());
+        }
+        
+        if (event.getSource() == btnCancel) {
+            dispose();
         }
     }
 
@@ -83,7 +92,7 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (!isVisible())
-            return; // TODO
+            return; // Ugly fix
 
         if (evt.getPropertyName() == "account_update") {
             List<String> errors = (ArrayList<String>) evt.getNewValue();
@@ -95,8 +104,8 @@ public class SettingsWindow extends JDialog implements ActionListener, PropertyC
                     msg += "Fel format på epostadress\n";
                 }
 
-                if (errors.contains("password_mismatch")) {
-                    msg += "Lösenorden stämmer inte överens\n";
+                if (errors.contains("password_tooshort")) {
+                    msg += "Lösenordet är för kort\n";
                 }
 
                 if (errors.contains("firstname_tooshort")) {

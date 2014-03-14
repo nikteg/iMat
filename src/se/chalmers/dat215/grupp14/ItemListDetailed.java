@@ -4,20 +4,17 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 @SuppressWarnings("serial")
-public class ItemListDetailed extends JPanel implements ActionListener, ChangeListener {
+public class ItemListDetailed extends JPanel implements ActionListener {
     private JLabel lblNameLabel;
     private ShoppingItem shoppingItem;
     private IMatModel model;
@@ -101,11 +98,4 @@ public class ItemListDetailed extends JPanel implements ActionListener, ChangeLi
         }
 
     }
-
-    @Override
-    public void stateChanged(ChangeEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
 }

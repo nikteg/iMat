@@ -1,4 +1,4 @@
-package se.chalmers.dat215.grupp14;
+package se.chalmers.dat215.grupp14.backend;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
@@ -25,4 +25,8 @@ public class Constants {
 
     public static final DecimalFormat currencyFormat = new DecimalFormat("#.##");
     public static final String currencySuffix = "kr";
+    
+    public static final int GRID_WIDTH = 180;
+    public static final int GRID_HEIGHT = 240;
+    public static final int LIST_HEIGHT = 64;
 }

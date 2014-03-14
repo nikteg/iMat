@@ -2,6 +2,8 @@ package se.chalmers.dat215.grupp14;
 
 import java.awt.Cursor;
 
+import se.chalmers.dat215.grupp14.backend.Constants;
+
 import com.alee.laf.button.WebToggleButton;
 
 @SuppressWarnings("serial")

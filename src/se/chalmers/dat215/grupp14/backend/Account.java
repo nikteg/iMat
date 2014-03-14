@@ -1,4 +1,4 @@
-package se.chalmers.dat215.grupp14;
+package se.chalmers.dat215.grupp14.backend;
 
 /**
  * Class responsible for combining the backend classes User and Customer
@@ -18,9 +18,11 @@ public class Account {
     private String postCode;
     private boolean anonymous = true;
 
+    @Override
     public String toString() {
-        return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s", getUserName(), getPassword(), getEmail(), getFirstName(),
-                getLastName(), getAddress(), getMobilePhoneNumber(), getPhoneNumber(), getPostAddress(), getPostCode());
+        return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", getUserName(), getPassword(), getEmail(),
+                getFirstName(), getLastName(), getAddress(), getMobilePhoneNumber(), getPhoneNumber(),
+                getPostAddress(), getPostCode());
     }
 
     public Account(String userName, String password, String email) {
@@ -127,5 +129,19 @@ public class Account {
 
     public void setAnonymous(boolean anonymous) {
         this.anonymous = anonymous;
+    }
+
+    @Override
+    public int hashCode() {
+        return userName.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (((Account) other).getUserName().equals(userName)) {
+            return true;
+        }
+
+        return false;
     }
 }

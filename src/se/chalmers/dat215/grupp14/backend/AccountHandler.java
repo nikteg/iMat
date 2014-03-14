@@ -1,12 +1,10 @@
-package se.chalmers.dat215.grupp14;
+package se.chalmers.dat215.grupp14.backend;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +26,6 @@ public class AccountHandler {
         if (accounts.contains(account)) {
             accounts.remove(account);
         }
-
-        saveState();
     }
 
     public void addAccount(Account account, boolean signIn) {
@@ -37,8 +33,6 @@ public class AccountHandler {
 
         if (signIn)
             setCurrentAccount(account);
-
-        saveState();
     }
 
     public Account findAccount(String userName) {
@@ -62,20 +56,21 @@ public class AccountHandler {
             for (Account account : accounts) {
                 if (account.isAnonymous())
                     continue;
+
                 System.out.println(account.getUserName());
                 File writeFile = new File(model.getDataDirectory() + "/accounts/" + account.getUserName() + ".txt");
 
                 if (!writeFile.exists())
                     writeFile.createNewFile();
 
-                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(writeFile), "UTF-8"));
+                writer = new PrintWriter(writeFile, "UTF-8");
                 writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", account.getUserName(),
                         account.getPassword(), account.getEmail(), account.getFirstName(), account.getLastName(),
                         account.getAddress(), account.getMobilePhoneNumber(), account.getPhoneNumber(),
                         account.getPostAddress(), account.getPostCode()));
-            }
 
-            writer.close();
+                writer.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException("I/O error. Changes could not be saved to file.", e);
         }
@@ -89,25 +84,17 @@ public class AccountHandler {
             sc = new Scanner(new FileReader(file));
             sc.useDelimiter(";");
 
-            String userName = sc.next();
-            String password = sc.next();
-            String email = sc.next();
-            String firstName = sc.next();
-            String lastName = sc.next();
-            String address = sc.next();
-            String mobilePhoneNumber = sc.next();
-            String phoneNumber = sc.next();
-            String postAddress = sc.next();
-            String postCode = sc.next();
+            if (sc.hasNext()) {
+                account = new Account(sc.next(), sc.next(), sc.next(), sc.next(), sc.next(), sc.next(), sc.next(),
+                        sc.next(), sc.next(), sc.next());
+                account.setAnonymous(false);
+                System.out.println(account);
+            }
 
-            System.out.println(String.format("OST: %s;%s;%s;%s;%s;%s;%s;%s;%s;%s;", userName, password, email,
-                    firstName, lastName, address, mobilePhoneNumber, phoneNumber, postAddress, postCode));
-
-            account = new Account(userName, password, email, firstName, lastName, address, mobilePhoneNumber,
-                    phoneNumber, postAddress, postCode);
-            account.setAnonymous(false);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("I/O error. Could not read from file.", e);
+        } finally {
+            sc.close();
         }
 
         return account;
@@ -121,7 +108,10 @@ public class AccountHandler {
 
         for (File file : folder.listFiles()) {
             if (file.getName().endsWith(".txt")) {
-                accounts.add(readAccount(file));
+                Account account = readAccount(file);
+                
+                if (account != null)
+                    accounts.add(account);
             }
         }
     }

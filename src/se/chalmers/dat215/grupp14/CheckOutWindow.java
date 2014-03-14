@@ -21,6 +21,9 @@ import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.CreditCard;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import com.alee.laf.rootpane.WebDialog;
 
@@ -84,14 +87,14 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 
         addressSettingsPanel = new AddressSettingsPanel(model);
         settingsPanel.add(addressSettingsPanel, "cell 1 0,grow");
-        if (!model.getAccount().isAnonymous()) {
-            addressSettingsPanel.setFirstName(model.getAccount().getFirstName());
-            addressSettingsPanel.setLastName(model.getAccount().getLastName());
-            addressSettingsPanel.setPhoneNumber(model.getAccount().getPhoneNumber());
-            addressSettingsPanel.setMobilePhoneNumber(model.getAccount().getMobilePhoneNumber());
-            addressSettingsPanel.setAddress(model.getAccount().getAddress());
-            addressSettingsPanel.setPostAddress(model.getAccount().getPostAddress());
-            addressSettingsPanel.setPostCode(model.getAccount().getPostCode());
+        if (!model.getAccountHandler().getCurrentAccount().isAnonymous()) {
+            addressSettingsPanel.setFirstName(model.getAccountHandler().getCurrentAccount().getFirstName());
+            addressSettingsPanel.setLastName(model.getAccountHandler().getCurrentAccount().getLastName());
+            addressSettingsPanel.setPhoneNumber(model.getAccountHandler().getCurrentAccount().getPhoneNumber());
+            addressSettingsPanel.setMobilePhoneNumber(model.getAccountHandler().getCurrentAccount().getMobilePhoneNumber());
+            addressSettingsPanel.setAddress(model.getAccountHandler().getCurrentAccount().getAddress());
+            addressSettingsPanel.setPostAddress(model.getAccountHandler().getCurrentAccount().getPostAddress());
+            addressSettingsPanel.setPostCode(model.getAccountHandler().getCurrentAccount().getPostCode());
         }
 
         btnConfirm = new JButton("Bekräfta");
@@ -113,22 +116,23 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
 
         settingsPanel.add(btnConfirm, "cell 1 3,alignx right,growy");
 
+        pack();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnConfirm) {
-            CCard card = null;
+            CreditCard card = null;
 
             if (cardSettingsPanel.getComboboxindex() == 0) {
-                card = new CCard(cardSettingsPanel.getCardNumber(), cardSettingsPanel.getValidMonth(),
-                        cardSettingsPanel.getValidYear(), cardSettingsPanel.getCVC(), model.getAccount());
+                card = new CreditCard(cardSettingsPanel.getCardNumber(), cardSettingsPanel.getValidMonth(),
+                        cardSettingsPanel.getValidYear(), cardSettingsPanel.getCVC(), model.getAccountHandler().getCurrentAccount());
             } else {
                 card = cardSettingsPanel.getSelectedCard();
             }
 
-            if (model.accountVerify(model.getAccount().getUserName(), model.getAccount().getPassword(),
-                    model.getAccount().getEmail(), addressSettingsPanel.getFirstName(),
+            if (model.accountVerify(model.getAccountHandler().getCurrentAccount().getUserName(), model.getAccountHandler().getCurrentAccount().getPassword(),
+                    model.getAccountHandler().getCurrentAccount().getEmail(), addressSettingsPanel.getFirstName(),
                     addressSettingsPanel.getLastName(), addressSettingsPanel.getAddress(),
                     addressSettingsPanel.getMobilePhoneNumber(), addressSettingsPanel.getPhoneNumber(),
                     addressSettingsPanel.getPostAddress(), addressSettingsPanel.getPostCode()).isEmpty()) {
@@ -142,7 +146,8 @@ public class CheckOutWindow extends WebDialog implements ActionListener, Propert
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (!isVisible())
-            return; // TODO
+            return; // Ugly fix
+        
         if (evt.getPropertyName() == "cart_removeitem") {
 
             for (int i = 0; i < cartPanel.getComponentCount(); i++) {

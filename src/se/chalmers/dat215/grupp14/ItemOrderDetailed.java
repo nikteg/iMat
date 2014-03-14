@@ -4,20 +4,17 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 @SuppressWarnings("serial")
-public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeListener {
+public class ItemOrderDetailed extends JPanel implements ActionListener {
     private JLabel lblNameLabel;
     private ShoppingItem shoppingItem;
     private IMatModel model;
@@ -43,7 +40,6 @@ public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeL
         lblNameLabel.setText(shoppingItem.getProduct().getName());
         labelAmount.setText((int) shoppingItem.getAmount() + " " + shoppingItem.getProduct().getUnitSuffix());
         tglFavorite.setSelected(model.isFavorite(shoppingItem.getProduct()));
-
     }
 
     private void initializeGUI() {
@@ -99,13 +95,5 @@ public class ItemOrderDetailed extends JPanel implements ActionListener, ChangeL
         if (action.getSource() == btnAddToCart) {
             model.cartAddItem(shoppingItem.getProduct(), shoppingItem.getAmount());
         }
-
     }
-
-    @Override
-    public void stateChanged(ChangeEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
 }

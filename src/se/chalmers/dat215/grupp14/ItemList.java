@@ -18,6 +18,8 @@ import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import com.alee.laf.spinner.WebSpinner;
 
@@ -28,7 +30,7 @@ public class ItemList extends Item implements ChangeListener {
     private JButton btnKp;
     private JLabel lblNamelabel;
     private WebSpinner spinner;
-    private JLabel lblPricelabel;
+    private JLabel lblPrice;
     public JToggleButton tglFavorite;
     private JLabel lblUnitsuffix;
 
@@ -43,10 +45,9 @@ public class ItemList extends Item implements ChangeListener {
     }
 
     private void initializeGUI() {
-        setPreferredSize(new Dimension(512, 64));
+        setPreferredSize(new Dimension(512, Constants.LIST_HEIGHT));
         // setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-        setLayout(new MigLayout("insets 0px 0px 0px 8px",
-                "[64px:64.00][5px:5px][92px:92px,grow][64px][][48px:48px][48][]", "[64px]"));
+        setLayout(new MigLayout("insets 0px 0px 0px 8px", "[64px][5px:5px][92px:n,grow][64px][][48px:48px][64px][]", "[64px]"));
 
         lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(48, 48)));
         lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -60,13 +61,13 @@ public class ItemList extends Item implements ChangeListener {
         lblNamelabel = new JLabel(shoppingItem.getProduct().getName());
         add(lblNamelabel, "cell 2 0,alignx left");
 
-        lblPricelabel = new JLabel(shoppingItem.getProduct().getPrice() + Constants.currencySuffix + "/" + shoppingItem.getProduct().getUnitSuffix());
-        lblPricelabel.setBackground(Color.RED);
-        add(lblPricelabel, "cell 3 0");
+        lblPrice = new JLabel(Constants.currencyFormat.format(shoppingItem.getProduct().getPrice()) + Constants.currencySuffix + "/" + shoppingItem.getProduct().getUnitSuffix());
+        lblPrice.setBackground(Color.RED);
+        add(lblPrice, "cell 3 0");
 
         spinner = new WebSpinner();
         spinner.addChangeListener(this);
-        spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+        spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), new Integer(99), new Integer(1)));
         add(spinner, "cell 5 0,growx");
 
         tglFavorite = new JToggleButton("");
@@ -85,7 +86,7 @@ public class ItemList extends Item implements ChangeListener {
         tglFavorite.addActionListener(this);
         tglFavorite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         tglFavorite.setActionCommand("favorite");
-        tglFavorite.setVisible(!model.getAccount().isAnonymous());
+        tglFavorite.setVisible(!model.getAccountHandler().getCurrentAccount().isAnonymous());
 
         if (model.isFavorite(shoppingItem.getProduct()))
             tglFavorite.setSelected(true);
@@ -97,7 +98,7 @@ public class ItemList extends Item implements ChangeListener {
         btnKp.addActionListener(this);
 
         lblUnitsuffix = new JLabel(shoppingItem.getProduct().getUnitSuffix());
-        add(lblUnitsuffix, "cell 6 0");
+        add(lblUnitsuffix, "cell 6 0,alignx left");
         btnKp.setActionCommand("add_cart");
         add(btnKp, "cell 7 0");
 

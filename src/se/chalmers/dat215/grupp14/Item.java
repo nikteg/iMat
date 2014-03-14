@@ -3,11 +3,14 @@ package se.chalmers.dat215.grupp14;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JPanel;
-
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
+/**
+ * 
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public abstract class Item extends JPanel implements ActionListener, PropertyChangeListener {
     public ShoppingItem shoppingItem;
@@ -19,7 +22,7 @@ public abstract class Item extends JPanel implements ActionListener, PropertyCha
     }
 
     public Item(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
-        super();
+        this();
         this.favoriteView = favoriteView;
         this.shoppingItem = shoppingItem;
         this.model = model;

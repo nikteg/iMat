@@ -17,9 +17,12 @@ import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import javax.swing.ImageIcon;
 
+// TODO LÄGG TILL EN SÅNDÄR RUBRIKJÄVEL
 @SuppressWarnings("serial")
 public class ListView extends JPanel implements ActionListener, PropertyChangeListener {
     private IMatModel model;
@@ -139,7 +142,7 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
 
     private void updateListView() {
         allListsItem.removeAll();
-        Map<String, List<ShoppingItem>> listMap = model.getListHandler().getLists(model.getAccount());
+        Map<String, List<ShoppingItem>> listMap = model.getListHandler().getLists(model.getAccountHandler().getCurrentAccount());
 
         if (listMap != null) {
             for (String s : listMap.keySet()) {

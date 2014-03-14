@@ -23,14 +23,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.Account;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
@@ -47,7 +48,6 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private JScrollPane scrollPaneContent;
     private JPanel panelContent;
     private int margin = 10;
-    private int numResults;
     private WebTabbedPane tabbedPaneSidebar;
 
     private SearchField searchField;
@@ -57,12 +57,6 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private JPanel cardPanelList;
     private JPanel cardPanelGrid;
 
-    private Timer searchTimer;
-
-    private JPanel confirmPurchasePanel;
-    private AddressSettingsPanel addressSettingsPanel_1;
-    private JPanel cartConfirmationPanel;
-    private CardSettingsPanel cardSettingsPanel_1;
     private JPanel signedInPanel;
     private JPanel userPanel;
     private JPanel signedOutPanel;
@@ -73,13 +67,11 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private CategoryButton tglBtnAllCategories;
 
     private JPanel panelCheckout;
-    private JButton confirmPurchaseButton;
     private SettingsWindow settingsWindow;
     private LogInWindow loginWindow;
     private Constants.Category currentCategory;
     private JPanel favoritePanel;
     private FavoriteView favoriteView;
-    private JScrollPane scrollPane;
     private JPanel historyPanel;
     private HistoryView historyView;
     private boolean logoChanged = true;
@@ -100,6 +92,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
      * Create the application.
      */
     public MainWindow(IMatModel model) {
+        super("iMat - Effektiva matinköp för folk i farten");
         this.model = model;
 
         StyleConstants.drawFocus = false;
@@ -138,15 +131,17 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
      * Initialize the contents of the frame.
      */
     private void initializeGUI() {
-        setBounds(100, 100, 1120, 772);
+        if (System.getProperty("os.name").contains("Windows")) {
+            setBounds(100, 100, 740, 772);
+            setMinimumSize(new Dimension(740, 360));
+        } else {
+            setBounds(100, 100, 720, 772);
+            setMinimumSize(new Dimension(720, 360));
+        }
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(
                 new MigLayout("insets 4px", "[192px:n][448.00,grow][72px][300px:300px]", "[][][grow]"));
-
-        // Set search timer to half a second
-        searchTimer = new Timer(500, this);
-        searchTimer.setRepeats(false);
-        searchTimer.setActionCommand("search");
 
         // Logotype
         lblLogo = new JLabel();
@@ -157,6 +152,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
 
         // Search field
         searchField = new SearchField(model, this);
+        searchField.setToolTipText("Skriv här för att söka. Resultaten visas i realtid");
         getContentPane().add(searchField, "cell 1 1,grow");
 
         // Change display mode buttons
@@ -178,7 +174,6 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         tglBtnList.setActionCommand("toggle_list");
 
         // Pre-select the grid button
-        // TODO Read settings from account
         tglBtnGrid.setSelected(true);
 
         getContentPane().add(groupGridList, "cell 2 1,grow");
@@ -243,7 +238,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
 
         cardPanelList = new JPanel();
         panelContent.add(cardPanelList, "cardPanelList");
-        cardPanelList.setLayout(new MigLayout("insets 0px, gapy 0px", "[grow]", "[64]"));
+        cardPanelList.setLayout(new MigLayout("insets 0px, gapy 0px", "[grow]", "[]"));
 
         tabbedPaneSidebar = new WebTabbedPane();
         tabbedPaneSidebar.setFocusable(false);
@@ -259,29 +254,6 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         panelCheckout.add(cartView, "cell 0 0,grow");
 
         getContentPane().add(tabbedPaneSidebar, "cell 3 2,grow");
-
-        // TODO Should this even be here?
-        confirmPurchasePanel = new JPanel();
-        panelContent.add(confirmPurchasePanel, "cardConfrimPanel");
-        confirmPurchasePanel.setLayout(new MigLayout("", "[][grow]", "[200.00][][grow]"));
-
-        scrollPane = new JScrollPane();
-        confirmPurchasePanel.add(scrollPane, "cell 0 0 2 1,grow");
-
-        cartConfirmationPanel = new JPanel();
-        scrollPane.setViewportView(cartConfirmationPanel);
-        cartConfirmationPanel.setBorder(new TitledBorder(null, "Varukorg", TitledBorder.LEADING, TitledBorder.TOP,
-                null, null));
-        cartConfirmationPanel.setLayout(new MigLayout("insets 0px", "[grow]", "[64px]"));
-
-        addressSettingsPanel_1 = new AddressSettingsPanel(model);
-        confirmPurchasePanel.add(addressSettingsPanel_1, "cell 0 1,grow");
-
-        cardSettingsPanel_1 = new CardSettingsPanel(model);
-        confirmPurchasePanel.add(cardSettingsPanel_1, "cell 1 1,grow");
-
-        confirmPurchaseButton = new JButton("Bekräfta köp");
-        confirmPurchasePanel.add(confirmPurchaseButton, "cell 1 2,alignx right,aligny bottom");
 
         favoritePanel = new JPanel();
         tabbedPaneSidebar.addTab("Favoriter", null, favoritePanel, null);
@@ -308,14 +280,14 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         historyView.setFocusable(false);
         historyPanel.add(historyView, "cell 0 0,grow");
 
-        tglBtnAllCategories = new CategoryButton("Alla kategorier", numResults);
+        tglBtnAllCategories = new CategoryButton("Alla kategorier", searchResults.size());
         tglBtnAllCategories.setSelected(true);
         tglBtnAllCategories.addActionListener(this);
         tglBtnAllCategories.setActionCommand("category_change");
         panelCategories.add(tglBtnAllCategories, "growx");
         groupCategories.add(tglBtnAllCategories);
 
-        if (model.getAccount().isAnonymous()) {
+        if (model.getAccountHandler().getCurrentAccount().isAnonymous()) {
             tabbedPaneSidebar.setEnabledAt(1, false);
             tabbedPaneSidebar.setToolTipTextAt(1, "Logga in för att se dina favoriter");
             tabbedPaneSidebar.setEnabledAt(2, false);
@@ -337,24 +309,18 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     }
 
     private void calculateResults(int width, int height) {
-        int num = 0;
-        for (Product product : searchResults) {
-            if (model.getCategory(product).equals(currentCategory)) {
-                num++;
-            }
-        }
-
-        int totalnum = num == 0 ? searchResults.size() : num;
+        int totalnum = cardPanelList.getComponentCount();
 
         if (tglBtnGrid.isSelected()) {
-            int cols = Math.max(1, width / (180 + margin));
+            int cols = Math.max(1, width / (Constants.GRID_WIDTH + margin));
             int rows = totalnum / cols;
             rows += ((rows * cols < totalnum) ? 1 : 0);
 
-            panelContent.setPreferredSize(new Dimension(width - 32, (rows * (240 + margin)) + margin));
+            panelContent
+                    .setPreferredSize(new Dimension(width - 0, (rows * (Constants.GRID_HEIGHT + margin)) + margin));
             scrollPaneContent.revalidate();
         } else if (tglBtnList.isSelected()) {
-            panelContent.setPreferredSize(new Dimension(width - 32, (totalnum * 64)));
+            panelContent.setPreferredSize(new Dimension(width - 32, (totalnum * Constants.LIST_HEIGHT)));
 
             scrollPaneContent.revalidate();
         }
@@ -376,23 +342,22 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         }
 
         if (action.getActionCommand() == "category_change") {
+            if (action.getSource() == tglBtnAllCategories) {
+                populateResults(searchResults);
+
+                return;
+            }
+
             currentCategory = ((CategoryButton) action.getSource()).getCategory();
             List<Product> results = new ArrayList<Product>();
 
-            if (searchResults.size() == 0 && searchField.getText().length() == 0) {
-                model.showAllProducts();
-            }
-
             for (Product product : searchResults) {
-                if (tglBtnAllCategories.isSelected()
-                        || ((CategoryButton) action.getSource()).getCategory().equals(model.getCategory(product))) {
-
+                if (currentCategory.equals(model.getCategory(product))) {
                     results.add(product);
                 }
             }
+
             populateResults(results);
-            scrollPaneContent.getVerticalScrollBar().setMaximum(panelContent.getHeight());
-            scrollPaneContent.getVerticalScrollBar().setValue(scrollPaneContent.getVerticalScrollBar().getMinimum());
         }
 
         if (action.getSource() == signInButton) {
@@ -439,27 +404,13 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         cardPanelList.removeAll();
 
         for (int i = 0; i < results.size(); i++) {
-
             Product product = results.get(i);
-
-            boolean skipstep = true;
-            for (CategoryButton ctb : categorybuttons) {
-                if (ctb.isSelected()) {
-                    if (model.getCategory(product).equals(ctb.getCategory())) {
-                        skipstep = false;
-                    }
-                }
-            }
-
-            if (skipstep && !tglBtnAllCategories.isSelected()) {
-                continue;
-            }
-
             ItemList item = new ItemList(new ShoppingItem(product), favoriteView, model);
 
             // Alternate background in list view
             if (i % 2 == 1)
                 item.setBackground(Constants.ALT_COLOR);
+
             cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), favoriteView, model));
             cardPanelList.add(item, "wrap,growx");
         }

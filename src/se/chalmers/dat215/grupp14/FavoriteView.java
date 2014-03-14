@@ -16,6 +16,8 @@ import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 @SuppressWarnings("serial")
 public class FavoriteView extends JPanel implements ActionListener, PropertyChangeListener {

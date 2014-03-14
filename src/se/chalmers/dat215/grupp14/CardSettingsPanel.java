@@ -1,23 +1,31 @@
 package se.chalmers.dat215.grupp14;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
 import net.miginfocom.swing.MigLayout;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.CreditCard;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
+
 import com.alee.extended.image.WebImage;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.text.WebTextField;
-import java.awt.Dimension;
 
 /**
  * Credit card panel responsible for showing the credit card information
@@ -41,8 +49,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     private JPanel panel;
     private JPanel panel_1;
     private IMatModel model;
-    private CCardHandler cardHandler;
-    private List<CCard> cardList;
+    private List<CreditCard> cardList;
 
     /**
      * Constructor
@@ -60,9 +67,15 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     public CardSettingsPanel(IMatModel model) {
         this();
         this.model = model;
-        cardHandler = model.getCCardHandler();
-        cardList = cardHandler.getCCards(model.getAccountHandler().getCurrentAccount());
         model.addPropertyChangeListener(this);
+        
+        if (!model.getAccountHandler().getCurrentAccount().isAnonymous()) {
+            cardList = model.getCreditCardHandler().getCards(model.getAccountHandler().getCurrentAccount());
+        }
+        
+        removeButton.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+        savedCardsWebComboBox.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+        
         updateCards();
     }
 
@@ -116,8 +129,15 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
         panel_1.add(slashLabel, "cell 2 1,alignx center");
 
         yearWebComboBox = new WebComboBox();
-        yearWebComboBox.setModel(new DefaultComboBoxModel(new String[] { "ÅÅ", "14", "15", "16", "17", "18", "19",
-                "20", "21", "22", "23", "24", "25", "26", "27", "28", "29" }));
+        
+        List<String> yearList = new ArrayList<String>();
+        yearList.add("ÅÅ");
+        
+        for (int i = 0; i < 10; i++) {
+            yearList.add(("" + (Calendar.getInstance().get(Calendar.YEAR) + i)).substring(2));
+        }
+        
+        yearWebComboBox.setModel(new DefaultComboBoxModel(yearList.toArray(new String[yearList.size()])));
         panel_1.add(yearWebComboBox, "cell 3 1");
 
         cvcLabel = new JLabel("CVC");
@@ -153,9 +173,31 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
         return savedCardsWebComboBox.getSelectedIndex();
     }
 
+    
+    // TODO Change days to years
+    // TODO Check if anonymous
     public void updateCards() {
-
-        if (model.getAccount().isAnonymous()) {
+        List<String> cardModelList = new ArrayList<String>();
+        
+        cardModelList.add(cardList.isEmpty() ? "Inga sparade kort" : "Välj ett kort");
+        
+        for (CreditCard card : cardList) {
+            String censored = "XXXX-";
+            
+            if (card.getCardType() == "amex") {
+                censored += "XXXXXX-" + card.getCardNumber().substring(card.getCardNumber().length() - 5, card.getCardNumber().length());;
+            } else {
+                censored += "XXXX-XXXX-" + card.getCardNumber().substring(card.getCardNumber().length() - 4, card.getCardNumber().length());;
+            }
+            
+            cardModelList.add(censored);
+        }
+        
+        savedCardsWebComboBox.setModel(new DefaultComboBoxModel(cardModelList.toArray(new String[cardModelList.size()])));
+        iconLabel.setIcon(null);
+        
+        /*
+        if (model.getAccountHandler().getCurrentAccount().isAnonymous()) {
             panel.remove(savedCardsWebComboBox);
             savedCardsWebComboBox = new WebComboBox();
             savedCardsWebComboBox.setEnabled(false);
@@ -181,7 +223,7 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 
                 String[] cardsfield = new String[cardList.size() + 1];
                 cardsfield[0] = "Välj kort";
-                for (CCard cc : cardList) {
+                for (CreditCard cc : cardList) {
                     String visa = "XXXX-XXXX-XXXX-"
                             + cc.getCardNumber()
                                     .substring(cc.getCardNumber().length() - 4, cc.getCardNumber().length());
@@ -230,11 +272,12 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
 
             }
 
-        }
+        }*/
     }
 
     public void resetError(WebTextField wt) {
         wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
     }
 
     public void setError(WebTextField wt) {
@@ -246,38 +289,28 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getActionCommand() == "card_add") {
-            model.cardAdd(new CCard(getCardNumber(), getValidMonth(), getValidYear(), getCVC(), model
+            model.cardAdd(new CreditCard(getCardNumber(), getValidMonth(), getValidYear(), getCVC(), model
                     .getAccountHandler().getCurrentAccount()));
         }
 
         if (event.getSource() == removeButton) {
-            if (cardList.isEmpty())
+            if (model.getCreditCardHandler().getCards(model.getAccountHandler().getCurrentAccount()).isEmpty())
                 return;
 
             model.removeCard(cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1));
             updateCards();
         }
 
+     // TODO Disable remove button when index 0 is selected
         if (event.getSource() == savedCardsWebComboBox) {
             iconLabel.setIcon(null);
 
-            if (cardList.size() != 0) {
-                if (savedCardsWebComboBox.getSelectedIndex() != 0) {
+            if (!cardList.isEmpty()) {
+                if (savedCardsWebComboBox.getSelectedIndex() > 0) {
                     String cardType = cardList.get(savedCardsWebComboBox.getSelectedIndex() - 1).getCardType();
 
-                    if (cardType.equals("mastercard"))
-                        iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/mastercard.png")));
-                    if (cardType.equals("visa"))
-                        iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/visa.png")));
-                    if (cardType.equals("amex"))
-                        iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
-                                .getResource("resources/images/amex.png")));
-
-                    iconLabel.repaint();
-                    panel.repaint();
-                    repaint();
+                    iconLabel.setIcon(new ImageIcon(CardSettingsPanel.class
+                            .getResource("resources/images/" + cardType + ".png")));
                 }
 
             }
@@ -287,12 +320,15 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (!isVisible())
-            return; // TODO
+            return; // Ugly fix
 
         if (evt.getPropertyName() == "card_add") {
             @SuppressWarnings("unchecked")
             List<String> errors = (ArrayList<String>) evt.getNewValue();
 
+            resetError(cardNumberTextField);
+            resetError(cvcTextField);
+            
             if (!errors.isEmpty()) {
                 if (errors.contains("cardnumber_invalid"))
                     setError(cardNumberTextField);
@@ -301,13 +337,21 @@ public class CardSettingsPanel extends JPanel implements ActionListener, Propert
             }
         }
 
-        if (evt.getPropertyName() == "card_saved") {
+        if (evt.getPropertyName() == "card_added") {
+            cardNumberTextField.setText("");
+            monthWebComboBox.setSelectedIndex(0);
+            yearWebComboBox.setSelectedIndex(0);
+            cvcTextField.setText("");
+            updateCards();
+        }
+        
+        if (evt.getPropertyName() == "card_removed") {
             updateCards();
         }
 
     }
 
-    public CCard getSelectedCard() {
+    public CreditCard getSelectedCard() {
         return cardList.get(Math.max(savedCardsWebComboBox.getSelectedIndex() - 1, 0));
     }
 }

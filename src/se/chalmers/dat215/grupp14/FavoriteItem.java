@@ -18,6 +18,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 @SuppressWarnings("serial")
 public class FavoriteItem extends JPanel implements ActionListener, PropertyChangeListener {

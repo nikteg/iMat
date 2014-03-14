@@ -3,10 +3,17 @@ package se.chalmers.dat215.grupp14;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 import net.miginfocom.swing.MigLayout;
+
 import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebPasswordField;
 import com.alee.laf.text.WebTextField;
@@ -15,20 +22,24 @@ import com.alee.laf.text.WebTextField;
 public class LogInSettingsPanel extends JPanel implements PropertyChangeListener {
     private JLabel lblEmail;
     private JLabel lblLsenord;
-    private JLabel lbligen;
     private WebPasswordField passwordField;
-    private WebPasswordField passwordFieldRepeat;
     private WebTextField emailTextField;
+    
+    public LogInSettingsPanel() {
+        super();
+        initializeGUI();
+    }
 
     public LogInSettingsPanel(IMatModel model) {
-        super();
+        this();
         model.addPropertyChangeListener(this);
-        initializeGUI();
+        emailTextField.setText(model.getAccountHandler().getCurrentAccount().getEmail());
+        passwordField.setText(model.getAccountHandler().getCurrentAccount().getPassword());
     }
 
     private void initializeGUI() {
         setBorder(new TitledBorder(null, "Inloggningsuppgifter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        setLayout(new MigLayout("", "[96][grow]", "[32][32][32]"));
+        setLayout(new MigLayout("", "[96][grow]", "[32][32]"));
 
         lblEmail = new JLabel("E-mail");
         add(lblEmail, "cell 0 0,alignx left");
@@ -42,49 +53,55 @@ public class LogInSettingsPanel extends JPanel implements PropertyChangeListener
 
         passwordField = new WebPasswordField();
         add(passwordField, "cell 1 1,growx");
-
-        lbligen = new JLabel("(igen)");
-        add(lbligen, "cell 0 2,alignx left");
-
-        passwordFieldRepeat = new WebPasswordField();
-        add(passwordFieldRepeat, "cell 1 2,growx");
     }
 
     public String getEmail() {
         return emailTextField.getText();
     }
 
-    public void setEmail(String email) {
-        this.emailTextField.setText(email);
-    }
-
     public String getPassword() {
         return new String(this.passwordField.getPassword());
     }
-
-    public String getPasswordRepeat() {
-        return new String(this.passwordFieldRepeat.getPassword());
+    
+    public void resetError(WebPasswordField wt) {
+        wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
     }
 
-    // TODO setErrors & resetErrors
-    public void setEmailErros(Color errorColor, WebImage webImage) {
-        emailTextField.setBackground(errorColor);
-        emailTextField.setTrailingComponent(webImage);
+    public void resetError(WebTextField wt) {
+        wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
     }
 
-    public void setPasswordErros(Color errorColor, WebImage webImage) {
-        passwordField.setBackground(errorColor);
-        passwordField.setTrailingComponent(webImage);
+    public void setError(WebPasswordField wt) {
+        wt.setBackground(Constants.ERROR_COLOR);
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
     }
-
-    public void setPasswordRepeatErrors(Color errorColor, WebImage webImage) {
-        passwordFieldRepeat.setBackground(errorColor);
-        passwordFieldRepeat.setTrailingComponent(webImage);
+    
+    public void setError(WebTextField wt) {
+        wt.setBackground(Constants.ERROR_COLOR);
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent arg0) {
-        // TODO Auto-generated method stub
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName() == "account_update") {
+            @SuppressWarnings("unchecked")
+            List<String> errors = (ArrayList<String>) evt.getNewValue();
+            
+            if (!errors.isEmpty()) {
+                resetError(emailTextField);
+                resetError(passwordField);
+                
+                if (errors.contains("email_invalid"))
+                    setError(emailTextField);
+                
+                if (errors.contains("password_tooshort"))
+                    setError(passwordField);
+            }
+        }
     }
 
 }

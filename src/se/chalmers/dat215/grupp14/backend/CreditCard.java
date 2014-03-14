@@ -1,4 +1,4 @@
-package se.chalmers.dat215.grupp14;
+package se.chalmers.dat215.grupp14.backend;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,14 +7,14 @@ import java.util.regex.Pattern;
  * Simple class to represent a credit card. Necessary for the iMat project since
  * the backend's CreditCard class doesn't support creating new instances.
  */
-public class CCard {
+public class CreditCard {
     private String cardNumber;
     private Account holder;
     private String month;
     private String year;
     private String cvc;
 
-    public CCard(String cardNumber, String validMonth, String validYear, String cvc, Account holder) {
+    public CreditCard(String cardNumber, String validMonth, String validYear, String cvc, Account holder) {
         this.cardNumber = cardNumber;
         this.month = validMonth;
         this.year = validYear;
@@ -61,5 +61,19 @@ public class CCard {
 
     public String getCVC() {
         return cvc;
+    }
+    
+    @Override
+    public int hashCode() {
+        return cardNumber.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (((CreditCard)other).getCardNumber().equals(cardNumber)) {
+            return true;
+        }
+        
+        return false;
     }
 }

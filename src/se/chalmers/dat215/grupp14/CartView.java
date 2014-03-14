@@ -1,11 +1,14 @@
 package se.chalmers.dat215.grupp14;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,8 +16,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
+
+import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebTextField;
 
 @SuppressWarnings("serial")
@@ -43,8 +51,8 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
         this.frame = frame;
         this.model.addPropertyChangeListener(this);
 
-        listNameTextField.setEnabled(!model.getAccount().isAnonymous());
-        btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
+        listNameTextField.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+        btnSparaLista.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
         checkoutButton.setEnabled(!model.getShoppingCart().getItems().isEmpty());
         btnClearCart.setEnabled(!model.getShoppingCart().getItems().isEmpty());
 
@@ -109,14 +117,14 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
     public void propertyChange(PropertyChangeEvent evt) {
         // Enable list saving
         if (evt.getPropertyName() == "account_signedin") {
-            listNameTextField.setEnabled(!model.getAccount().isAnonymous());
-            btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
+            listNameTextField.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+            btnSparaLista.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
         }
 
         // Disable list saving
         if (evt.getPropertyName() == "account_signout") {
-            listNameTextField.setEnabled(!model.getAccount().isAnonymous());
-            btnSparaLista.setEnabled(!model.getAccount().isAnonymous());
+            listNameTextField.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+            btnSparaLista.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
         }
 
         // Add item to cart
@@ -125,7 +133,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
             btnClearCart.setEnabled(true);
             itemPanel.add(new CartItem((ShoppingItem) evt.getNewValue(), model), "wrap,growx");
 
-            totalPriceLabel.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
+            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
             updateColors();
         }
 
@@ -141,7 +149,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
                 }
             }
 
-            totalPriceLabel.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
+            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
             updateColors();
         }
 
@@ -166,6 +174,40 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
             totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal())
                     + Constants.currencySuffix);
         }
+        
+        if (evt.getPropertyName() == "list_save") {
+            @SuppressWarnings("unchecked")
+            List<String> errors = (List<String>)evt.getNewValue();
+            
+            resetError(listNameTextField);
+            
+            if (!errors.isEmpty()) {
+                if (errors.contains("name_tooshort")) {
+                    setError(listNameTextField);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reset text field icon and background
+     * 
+     * @param wt
+     */
+    public void resetError(WebTextField wt) {
+        wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
+    }
+
+    /**
+     * Add error icon and background to text field
+     * 
+     * @param wt
+     */
+    public void setError(WebTextField wt) {
+        wt.setBackground(Constants.ERROR_COLOR);
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
     }
 
     private void updateColors() {
@@ -194,13 +236,10 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
                 checkoutWindow.setLocationRelativeTo(frame);
                 checkoutWindow.setVisible(true);
             }
-
         }
 
         if (event.getSource() == btnSparaLista) {
-
             model.listSave(listNameTextField.getText(), model.getShoppingCart().getItems());
-
         }
     }
 }

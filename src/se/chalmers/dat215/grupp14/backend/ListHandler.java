@@ -1,4 +1,4 @@
-package se.chalmers.dat215.grupp14;
+package se.chalmers.dat215.grupp14.backend;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

@@ -6,18 +6,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
+
 import com.alee.laf.text.WebTextField;
+
 import javax.swing.ImageIcon;
 
+//TODO LÄGG TILL EN SÅNDÄR RUBRIKJÄVEL
 @SuppressWarnings("serial")
 public class HistoryView extends JPanel implements ActionListener, PropertyChangeListener {
 

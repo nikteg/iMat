@@ -7,10 +7,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.Timer;
+
+import se.chalmers.dat215.grupp14.backend.IMatModel;
+
 import com.alee.laf.text.WebTextField;
 
 @SuppressWarnings("serial")
@@ -27,13 +31,16 @@ public class SearchField extends WebTextField implements ActionListener {
 
     /* END KONAMI STUFF */
 
-    public SearchField(IMatModel model, MainWindow parent) {
+    public SearchField() {
         super();
+        initializeGUI();
+    }
+    
+    public SearchField(IMatModel model, MainWindow parent) {
+        this();
 
         this.model = model;
         this.parent = parent;
-
-        initializeGUI();
 
         /* KONAMI STUFF */
         try {
@@ -62,10 +69,8 @@ public class SearchField extends WebTextField implements ActionListener {
 
         setFont(new Font("Lucida Grande", Font.PLAIN, 24));
         setInputPrompt("Sök...");
-        this.setToolTipText("Skriv här för att söka. Resultaten visas i realtid");
         addActionListener(this);
         addKeyListener(new KeyListener());
-        timer.restart();
     }
 
     @Override

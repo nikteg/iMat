@@ -20,6 +20,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
+import se.chalmers.dat215.grupp14.backend.Account;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebPasswordField;
@@ -82,12 +85,7 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
         btnCancel = new JButton("Avbryt");
         btnCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         signInPanel.add(btnCancel, "cell 1 3,alignx right,aligny top");
-        btnCancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                dispose();
-            }
-        });
+        btnCancel.addActionListener(this);
 
         btnLogIn = new JButton("Logga in");
         btnLogIn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -136,36 +134,60 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == btnLogIn) {
-            userNameTextField.setBackground(Color.WHITE);
-            passwordField.setBackground(Color.WHITE);
             model.accountSignIn(userNameTextField.getText(), new String(passwordField.getPassword()));
         }
 
         if (event.getSource() == btnRegister) {
-            newUserNameTextField.setBackground(Color.WHITE);
-            newUserPassword.setBackground(Color.WHITE);
-            newUserEmailTextField.setBackground(Color.WHITE);
-            newUserPasswordRepeat.setBackground(Color.WHITE);
-
             model.accountSignUp(newUserNameTextField.getText(), new String(newUserPassword.getPassword()),
                     newUserEmailTextField.getText());
         }
+        
+        if (event.getSource() == btnCancel) {
+            dispose();
+        }
+    }
+
+    public void resetError(WebPasswordField wt) {
+        wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
+    }
+
+    public void resetError(WebTextField wt) {
+        wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
+    }
+
+    public void setError(WebTextField wt) {
+        wt.setBackground(Constants.ERROR_COLOR);
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
+    }
+
+    public void setError(WebPasswordField wt) {
+        wt.setBackground(Constants.ERROR_COLOR);
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (!isVisible())
-            return; // TODO
+            return; // Ugly fix
+
         if (evt.getPropertyName() == "account_signin") {
             @SuppressWarnings("unchecked")
             List<String> errors = (ArrayList<String>) evt.getNewValue();
+
+            resetError(userNameTextField);
+            resetError(passwordField);
+
             if (!errors.isEmpty()) {
-                userNameTextField.setBackground(Constants.ERROR_COLOR);
-                userNameTextField.setTrailingComponent(new WebImage(LogInWindow.class
-                        .getResource("resources/images/icons/warning.png")));
-                passwordField.setBackground(Constants.ERROR_COLOR);
-                passwordField.setTrailingComponent(new WebImage(LogInWindow.class
-                        .getResource("resources/images/icons/warning.png")));
+                if (errors.contains("username_wrong"))
+                    setError(userNameTextField);
+
+                if (errors.contains("password_wrong"))
+                    setError(passwordField);
+
                 JOptionPane.showMessageDialog(this, "Felaktigt användarnamn eller lösenord", "Fel vid inloggning",
                         JOptionPane.WARNING_MESSAGE);
             }
@@ -178,41 +200,40 @@ public class LogInWindow extends JDialog implements ActionListener, PropertyChan
         if (evt.getPropertyName() == "account_signup") {
             @SuppressWarnings("unchecked")
             List<String> errors = (ArrayList<String>) evt.getNewValue();
+
+            resetError(newUserNameTextField);
+            resetError(newUserEmailTextField);
+            resetError(newUserPassword);
+            resetError(newUserPasswordRepeat);
+
             if (!errors.isEmpty()) {
+
                 String msg = "";
 
-                if (errors.contains("username_too_short")) {
-                    newUserNameTextField.setBackground(Constants.ERROR_COLOR);
-                    newUserNameTextField.setTrailingComponent(new WebImage(LogInWindow.class
-                            .getResource("resources/images/icons/warning.png")));
-                    msg += "För kort användarnamn\n";
-                }
+                if (errors.contains("username_taken")) {
+                    setError(newUserNameTextField);
+                    msg += "Användarnamn upptaget\n";
+                } else {
+                    if (errors.contains("username_too_short")) {
+                        setError(newUserNameTextField);
+                        msg += "För kort användarnamn\n";
+                    }
 
-                if (errors.contains("password_too_short")) {
-                    newUserPassword.setBackground(Constants.ERROR_COLOR);
-                    newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class
-                            .getResource("resources/images/icons/warning.png")));
-                    newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
-                    newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class
-                            .getResource("resources/images/icons/warning.png")));
-                    msg += "För kort lösenord\n";
-                }
+                    if (errors.contains("password_too_short")) {
+                        setError(newUserPassword);
+                        msg += "För kort lösenord\n";
+                    }
 
-                if (errors.contains("email_invalid")) {
-                    newUserEmailTextField.setBackground(Constants.ERROR_COLOR);
-                    newUserEmailTextField.setTrailingComponent(new WebImage(LogInWindow.class
-                            .getResource("resources/images/icons/warning.png")));
-                    msg += "Felaktig epostadress\n";
-                }
+                    if (errors.contains("email_invalid")) {
+                        setError(newUserEmailTextField);
+                        msg += "Felaktig epostadress\n";
+                    }
 
-                if (!new String(newUserPassword.getPassword()).equals(new String(newUserPasswordRepeat.getPassword()))) {
-                    newUserPassword.setBackground(Constants.ERROR_COLOR);
-                    newUserPassword.setTrailingComponent(new WebImage(LogInWindow.class
-                            .getResource("resources/images/icons/warning.png")));
-                    newUserPasswordRepeat.setBackground(Constants.ERROR_COLOR);
-                    newUserPasswordRepeat.setTrailingComponent(new WebImage(LogInWindow.class
-                            .getResource("resources/images/icons/warning.png")));
-                    msg += "Lösenorden stämmer inte överens\n";
+                    if (!new String(newUserPassword.getPassword()).equals(new String(newUserPasswordRepeat
+                            .getPassword()))) {
+                        setError(newUserPasswordRepeat);
+                        msg += "Lösenorden stämmer inte överens\n";
+                    }
                 }
 
                 JOptionPane.showMessageDialog(this, msg, "Fel vid registering", JOptionPane.WARNING_MESSAGE);

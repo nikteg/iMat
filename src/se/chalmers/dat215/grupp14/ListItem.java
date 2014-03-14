@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import se.chalmers.dat215.grupp14.backend.Constants;
+import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 @SuppressWarnings("serial")
 public class ListItem extends JPanel implements ActionListener, PropertyChangeListener {

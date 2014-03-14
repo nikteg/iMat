@@ -1,4 +1,4 @@
-package se.chalmers.dat215.grupp14;
+package se.chalmers.dat215.grupp14.backend;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeListener;
@@ -18,47 +18,42 @@ import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ProductCategory;
 import se.chalmers.ait.dat215.project.ShoppingCart;
 import se.chalmers.ait.dat215.project.ShoppingItem;
-import se.chalmers.ait.dat215.project.User;
 
 /**
  * A model class to handle communication with the backend IMatDataHandler and
  * present data to the view.
  * 
- * @author Oskar Jönefors
- * 
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
  */
-
 public class IMatModel {
     private static final IMatDataHandler backend = IMatDataHandler.getInstance();
     private List<Product> categoryList = new ArrayList<Product>();
     private AccountHandler accountHandler;
-    private CCardHandler cardHandler;
+    private CreditCardHandler cardHandler;
     private ListHandler listHandler;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private final static Logger LOGGER = Logger.getLogger(IMatModel.class.getName());
 
-    IMatModel() {
+    public IMatModel() {
         accountHandler = new AccountHandler(this);
-        cardHandler = new CCardHandler(this);
+        cardHandler = new CreditCardHandler(this);
         listHandler = new ListHandler(this);
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("SHUTDOWN IMMINENT");
                 shutDown();
             }
         }));
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener pcl) {
-        pcs.addPropertyChangeListener(pcl);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener pcl) {
-        pcs.removePropertyChangeListener(pcl);
-    }
-
+    /**
+     * Account sign in
+     * 
+     * @param userName
+     * @param password
+     * @return
+     */
     public boolean accountSignIn(String userName, String password) {
         List<String> errors = new ArrayList<String>();
 
@@ -86,56 +81,28 @@ public class IMatModel {
         return false;
     }
 
-    public static IMatDataHandler getBackend() {
-        return backend;
-    }
-
-    public void removeCard(CCard creditCard) {
-        cardHandler.removeCard(creditCard, accountHandler.getCurrentAccount());
-    }
-
-    public void cardAdd(CCard creditCard) {
-        List<String> errors = new ArrayList<String>();
-
-        Pattern monthYearPattern = Pattern.compile("^[0-9]{2}$");
-        Pattern cvcPattern = Pattern.compile("^[0-9]{3}$");
-
-        Matcher m = monthYearPattern.matcher(creditCard.getValidMonth());
-        Matcher y = monthYearPattern.matcher(creditCard.getValidYear());
-        Matcher cvcm = cvcPattern.matcher(creditCard.getCVC());
-
-        System.out.println(creditCard.getCardType());
-
-        if (creditCard.getCardType() == "")
-            errors.add("cardnumber_invalid");
-
-        if (!m.matches())
-            errors.add("month_invalid");
-
-        if (!y.matches())
-            errors.add("year_invalid");
-
-        if (!cvcm.matches())
-            errors.add("cvc_invalid");
-
-        pcs.firePropertyChange("card_add", null, errors);
-        LOGGER.log(Level.INFO, "card_add");
-
-        if (errors.isEmpty()) {
-            cardHandler.saveCard(creditCard, accountHandler.getCurrentAccount());
-
-            pcs.firePropertyChange("card_added", null, creditCard);
-            LOGGER.log(Level.INFO, "card_added");
-        }
-
-    }
-
+    /**
+     * Verify account
+     * 
+     * @param userName
+     * @param password
+     * @param email
+     * @param firstName
+     * @param lastName
+     * @param address
+     * @param mobilePhoneNumber
+     * @param phoneNumber
+     * @param postAddress
+     * @param postCode
+     * @return
+     */
     public List<String> accountVerify(String userName, String password, String email, String firstName,
             String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress,
             String postCode) {
         List<String> errors = new ArrayList<String>();
 
-        if (!getAccount().isAnonymous()) {
+        if (!getAccountHandler().getCurrentAccount().isAnonymous()) {
+
             // Password too short
             if (password.length() < 1)
                 errors.add("password_tooshort");
@@ -193,9 +160,7 @@ public class IMatModel {
      * Update account and check whether the given credentials are valid
      * 
      * @param userName
-     *            The username
      * @param password
-     *            The password
      * @param passwordRepeat
      * @param email
      * @param firstName
@@ -206,15 +171,10 @@ public class IMatModel {
      * @param postAddress
      * @param postCode
      */
-    public void accountUpdate(String userName, String password, String passwordRepeat, String email, String firstName,
-            String lastName, String address, String mobilePhoneNumber, String phoneNumber, String postAddress,
-            String postCode) {
+    public void accountUpdate(String userName, String password, String email, String firstName, String lastName,
+            String address, String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
         List<String> errors = accountVerify(userName, password, email, firstName, lastName, address, mobilePhoneNumber,
                 phoneNumber, postAddress, postCode);
-
-        // Password mismatch
-        if (!password.equals(passwordRepeat))
-            errors.add("password_mismatch");
 
         pcs.firePropertyChange("account_update", null, errors);
 
@@ -234,9 +194,20 @@ public class IMatModel {
         }
     }
 
+    /**
+     * Account sign up
+     * 
+     * @param userName
+     * @param password
+     * @param email
+     * @return
+     */
     public boolean accountSignUp(String userName, String password, String email) {
         List<String> errors = new ArrayList<String>();
 
+        if (getAccountHandler().findAccount(userName) != null)
+            errors.add("username_taken");
+        
         if (userName.length() < 1)
             errors.add("username_too_short");
 
@@ -266,6 +237,9 @@ public class IMatModel {
         return false;
     }
 
+    /**
+     * Account sign out
+     */
     public void accountSignOut() {
         accountHandler.setCurrentAccount(null);
 
@@ -273,12 +247,65 @@ public class IMatModel {
         LOGGER.log(Level.INFO, "account_signout");
     }
 
-    public AccountHandler getAccountHandler() {
-        return accountHandler;
+    /**
+     * Remove card from current user
+     * 
+     * @param creditCard
+     */
+    public void removeCard(CreditCard creditCard) {
+        cardHandler.removeCard(creditCard, accountHandler.getCurrentAccount());
+        pcs.firePropertyChange("card_removed", null, creditCard);
+        LOGGER.log(Level.INFO, "card_removed");
     }
 
-    public Account getAccount() {
-        return accountHandler.getCurrentAccount();
+    /**
+     * Add card from current user
+     * 
+     * @param creditCard
+     */
+    public void cardAdd(CreditCard creditCard) {
+        List<String> errors = new ArrayList<String>();
+
+        Pattern monthYearPattern = Pattern.compile("^[0-9]{2}$");
+        Pattern cvcPattern = Pattern.compile("^[0-9]{3}$");
+
+        Matcher m = monthYearPattern.matcher(creditCard.getValidMonth());
+        Matcher y = monthYearPattern.matcher(creditCard.getValidYear());
+        Matcher cvcm = cvcPattern.matcher(creditCard.getCVC());
+
+        System.out.println(creditCard.getCardType());
+
+        if (creditCard.getCardType() == "")
+            errors.add("cardnumber_invalid");
+
+        if (!m.matches())
+            errors.add("month_invalid");
+
+        if (!y.matches())
+            errors.add("year_invalid");
+
+        if (!cvcm.matches())
+            errors.add("cvc_invalid");
+
+        pcs.firePropertyChange("card_add", null, errors);
+        LOGGER.log(Level.INFO, "card_add");
+
+        if (errors.isEmpty()) {
+            cardHandler.saveCard(creditCard, accountHandler.getCurrentAccount());
+
+            pcs.firePropertyChange("card_added", null, creditCard);
+            LOGGER.log(Level.INFO, "card_added");
+        }
+
+    }
+
+    /**
+     * Get account handler
+     * 
+     * @return
+     */
+    public AccountHandler getAccountHandler() {
+        return accountHandler;
     }
 
     /**
@@ -585,16 +612,6 @@ public class IMatModel {
     }
 
     /**
-     * Returns the single user object holding information about the (optional)
-     * user.
-     * 
-     * @return a User object.
-     */
-    public User getUser() {
-        return backend.getUser();
-    }
-
-    /**
      * Returns true the given Product object p has an image associated with.
      * Should normally be true for all products.
      * 
@@ -638,7 +655,7 @@ public class IMatModel {
      * 
      * @return An Order object containing information about the order.
      */
-    public void orderPlace(CCard creditCard) {
+    public void orderPlace(CreditCard creditCard) {
         orderPlace(creditCard, true);
     }
 
@@ -650,7 +667,7 @@ public class IMatModel {
      *            - indicates whether the shopping cart is cleared or not.
      * @return An Order object containing information about the order.
      */
-    public void orderPlace(CCard creditCard, boolean clearShoppingCart) {
+    public void orderPlace(CreditCard creditCard, boolean clearShoppingCart) {
         List<String> errors = new ArrayList<String>();
 
         Pattern monthYearPattern = Pattern.compile("^[0-9]{2}$");
@@ -692,9 +709,19 @@ public class IMatModel {
     }
 
     public void listSave(String listName, List<ShoppingItem> shoppingItems) {
-        listHandler.saveFavoriteList(shoppingItems, listName, accountHandler.getCurrentAccount());
-        pcs.firePropertyChange("list_saved", null, null);
-        LOGGER.log(Level.INFO, "list_saved");
+        List<String> errors = new ArrayList<String>();
+
+        if (listName.length() < 1)
+            errors.add("name_tooshort");
+
+        pcs.firePropertyChange("list_save", null, errors);
+        LOGGER.log(Level.INFO, "list_save");
+        
+        if (errors.isEmpty()) {
+            listHandler.saveFavoriteList(shoppingItems, listName, accountHandler.getCurrentAccount());
+            pcs.firePropertyChange("list_saved", null, null);
+            LOGGER.log(Level.INFO, "list_saved");
+        }
     }
 
     public void listRemove(String title) {
@@ -707,7 +734,7 @@ public class IMatModel {
         return listHandler;
     }
 
-    public CCardHandler getCCardHandler() {
+    public CreditCardHandler getCreditCardHandler() {
         return cardHandler;
     }
 
@@ -744,6 +771,14 @@ public class IMatModel {
         listHandler.saveState();
         cardHandler.saveState();
         backend.shutDown();
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.addPropertyChangeListener(pcl);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.removePropertyChangeListener(pcl);
     }
 
 }

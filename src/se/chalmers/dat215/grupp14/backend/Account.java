@@ -1,8 +1,7 @@
 package se.chalmers.dat215.grupp14.backend;
 
 /**
- * Class responsible for combining the backend classes User and Customer
- * 
+ * Account class
  * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
  */
 public class Account {
@@ -18,10 +17,29 @@ public class Account {
     private String postCode;
     private boolean anonymous = true;
 
+    /**
+     * Create "empty" account
+     * @param userName
+     * @param password
+     * @param email
+     */
     public Account(String userName, String password, String email) {
         this(userName, password, email, "", "", "", "", "", "", "");
     }
 
+    /**
+     * Create account
+     * @param userName
+     * @param password
+     * @param email
+     * @param firstName
+     * @param lastName
+     * @param address
+     * @param mobilePhoneNumber
+     * @param phoneNumber
+     * @param postAddress
+     * @param postCode
+     */
     public Account(String userName, String password, String email, String firstName, String lastName, String address,
             String mobilePhoneNumber, String phoneNumber, String postAddress, String postCode) {
         this.userName = userName;

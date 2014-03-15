@@ -15,17 +15,12 @@ import java.util.Scanner;
 
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
-// TODO Reparera denna filen så att man kan ha ett listobjekt
+// TODO Fixa så att ListHandler behandlar instanser av List
 public class ListHandler {
 
     private IMatModel model;
     private Map<String, Map<String, List<ShoppingItem>>> listMap;
 
-    /**
-     * Creates an instance of the ListHandler working with the supplied model.
-     * 
-     * @param model
-     */
     public ListHandler(IMatModel model) {
         this.model = model;
         this.listMap = null;
@@ -36,14 +31,6 @@ public class ListHandler {
         }
     }
 
-    /**
-     * Returns the given user's lists.
-     * 
-     * @param userName
-     * @return a Map<String, List<ShoppingItem> with the user's list names and
-     *         corresponding products. Returns null if user has no lists.
-     * 
-     */
     public Map<String, List<ShoppingItem>> getLists(Account account) {
         if (listMap.containsKey(account.getUserName())) {
             return listMap.get(account.getUserName());
@@ -52,12 +39,6 @@ public class ListHandler {
         }
     }
 
-    /**
-     * Removes the given user's list with the given name, if it exists.
-     * 
-     * @param listName
-     * @param userName
-     */
     public void removeList(String listName, Account account) {
         if (hasList(listName, account.getUserName())) {
             Map<String, List<ShoppingItem>> lists = listMap.get(account.getUserName());
@@ -66,17 +47,6 @@ public class ListHandler {
         this.saveState();
     }
 
-    /**
-     * Save the favorite list with the given user name and list name. If a list
-     * with matching user name and list name exists, it will be overwritten.
-     * 
-     * @param list
-     *            - List of ShoppingItem to save.
-     * @param listName
-     *            - Name of the list.
-     * @param userName
-     *            - The user name that the list belongs to.
-     */
     public void saveFavoriteList(List<ShoppingItem> list, String listName, Account account) {
         List<ShoppingItem> favList = new ArrayList<ShoppingItem>();
 
@@ -97,9 +67,6 @@ public class ListHandler {
         this.saveState();
     }
 
-    /**
-     * Saves all the favorite lists to file.
-     */
     public void saveState() {
         Writer writer = null;
         try {

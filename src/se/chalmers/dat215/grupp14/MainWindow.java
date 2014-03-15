@@ -47,7 +47,6 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     private JPanel panelCategories;
     private JScrollPane scrollPaneContent;
     private JPanel panelContent;
-    private int margin = 10;
     private WebTabbedPane tabbedPaneSidebar;
 
     private SearchField searchField;
@@ -68,7 +67,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
 
     private JPanel panelCheckout;
     private SettingsDialog settingsWindow;
-    private LogInDialog loginWindow;
+    private SignInDialog loginWindow;
     private Constants.Category currentCategory;
     private JPanel favoritePanel;
     private FavoriteView favoriteView;
@@ -89,7 +88,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     }
 
     /**
-     * Create the application.
+     * Create the application with given model
      */
     public MainWindow(IMatModel model) {
         super("iMat - Effektiva matinköp för folk i farten");
@@ -105,9 +104,14 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         model.addPropertyChangeListener(this);
         initializeGUI();
         
+        // Perform a search on startup
         model.search("");
     }
 
+    /**
+     * Get model
+     * @return
+     */
     public IMatModel getModel() {
         return model;
     }
@@ -130,7 +134,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
     /* END KONAMI STUFF */
 
     /**
-     * Initialize the contents of the frame.
+     * Initialize GUI
      */
     private void initializeGUI() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -236,7 +240,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
 
         cardPanelGrid = new JPanel();
         panelContent.add(cardPanelGrid, "cardPanelGrid");
-        cardPanelGrid.setLayout(new FlowLayout(FlowLayout.LEFT, margin, margin));
+        cardPanelGrid.setLayout(new FlowLayout(FlowLayout.LEFT, Constants.MARGIN, Constants.MARGIN));
 
         cardPanelList = new JPanel();
         panelContent.add(cardPanelList, "cardPanelList");
@@ -251,7 +255,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         tabbedPaneSidebar.addChangeListener(this);
         panelCheckout.setLayout(new MigLayout("insets 4px", "[grow]", "[2px,grow]"));
 
-        CartView cartView = new CartView(model, this);
+        CartView cartView = new CartView(this, model);
         cartView.setFocusable(false);
         panelCheckout.add(cartView, "cell 0 0,grow");
 
@@ -309,17 +313,70 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
             groupCategories.add(button);
         }
     }
+    
+    /**
+     * Update category button amount
+     */
+    private void updateButtonNumbers() {
+        tglBtnAllCategories.setAmount(searchResults.size());
+        for (int i = 0; i < Constants.Category.values().length; i++) {
+            int num = 0;
+            
+            for (int j = 0; j < searchResults.size(); j++) {
+                if (Constants.Category.values()[i].getName().equals(model.getCategory(searchResults.get(j)).getName())) {
+                    num++;
+                }
+            }
+            
+            categorybuttons.get(i).setName(Constants.Category.values()[i].getName());
+            categorybuttons.get(i).setAmount(num);
+        }
+    }
+    
+    /**
+     * Populate main view with search results
+     * @param results
+     */
+    private void populateResults(List<Product> results) {
+        // Clear panel search results
+        cardPanelGrid.removeAll();
+        cardPanelList.removeAll();
+        
+        for (int i = 0; i < results.size(); i++) {
+            Product product = results.get(i);
+            ItemList item = new ItemList(new ShoppingItem(product), favoriteView, model);
+            
+            // Alternate background in list view
+            if (i % 2 == 1)
+                item.setBackground(Constants.ALT_COLOR);
+            
+            cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), favoriteView, model));
+            cardPanelList.add(item, "wrap,growx");
+        }
+        
+        updateButtonNumbers();
+        calculateResults(scrollPaneContent.getWidth(), scrollPaneContent.getHeight());
+        cardPanelGrid.revalidate();
+        cardPanelList.revalidate();
+        cardPanelGrid.repaint();
+        cardPanelList.repaint();
+    }
 
+    /**
+     * Resize the main panel according to the amount of items in the view and window size
+     * @param width
+     * @param height
+     */
     private void calculateResults(int width, int height) {
         int totalnum = cardPanelList.getComponentCount();
 
         if (tglBtnGrid.isSelected()) {
-            int cols = Math.max(1, width / (Constants.GRID_WIDTH + margin));
+            int cols = Math.max(1, width / (Constants.GRID_WIDTH + Constants.MARGIN));
             int rows = totalnum / cols;
             rows += ((rows * cols < totalnum) ? 1 : 0);
 
             panelContent
-                    .setPreferredSize(new Dimension(width - 0, (rows * (Constants.GRID_HEIGHT + margin)) + margin));
+                    .setPreferredSize(new Dimension(width - 0, (rows * (Constants.GRID_HEIGHT + Constants.MARGIN)) + Constants.MARGIN));
             scrollPaneContent.revalidate();
         } else if (tglBtnList.isSelected()) {
             panelContent.setPreferredSize(new Dimension(width - 32, (totalnum * Constants.LIST_HEIGHT)));
@@ -363,7 +420,7 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
         }
 
         if (action.getSource() == signInButton) {
-            loginWindow = new LogInDialog(this, model);
+            loginWindow = new SignInDialog(this, model);
             loginWindow.setLocationRelativeTo(this);
             loginWindow.setVisible(true);
         }
@@ -382,47 +439,6 @@ public class MainWindow extends JFrame implements ActionListener, PropertyChange
             userComboBox.setSelectedIndex(0);
 
         }
-    }
-
-    private void updateButtonNumbers() {
-        tglBtnAllCategories.setNumber(searchResults.size());
-        for (int i = 0; i < Constants.Category.values().length; i++) {
-            int num = 0;
-
-            for (int j = 0; j < searchResults.size(); j++) {
-                if (Constants.Category.values()[i].getName().equals(model.getCategory(searchResults.get(j)).getName())) {
-                    num++;
-                }
-            }
-
-            categorybuttons.get(i).setName(Constants.Category.values()[i].getName());
-            categorybuttons.get(i).setNumber(num);
-        }
-    }
-
-    private void populateResults(List<Product> results) {
-        // Clear panel search results
-        cardPanelGrid.removeAll();
-        cardPanelList.removeAll();
-
-        for (int i = 0; i < results.size(); i++) {
-            Product product = results.get(i);
-            ItemList item = new ItemList(new ShoppingItem(product), favoriteView, model);
-
-            // Alternate background in list view
-            if (i % 2 == 1)
-                item.setBackground(Constants.ALT_COLOR);
-
-            cardPanelGrid.add(new ItemGrid(new ShoppingItem(product), favoriteView, model));
-            cardPanelList.add(item, "wrap,growx");
-        }
-
-        updateButtonNumbers();
-        calculateResults(scrollPaneContent.getWidth(), scrollPaneContent.getHeight());
-        cardPanelGrid.revalidate();
-        cardPanelList.revalidate();
-        cardPanelGrid.repaint();
-        cardPanelList.repaint();
     }
 
     @Override

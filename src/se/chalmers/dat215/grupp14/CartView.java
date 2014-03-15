@@ -25,46 +25,61 @@ import se.chalmers.dat215.grupp14.backend.IMatModel;
 import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebTextField;
 
+/**
+ * Cart view
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class CartView extends JPanel implements ActionListener, PropertyChangeListener {
     private CheckOutDialog checkoutWindow;
-    private WebTextField listNameTextField;
+    private WebTextField txtListName;
     private JScrollPane scrollPane;
     private JButton btnClearCart;
-    private JButton checkoutButton;
-    private JButton btnSparaLista;
-    private JPanel itemPanel;
+    private JButton btnCheckout;
+    private JButton btnSave;
+    private JPanel pnlItem;
     private JPanel panel;
-    private JLabel totalPriceLabel;
-    private JLabel totalPriceDescriptionLabel;
+    private JLabel lblTotalPrice;
+    private JLabel lblTotalPriceDescription;
     private JFrame frame;
     private IMatModel model;
 
+    /**
+     * Constructor
+     */
     public CartView() {
         super();
         initializeGUI();
     }
 
-    public CartView(IMatModel model, JFrame frame) {
+    /**
+     * Constructor with a given model and parent frame
+     * @param model
+     * @param frame
+     */
+    public CartView(JFrame frame, IMatModel model) {
         this();
         this.model = model;
         this.frame = frame;
         this.model.addPropertyChangeListener(this);
 
-        listNameTextField.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
-        btnSparaLista.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
-        checkoutButton.setEnabled(!model.getShoppingCart().getItems().isEmpty());
+        txtListName.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+        btnSave.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+        btnCheckout.setEnabled(!model.getShoppingCart().getItems().isEmpty());
         btnClearCart.setEnabled(!model.getShoppingCart().getItems().isEmpty());
 
         for (int i = 0; i < model.getShoppingCart().getItems().size(); i++) {
             CartItem ci = new CartItem(model.getShoppingCart().getItems().get(i), model);
-            itemPanel.add(ci, "wrap,growx");
+            pnlItem.add(ci, "wrap,growx");
         }
 
-        totalPriceLabel.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
+        lblTotalPrice.setText(model.getShoppingCart().getTotal() + Constants.currencySuffix);
         updateColors();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setLayout(new MigLayout("insets 2px", "[grow][grow]", "[][grow][20.00][24.00]"));
 
@@ -72,16 +87,16 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
         add(panel, "cell 0 0 2 1,grow");
         panel.setLayout(new MigLayout("insets 0px", "[grow][]", "[]"));
 
-        listNameTextField = new WebTextField();
-        listNameTextField.setInputPrompt("Namn på lista...");
+        txtListName = new WebTextField();
+        txtListName.setInputPrompt("Namn på lista...");
 
-        panel.add(listNameTextField, "cell 0 0,growx");
+        panel.add(txtListName, "cell 0 0,growx");
 
-        btnSparaLista = new JButton("Spara varukorg");
-        btnSparaLista.addActionListener(this);
-        btnSparaLista.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnSave = new JButton("Spara varukorg");
+        btnSave.addActionListener(this);
+        btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        panel.add(btnSparaLista, "cell 1 0");
+        panel.add(btnSave, "cell 1 0");
 
         scrollPane = new JScrollPane();
         scrollPane.setFocusable(false);
@@ -89,15 +104,15 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPane, "cell 0 1 2 1,grow");
 
-        itemPanel = new JPanel();
-        scrollPane.setViewportView(itemPanel);
-        itemPanel.setLayout(new MigLayout("insets 0px, gapy 0", "[grow]", "[36px]"));
+        pnlItem = new JPanel();
+        scrollPane.setViewportView(pnlItem);
+        pnlItem.setLayout(new MigLayout("insets 0px, gapy 0", "[grow]", "[36px]"));
 
-        totalPriceDescriptionLabel = new JLabel("Totalpris:");
-        add(totalPriceDescriptionLabel, "flowx,cell 0 2,alignx right");
+        lblTotalPriceDescription = new JLabel("Totalpris:");
+        add(lblTotalPriceDescription, "flowx,cell 0 2,alignx right");
 
-        totalPriceLabel = new JLabel("TOTALPRIS");
-        add(totalPriceLabel, "cell 1 2");
+        lblTotalPrice = new JLabel("TOTALPRIS");
+        add(lblTotalPrice, "cell 1 2");
 
         btnClearCart = new JButton("Rensa varukorg");
         btnClearCart.setToolTipText("Ta bort alla artiklar från varukorgen");
@@ -105,11 +120,11 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
         btnClearCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         add(btnClearCart, "cell 0 3,growx,aligny center");
 
-        checkoutButton = new JButton("Gå till kassan");
-        checkoutButton.setToolTipText("Gå vidare till kassan");
-        checkoutButton.addActionListener(this);
-        checkoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        add(checkoutButton, "cell 1 3,growx,aligny center");
+        btnCheckout = new JButton("Gå till kassan");
+        btnCheckout.setToolTipText("Gå vidare till kassan");
+        btnCheckout.addActionListener(this);
+        btnCheckout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        add(btnCheckout, "cell 1 3,growx,aligny center");
 
     }
 
@@ -117,61 +132,61 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
     public void propertyChange(PropertyChangeEvent evt) {
         // Enable list saving
         if (evt.getPropertyName() == "account_signedin") {
-            listNameTextField.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
-            btnSparaLista.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+            txtListName.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+            btnSave.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
         }
 
         // Disable list saving
         if (evt.getPropertyName() == "account_signout") {
-            listNameTextField.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
-            btnSparaLista.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+            txtListName.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
+            btnSave.setEnabled(!model.getAccountHandler().getCurrentAccount().isAnonymous());
         }
 
         // Add item to cart
         if (evt.getPropertyName() == "cart_additem") {
-            checkoutButton.setEnabled(true);
+            btnCheckout.setEnabled(true);
             btnClearCart.setEnabled(true);
-            itemPanel.add(new CartItem((ShoppingItem) evt.getNewValue(), model), "wrap,growx");
+            pnlItem.add(new CartItem((ShoppingItem) evt.getNewValue(), model), "wrap,growx");
 
-            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
+            lblTotalPrice.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
             updateColors();
         }
 
         // Remove item from cart
         if (evt.getPropertyName() == "cart_removeitem") {
-            checkoutButton.setEnabled(!model.getShoppingCart().getItems().isEmpty());
+            btnCheckout.setEnabled(!model.getShoppingCart().getItems().isEmpty());
             btnClearCart.setEnabled(!model.getShoppingCart().getItems().isEmpty());
 
-            for (Component component : itemPanel.getComponents()) {
+            for (Component component : pnlItem.getComponents()) {
                 if (((CartItem) component).getShoppingItem() == (ShoppingItem) evt.getNewValue()) {
-                    itemPanel.remove(component);
+                    pnlItem.remove(component);
                     break;
                 }
             }
 
-            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
+            lblTotalPrice.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal()) + Constants.currencySuffix);
             updateColors();
         }
 
         // Update cart
         if (evt.getPropertyName() == "cart_updateitem") {
-            for (Component component : itemPanel.getComponents()) {
+            for (Component component : pnlItem.getComponents()) {
                 if (((CartItem) component).getShoppingItem() == (ShoppingItem) evt.getNewValue()) {
                     ((CartItem) component).getShoppingItem().setAmount(((ShoppingItem) evt.getNewValue()).getAmount());
                     break;
                 }
             }
 
-            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal())
+            lblTotalPrice.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal())
                     + Constants.currencySuffix);
         }
 
         // Clear cart
         if (evt.getPropertyName() == "cart_clear") {
-            itemPanel.removeAll();
-            itemPanel.revalidate();
+            pnlItem.removeAll();
+            pnlItem.revalidate();
             repaint();
-            totalPriceLabel.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal())
+            lblTotalPrice.setText(Constants.currencyFormat.format(model.getShoppingCart().getTotal())
                     + Constants.currencySuffix);
         }
         
@@ -179,11 +194,11 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
             @SuppressWarnings("unchecked")
             List<String> errors = (List<String>)evt.getNewValue();
             
-            resetError(listNameTextField);
+            resetError(txtListName);
             
             if (!errors.isEmpty()) {
                 if (errors.contains("name_tooshort")) {
-                    setError(listNameTextField);
+                    setError(txtListName);
                 }
             }
         }
@@ -191,7 +206,6 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 
     /**
      * Reset text field icon and background
-     * 
      * @param wt
      */
     public void resetError(WebTextField wt) {
@@ -201,7 +215,6 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
 
     /**
      * Add error icon and background to text field
-     * 
      * @param wt
      */
     public void setError(WebTextField wt) {
@@ -210,9 +223,12 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
                 .getResource("resources/images/icons/warning.png")));
     }
 
+    /**
+     * Row striping
+     */
     private void updateColors() {
-        for (int i = 0; i < itemPanel.getComponentCount(); i++) {
-            itemPanel.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
+        for (int i = 0; i < pnlItem.getComponentCount(); i++) {
+            pnlItem.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
         }
 
         repaint();
@@ -230,7 +246,7 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
             }
         }
 
-        if (event.getSource() == checkoutButton) {
+        if (event.getSource() == btnCheckout) {
             if (model.getShoppingCart().getItems().size() != 0) {
                 checkoutWindow = new CheckOutDialog(frame, model);
                 checkoutWindow.setLocationRelativeTo(frame);
@@ -238,8 +254,8 @@ public class CartView extends JPanel implements ActionListener, PropertyChangeLi
             }
         }
 
-        if (event.getSource() == btnSparaLista) {
-            model.listSave(listNameTextField.getText(), model.getShoppingCart().getItems());
+        if (event.getSource() == btnSave) {
+            model.listSave(txtListName.getText(), model.getShoppingCart().getItems());
         }
     }
 }

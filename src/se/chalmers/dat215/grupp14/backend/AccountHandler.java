@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Account handler
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 public class AccountHandler {
     private List<Account> accounts = new ArrayList<Account>();
     private Account currentAccount;

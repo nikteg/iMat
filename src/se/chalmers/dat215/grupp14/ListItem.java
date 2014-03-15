@@ -18,6 +18,10 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 import se.chalmers.dat215.grupp14.backend.Constants;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
 
+/**
+ * Item in list view
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class ListItem extends JPanel implements ActionListener, PropertyChangeListener {
     private IMatModel model;
@@ -29,16 +33,20 @@ public class ListItem extends JPanel implements ActionListener, PropertyChangeLi
     private ListView listView;
     private JButton btnX;
 
+    /**
+     * Constructor
+     */
     public ListItem() {
         super();
         initializeGUI();
     }
 
     /**
-     * Creates a CartItem instance from the given ShoppingItem.
-     * 
-     * @param shoppingItem
-     *            - The item to track
+     * Constructor with given list view, title, shopping items and model
+     * @param listView
+     * @param title
+     * @param shoppingItems
+     * @param model
      */
     public ListItem(ListView listView, String title, List<ShoppingItem> shoppingItems, IMatModel model) {
         this();
@@ -47,11 +55,14 @@ public class ListItem extends JPanel implements ActionListener, PropertyChangeLi
         this.model = model;
         this.listView = listView;
         lblDatum.setText(title);
-        label.setText((totalPrice(shoppingItems)) + Constants.currencySuffix);
+        label.setText((getTotalPrice(shoppingItems)) + Constants.currencySuffix);
         this.model.addPropertyChangeListener(this);
 
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[grow][][][]", "[60px]"));
 
@@ -85,7 +96,12 @@ public class ListItem extends JPanel implements ActionListener, PropertyChangeLi
         add(btnX, "cell 3 0");
     }
 
-    private double totalPrice(List<ShoppingItem> shoppingItems) {
+    /**
+     * Get total price
+     * @param shoppingItems
+     * @return
+     */
+    private double getTotalPrice(List<ShoppingItem> shoppingItems) {
         double price = 0;
         for (ShoppingItem si : shoppingItems) {
             price += si.getTotal();

@@ -17,6 +17,10 @@ import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import com.alee.laf.text.WebTextField;
 
+/**
+ * Search field
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class SearchField extends WebTextField implements ActionListener {
     private IMatModel model;
@@ -31,11 +35,19 @@ public class SearchField extends WebTextField implements ActionListener {
 
     /* END KONAMI STUFF */
 
+    /**
+     * Constructor
+     */
     public SearchField() {
         super();
         initializeGUI();
     }
     
+    /**
+     * Constructor with given model and parent window
+     * @param model
+     * @param parent
+     */
     public SearchField(IMatModel model, MainWindow parent) {
         this();
 
@@ -64,6 +76,9 @@ public class SearchField extends WebTextField implements ActionListener {
         /* END KONAMI STUFF */
     }
 
+    /**
+     * Initialize GUI
+     */
     public void initializeGUI() {
         timer.setRepeats(false);
 

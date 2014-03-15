@@ -20,6 +20,10 @@ import javax.swing.JPanel;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Settings dialog
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class SettingsDialog extends JDialog implements ActionListener, PropertyChangeListener {
     private IMatModel model;
@@ -27,10 +31,15 @@ public class SettingsDialog extends JDialog implements ActionListener, PropertyC
     private JLabel lblSettings;
     private CardSettingsPanel cardSettingsPanel;
     private AddressSettingsPanel addressSettingsPanel;
-    private LogInSettingsPanel logInSettingsPanel;
+    private SignInSettingsPanel logInSettingsPanel;
     private JButton btnSave;
     private JButton btnCancel;
 
+    /**
+     * Constructor with given frame and model
+     * @param frame
+     * @param model
+     */
     public SettingsDialog(JFrame frame, IMatModel model) {
         super(frame, true);
         this.model = model;
@@ -38,6 +47,9 @@ public class SettingsDialog extends JDialog implements ActionListener, PropertyC
         initializeGUI();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setSize(660, 600);
         setResizable(false);
@@ -50,7 +62,7 @@ public class SettingsDialog extends JDialog implements ActionListener, PropertyC
         lblSettings.setFont(new Font("Tahoma", Font.PLAIN, 16));
         settingsPanel.add(lblSettings, "cell 0 0");
 
-        logInSettingsPanel = new LogInSettingsPanel(model);
+        logInSettingsPanel = new SignInSettingsPanel(model);
         settingsPanel.add(logInSettingsPanel, "cell 0 1,grow");
 
         cardSettingsPanel = new CardSettingsPanel(model);

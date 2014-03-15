@@ -23,10 +23,14 @@ import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import com.alee.laf.spinner.WebSpinner;
 
+/**
+ * Cart item
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class CartItem extends JPanel implements ChangeListener, ActionListener, PropertyChangeListener {
     private JLabel lblName;
-    private WebSpinner spinnerAmount;
+    private WebSpinner spnrAmount;
     private ShoppingItem shoppingItem;
     private IMatModel model;
     private JLabel lblTotalPrice;
@@ -54,7 +58,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
         lblName.setText(shoppingItem.getProduct().getName());
         lblTotalPrice.setText(Constants.currencyFormat.format(shoppingItem.getTotal()) + Constants.currencySuffix);
         lblUnitSuffix.setText(shoppingItem.getProduct().getUnitSuffix());
-        spinnerAmount.setValue(((Double) (shoppingItem.getAmount())).intValue());
+        spnrAmount.setValue(((Double) (shoppingItem.getAmount())).intValue());
     }
 
     /**
@@ -67,11 +71,11 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
         lblName.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
         add(lblName, "cell 0 0,alignx left,aligny center");
 
-        spinnerAmount = new WebSpinner();
-        spinnerAmount.addChangeListener(this);
-        spinnerAmount.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), new Integer(99), new Integer(1)));
-        spinnerAmount.setPreferredSize(new Dimension(48, 10));
-        add(spinnerAmount, "cell 1 0,alignx right,aligny baseline");
+        spnrAmount = new WebSpinner();
+        spnrAmount.addChangeListener(this);
+        spnrAmount.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), new Integer(99), new Integer(1)));
+        spnrAmount.setPreferredSize(new Dimension(48, 10));
+        add(spnrAmount, "cell 1 0,alignx right,aligny baseline");
 
         lblUnitSuffix = new JLabel("<unit>");
         lblUnitSuffix.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
@@ -92,14 +96,18 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
         add(btnRemove, "cell 4 0");
     }
 
+    /**
+     * Get shopping item
+     * @return
+     */
     public ShoppingItem getShoppingItem() {
         return shoppingItem;
     }
 
     @Override
     public void stateChanged(ChangeEvent event) {
-        if (event.getSource() == spinnerAmount) {
-            model.cartUpdateItem(shoppingItem.getProduct(), ((Integer) spinnerAmount.getValue()).doubleValue());
+        if (event.getSource() == spnrAmount) {
+            model.cartUpdateItem(shoppingItem.getProduct(), ((Integer) spnrAmount.getValue()).doubleValue());
         }
     }
 
@@ -116,7 +124,7 @@ public class CartItem extends JPanel implements ChangeListener, ActionListener, 
             if (shoppingItem.getProduct().equals(((ShoppingItem) evt.getNewValue()).getProduct())) {
                 ShoppingItem item = (ShoppingItem) evt.getNewValue();
 
-                spinnerAmount.setValue(((Double) item.getAmount()).intValue());
+                spnrAmount.setValue(((Double) item.getAmount()).intValue());
                 lblTotalPrice.setText(Constants.currencyFormat.format(item.getTotal()) + Constants.currencySuffix);
                 shoppingItem = item;
                 repaint();

@@ -15,6 +15,10 @@ import se.chalmers.dat215.grupp14.backend.Constants;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
 import javax.swing.ImageIcon;
 
+/**
+ * Item in order view
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class OrderItem extends JPanel implements ActionListener, PropertyChangeListener {
     private IMatModel model;
@@ -24,16 +28,19 @@ public class OrderItem extends JPanel implements ActionListener, PropertyChangeL
     private JButton btnInfo;
     private HistoryView historyView;
 
+    /**
+     * Constructor
+     */
     public OrderItem() {
         super();
         initializeGUI();
     }
 
     /**
-     * Creates a CartItem instance from the given ShoppingItem.
-     * 
-     * @param shoppingItem
-     *            - The item to track
+     * Constructor with given history view, order and model
+     * @param historyView
+     * @param order
+     * @param model
      */
     public OrderItem(HistoryView historyView, Order order, IMatModel model) {
         this();
@@ -41,11 +48,14 @@ public class OrderItem extends JPanel implements ActionListener, PropertyChangeL
         this.model = model;
         this.historyView = historyView;
         lblDatum.setText(Constants.dateFormat.format(order.getDate()));
-        label.setText(Constants.currencyFormat.format(totalPrice(order)) + Constants.currencySuffix);
+        label.setText(Constants.currencyFormat.format(getTotalPrice(order)) + Constants.currencySuffix);
         this.model.addPropertyChangeListener(this);
 
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[grow][][]", "[60px]"));
 
@@ -67,7 +77,12 @@ public class OrderItem extends JPanel implements ActionListener, PropertyChangeL
         add(btnInfo, "cell 2 0,alignx right");
     }
 
-    private double totalPrice(Order order) {
+    /**
+     * Get total price
+     * @param order
+     * @return
+     */
+    private double getTotalPrice(Order order) {
         double price = 0;
         for (ShoppingItem si : order.getItems()) {
             price += si.getTotal();

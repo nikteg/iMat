@@ -28,8 +28,12 @@ import com.alee.extended.image.WebImage;
 import com.alee.laf.text.WebPasswordField;
 import com.alee.laf.text.WebTextField;
 
+/**
+ * Sign in dialog
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
-public class LogInDialog extends JDialog implements ActionListener, PropertyChangeListener {
+public class SignInDialog extends JDialog implements ActionListener, PropertyChangeListener {
     private JTabbedPane signInTabbedPane;
     private JPanel newCustomerPanel;
     private JPanel signInPanel;
@@ -50,13 +54,21 @@ public class LogInDialog extends JDialog implements ActionListener, PropertyChan
     private JButton btnRegister;
     private IMatModel model;
 
-    public LogInDialog(JFrame frame, IMatModel model) {
+    /**
+     * Constructor with given frame and model
+     * @param frame
+     * @param model
+     */
+    public SignInDialog(JFrame frame, IMatModel model) {
         super(frame, true);
         this.model = model;
         this.model.addPropertyChangeListener(this);
         initializeGUI();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setSize(360, 250);
         setResizable(false);
@@ -130,6 +142,44 @@ public class LogInDialog extends JDialog implements ActionListener, PropertyChan
 
         userNameLabel.requestFocusInWindow();
     }
+    
+    /**
+     * Reset password field icon and background
+     * @param wt
+     */
+    public void resetError(WebPasswordField wt) {
+        wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
+    }
+
+    /**
+     * Add error icon and background to password field
+     * @param wt
+     */
+    public void setError(WebPasswordField wt) {
+        wt.setBackground(Constants.ERROR_COLOR);
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
+    }
+    
+    /**
+     * Reset text field icon and background
+     * @param wt
+     */
+    public void resetError(WebTextField wt) {
+        wt.setBackground(Color.WHITE);
+        wt.setTrailingComponent(null);
+    }
+
+    /**
+     * Add error icon and background to text field
+     * @param wt
+     */
+    public void setError(WebTextField wt) {
+        wt.setBackground(Constants.ERROR_COLOR);
+        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
+                .getResource("resources/images/icons/warning.png")));
+    }
 
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -145,28 +195,6 @@ public class LogInDialog extends JDialog implements ActionListener, PropertyChan
         if (event.getSource() == btnCancel) {
             dispose();
         }
-    }
-
-    public void resetError(WebPasswordField wt) {
-        wt.setBackground(Color.WHITE);
-        wt.setTrailingComponent(null);
-    }
-
-    public void resetError(WebTextField wt) {
-        wt.setBackground(Color.WHITE);
-        wt.setTrailingComponent(null);
-    }
-
-    public void setError(WebTextField wt) {
-        wt.setBackground(Constants.ERROR_COLOR);
-        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
-                .getResource("resources/images/icons/warning.png")));
-    }
-
-    public void setError(WebPasswordField wt) {
-        wt.setBackground(Constants.ERROR_COLOR);
-        wt.setTrailingComponent(new WebImage(AddressSettingsPanel.class
-                .getResource("resources/images/icons/warning.png")));
     }
 
     @Override

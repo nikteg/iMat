@@ -20,6 +20,11 @@ import com.alee.laf.text.WebTextField;
 import javax.swing.ImageIcon;
 import java.awt.BorderLayout;
 
+/**
+ * History view
+ * 
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class HistoryView extends JPanel implements ActionListener, PropertyChangeListener {
     private IMatModel model;
@@ -40,11 +45,19 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
     private JLabel lblOrderName;
     private Order order;
 
+    /**
+     * Constructor
+     */
     public HistoryView() {
         super();
         initializeGUI();
     }
 
+    /**
+     * Constructor with given model
+     * 
+     * @param model
+     */
     public HistoryView(IMatModel model) {
         this();
         this.model = model;
@@ -52,6 +65,9 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         updateHistoryView();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setLayout(new CardLayout(0, 0));
 
@@ -72,7 +88,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         oneOrderPanel = new JPanel();
         add(oneOrderPanel, "oneOrderPanel");
         oneOrderPanel.setLayout(new MigLayout("insets 0px", "[50%,grow,left][50%,grow]", "[][][2px,grow][]"));
-        
+
         panel_3 = new JPanel();
         oneOrderPanel.add(panel_3, "cell 0 0 2 1,grow");
         panel_3.setLayout(new BorderLayout(0, 0));
@@ -81,7 +97,7 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         panel_3.add(backButton, BorderLayout.WEST);
         backButton.setIcon(new ImageIcon(HistoryView.class.getResource("resources/images/icons/back.png")));
         backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        
+
         lblOrderName = new JLabel("<name>");
         panel_3.add(lblOrderName, BorderLayout.EAST);
         backButton.addActionListener(this);
@@ -120,19 +136,13 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         oneOrderPanel.add(lblSumma, "cell 1 3,alignx center");
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent event) {
-
-        if (event.getPropertyName() == "order_placed") {
-            updateHistoryView();
-        }
-    }
-
     public double getOrderTotal(Order order) {
         double total = 0;
+        
         for (ShoppingItem si : order.getItems()) {
             total += si.getTotal();
         }
+        
         return total;
     }
 
@@ -141,10 +151,12 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         lblOrderName.setText(Constants.dateFormat.format(order.getDate()));
         lblSumma.setText(getOrderTotal(order) + Constants.currencySuffix);
         oneOrderItem.removeAll();
+        
         for (ShoppingItem si : order.getItems()) {
             ItemOrderDetailed fi = new ItemOrderDetailed(si, model);
             oneOrderItem.add(fi, "wrap,growx");
         }
+        
         updateColors(oneOrderItem);
         allOrdersItem.revalidate();
         repaint();
@@ -173,7 +185,6 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         updateColors(allOrdersItem);
         allOrdersItem.revalidate();
         repaint();
-
     }
 
     @Override
@@ -190,10 +201,14 @@ public class HistoryView extends JPanel implements ActionListener, PropertyChang
         }
 
         if (event.getSource() == btnSparaLista) {
-
             model.listSave(textField.getText(), order.getItems());
-
         }
+    }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getPropertyName() == "order_placed") {
+            updateHistoryView();
+        }
     }
 }

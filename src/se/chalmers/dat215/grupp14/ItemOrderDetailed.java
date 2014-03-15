@@ -13,6 +13,10 @@ import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
 
+/**
+ * Item in detailed order view
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class ItemOrderDetailed extends JPanel implements ActionListener {
     private JLabel lblNameLabel;
@@ -22,16 +26,18 @@ public class ItemOrderDetailed extends JPanel implements ActionListener {
     private JButton btnAddToCart;
     private JLabel labelAmount;
 
+    /**
+     * Constructor
+     */
     public ItemOrderDetailed() {
         super();
         initializeGUI();
     }
 
     /**
-     * Creates a CartItem instance from the given ShoppingItem.
-     * 
+     * Constructor with given shopping item and model
      * @param shoppingItem
-     *            - The item to track
+     * @param model
      */
     public ItemOrderDetailed(ShoppingItem shoppingItem, IMatModel model) {
         this();
@@ -42,6 +48,9 @@ public class ItemOrderDetailed extends JPanel implements ActionListener {
         tglFavorite.setSelected(model.isFavorite(shoppingItem.getProduct()));
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[75.00,grow][][][pref:18.00px:pref]", "[60px]"));
 

@@ -24,6 +24,10 @@ import javax.swing.ImageIcon;
 import java.awt.BorderLayout;
 
 // TODO LÄGG TILL EN SÅNDÄR RUBRIKJÄVEL
+/**
+ * List view
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class ListView extends JPanel implements ActionListener, PropertyChangeListener {
     private IMatModel model;
@@ -41,11 +45,18 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
     private JPanel panel_2;
     private JLabel lblListName;
 
+    /**
+     * Constructor
+     */
     public ListView() {
         super();
         initializeGUI();
     }
 
+    /**
+     * Constructor with given model
+     * @param model
+     */
     public ListView(IMatModel model) {
         this();
         this.model = model;
@@ -53,6 +64,9 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         updateListView();
     }
 
+    /**
+     * Initiliaze GUI
+     */
     private void initializeGUI() {
         setLayout(new CardLayout(0, 0));
 
@@ -83,7 +97,7 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         backButton.setIcon(new ImageIcon(ListView.class.getResource("resources/images/icons/back.png")));
         backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         
-        lblListName = new JLabel("<name>");
+        lblListName = new JLabel(""); // TODO Här ska egentligen listnamnet visas...
         panel_2.add(lblListName, BorderLayout.EAST);
         backButton.addActionListener(this);
 
@@ -108,16 +122,12 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         lblSumma = new JLabel("Summa: ");
         oneListPanel.add(lblSumma, "cell 1 2,alignx center");
     }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent event) {
-
-        if (event.getPropertyName() == "list_saved" || event.getPropertyName() == "list_removed"
-                || event.getPropertyName() == "account_signedin") {
-            updateListView();
-        }
-    }
-
+    
+    /**
+     * Get order total
+     * @param shoppingItems
+     * @return
+     */
     public double getOrderTotal(List<ShoppingItem> shoppingItems) {
         double total = 0;
         for (ShoppingItem si : shoppingItems) {
@@ -125,9 +135,12 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         }
         return total;
     }
-
+    
+    /**
+     * Add shopping items
+     * @param shoppingItems
+     */
     public void addShoppingItems(List<ShoppingItem> shoppingItems) {
-
         this.shoppingItems = shoppingItems;
         lblSumma.setText(getOrderTotal(shoppingItems) + Constants.currencySuffix);
         oneListItem.removeAll();
@@ -141,31 +154,45 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         CardLayout cl = (CardLayout) (this.getLayout());
         cl.show(this, "oneOrderPanel");
     }
-
+    
+    /**
+     * Row striping
+     * @param panel
+     */
     private void updateColors(JPanel panel) {
         for (int i = 0; i < panel.getComponentCount(); i++) {
             panel.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
         }
-
+        
         repaint();
     }
-
+    
+    /**
+     * Update list view
+     */
     private void updateListView() {
         allListsItem.removeAll();
         Map<String, List<ShoppingItem>> listMap = model.getListHandler().getLists(model.getAccountHandler().getCurrentAccount());
-
+        
         if (listMap != null) {
             for (String s : listMap.keySet()) {
-
+                
                 ListItem li = new ListItem(this, s, listMap.get(s), model);
                 allListsItem.add(li, "wrap,growx");
             }
-
+            
             updateColors(allListsItem);
             allListsItem.revalidate();
             repaint();
         }
+    }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getPropertyName() == "list_saved" || event.getPropertyName() == "list_removed"
+                || event.getPropertyName() == "account_signedin") {
+            updateListView();
+        }
     }
 
     @Override
@@ -176,11 +203,9 @@ public class ListView extends JPanel implements ActionListener, PropertyChangeLi
         }
 
         if (event.getSource() == addAllToCartButton) {
-
             for (ShoppingItem si : shoppingItems) {
                 model.cartAddItem(si.getProduct(), si.getAmount());
             }
         }
-
     }
 }

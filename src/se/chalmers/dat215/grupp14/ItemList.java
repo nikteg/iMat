@@ -23,6 +23,11 @@ import se.chalmers.dat215.grupp14.backend.IMatModel;
 
 import com.alee.laf.spinner.WebSpinner;
 
+/**
+ * List item
+ * 
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class ItemList extends Item implements ChangeListener {
     private JLabel lblBild;
@@ -34,20 +39,34 @@ public class ItemList extends Item implements ChangeListener {
     public JToggleButton tglFavorite;
     private JLabel lblUnitsuffix;
 
+    /**
+     * Constructor
+     */
     public ItemList() {
         super();
         initializeGUI();
     }
 
+    /**
+     * Constructor with given shopping item, favorite view and model
+     * 
+     * @param shoppingItem
+     * @param favoriteView
+     * @param model
+     */
     public ItemList(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
         super(shoppingItem, favoriteView, model);
         initializeGUI();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setPreferredSize(new Dimension(512, Constants.LIST_HEIGHT));
         // setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-        setLayout(new MigLayout("insets 0px 0px 0px 8px", "[64px][5px:5px][92px:n,grow][64px][][48px:48px][64px][]", "[64px]"));
+        setLayout(new MigLayout("insets 0px 0px 0px 8px", "[64px][5px:5px][92px:n,grow][64px][][48px:48px][64px][]",
+                "[64px]"));
 
         lblBild = new JLabel(model.getImageIcon(shoppingItem.getProduct(), new Dimension(48, 48)));
         lblBild.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -61,7 +80,8 @@ public class ItemList extends Item implements ChangeListener {
         lblNamelabel = new JLabel(shoppingItem.getProduct().getName());
         add(lblNamelabel, "cell 2 0,alignx left");
 
-        lblPrice = new JLabel(Constants.currencyFormat.format(shoppingItem.getProduct().getPrice()) + Constants.currencySuffix + "/" + shoppingItem.getProduct().getUnitSuffix());
+        lblPrice = new JLabel(Constants.currencyFormat.format(shoppingItem.getProduct().getPrice())
+                + Constants.currencySuffix + "/" + shoppingItem.getProduct().getUnitSuffix());
         lblPrice.setBackground(Color.RED);
         add(lblPrice, "cell 3 0");
 

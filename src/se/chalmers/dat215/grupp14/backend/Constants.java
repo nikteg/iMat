@@ -31,4 +31,6 @@ public class Constants {
     public static final int GRID_WIDTH = 180;
     public static final int GRID_HEIGHT = 240;
     public static final int LIST_HEIGHT = 64;
+    
+    public static final int MARGIN = 10;
 }

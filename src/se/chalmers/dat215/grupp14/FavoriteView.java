@@ -19,19 +19,30 @@ import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.dat215.grupp14.backend.Constants;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
 
+/**
+ * Favorite view
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class FavoriteView extends JPanel implements ActionListener, PropertyChangeListener {
     private IMatModel model;
-    private JButton clearFavoritesButton;
-    private JPanel favoritePanel;
+    private JButton btnClearFavorites;
+    private JPanel pnlFavorite;
     private JScrollPane scrollPane;
     private List<Product> favItemList = new ArrayList<Product>();
 
+    /**
+     * Constructor
+     */
     public FavoriteView() {
         super();
         initializeGUI();
     }
 
+    /**
+     * Constructor with given model
+     * @param model
+     */
     public FavoriteView(IMatModel model) {
         this.model = model;
         this.model.addPropertyChangeListener(this);
@@ -39,6 +50,9 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
         updateFavoriteView();
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setLayout(new MigLayout("insets 2px", "[grow]", "[grow][20][24]"));
 
@@ -47,45 +61,55 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPane, "cell 0 0,grow");
 
-        favoritePanel = new JPanel();
-        scrollPane.setViewportView(favoritePanel);
-        favoritePanel.setLayout(new MigLayout("insets 0px,gapy 0px", "[grow]", "[36px]"));
+        pnlFavorite = new JPanel();
+        scrollPane.setViewportView(pnlFavorite);
+        pnlFavorite.setLayout(new MigLayout("insets 0px,gapy 0px", "[grow]", "[36px]"));
 
-        clearFavoritesButton = new JButton("Rensa favoriter");
-        clearFavoritesButton.addActionListener(this);
-        clearFavoritesButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        add(clearFavoritesButton, "cell 0 2,alignx center");
+        btnClearFavorites = new JButton("Rensa favoriter");
+        btnClearFavorites.addActionListener(this);
+        btnClearFavorites.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        add(btnClearFavorites, "cell 0 2,alignx center");
     }
 
+    /**
+     * Row striping
+     */
     private void updateColors() {
-        for (int i = 0; i < favoritePanel.getComponentCount(); i++) {
-            favoritePanel.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
+        for (int i = 0; i < pnlFavorite.getComponentCount(); i++) {
+            pnlFavorite.getComponents()[i].setBackground((i % 2 == 0) ? Constants.ALT_COLOR : null);
         }
 
         repaint();
     }
 
+    /**
+     * Update favorite view
+     */
     public void updateFavoriteView() {
 
-        favoritePanel.removeAll();
+        pnlFavorite.removeAll();
         favItemList.clear();
         for (int i = 0; i < model.getFavorites().size(); i++) {
             FavoriteItem fi = new FavoriteItem(model.getFavorites().get(i), model);
-            favoritePanel.add(fi, "wrap,growx");
+            pnlFavorite.add(fi, "wrap,growx");
             favItemList.add(fi.getProduct());
         }
 
         updateColors();
-        favoritePanel.revalidate();
+        pnlFavorite.revalidate();
     }
 
+    /**
+     * Add favorite
+     * @param product
+     */
     public void addFavorite(Product product) {
         if (!favItemList.contains(product)) {
             FavoriteItem fi = new FavoriteItem(product, model);
-            favoritePanel.add(fi, "wrap,growx");
+            pnlFavorite.add(fi, "wrap,growx");
             favItemList.add(product);
             updateColors();
-            favoritePanel.revalidate();
+            pnlFavorite.revalidate();
             repaint();
         }
     }
@@ -99,7 +123,7 @@ public class FavoriteView extends JPanel implements ActionListener, PropertyChan
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == clearFavoritesButton) {
+        if (event.getSource() == btnClearFavorites) {
             if (JOptionPane.showConfirmDialog(this, "Är du säker på att du vill radera alla favoriter?",
                     "Radera alla favoriter", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
                 model.favoriteClear();

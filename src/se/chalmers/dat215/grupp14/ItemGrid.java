@@ -26,6 +26,10 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Font;
 
+/**
+ * Grid item
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class ItemGrid extends Item implements ChangeListener {
     private JLabel lblBild;
@@ -37,11 +41,20 @@ public class ItemGrid extends Item implements ChangeListener {
     private JLabel lblSuffix;
     private JPanel panel;
 
+    /**
+     * Constructor
+     */
     public ItemGrid() {
         super();
         initializeGUI();
     }
 
+    /**
+     * Constructor with given shopping item, favorite view and model
+     * @param shoppingItem
+     * @param favoriteView
+     * @param model
+     */
     public ItemGrid(ShoppingItem shoppingItem, FavoriteView favoriteView, IMatModel model) {
         super(shoppingItem, favoriteView, model);
         initializeGUI();

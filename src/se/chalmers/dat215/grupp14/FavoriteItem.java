@@ -20,6 +20,10 @@ import javax.swing.JButton;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.dat215.grupp14.backend.IMatModel;
 
+/**
+ * Favorite item
+ * @author Niklas Tegnander, Mikael Lönn and Oskar Jönefors
+ */
 @SuppressWarnings("serial")
 public class FavoriteItem extends JPanel implements ActionListener, PropertyChangeListener {
     private JLabel lblNameLabel;
@@ -29,16 +33,17 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
     private JToggleButton tglFavorite;
     private JButton btnAddToCart;
 
+    /**
+     * Constructor
+     */
     public FavoriteItem() {
         super();
         initializeGUI();
     }
 
     /**
-     * Creates a CartItem instance from the given ShoppingItem.
-     * 
+     * Constructor with product and model
      * @param shoppingItem
-     *            - The item to track
      */
     public FavoriteItem(Product product, IMatModel model) {
         this();
@@ -49,6 +54,9 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
         lblPriceLabel.setText(product.getPrice() + product.getUnit());
     }
 
+    /**
+     * Initialize GUI
+     */
     private void initializeGUI() {
         setLayout(new MigLayout("insets 4px", "[grow][64px][][pref:18.00px:pref]", "[60px]"));
 
@@ -89,6 +97,14 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
         add(tglFavorite, "cell 3 0,alignx right,aligny center");
     }
 
+    /**
+     * Get product
+     * @return
+     */
+    public Product getProduct() {
+        return product;
+    }
+    
     @Override
     public void actionPerformed(ActionEvent action) {
         if (action.getActionCommand() == "favorite") {
@@ -104,10 +120,6 @@ public class FavoriteItem extends JPanel implements ActionListener, PropertyChan
             model.cartAddItem(product);
         }
 
-    }
-
-    public Product getProduct() {
-        return product;
     }
 
     @Override
